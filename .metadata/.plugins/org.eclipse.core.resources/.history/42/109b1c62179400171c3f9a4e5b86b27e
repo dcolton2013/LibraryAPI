@@ -1,0 +1,5 @@
+package models.copy;
+
+public class Library{
+    public static String s = "Library Class!";
+}
