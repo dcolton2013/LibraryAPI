@@ -40,43 +40,52 @@ public class Library{
         					 	"lname		varchar(15)		not null,"+
         					 	"username	varchar(15)		not null,"+
         					 	"password	varchar(15)		not null,"+
+        					 	"loggedIn	boolean					,"+
         					 	"primary key(username));";
         try {
             stmt.executeUpdate(managersTable);
         } catch (SQLException ex) {
             System.out.println(ex.toString());
         }
-        populateManagers();
 	}
-	private static void populateManagers() {
-		String insert = "replace into managers values("+
-						"'LeBron', 'James', 'lbjames','manpass1'"+
-						");";
-		try {
-			stmt.executeUpdate(insert);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
-	}
-	public static void loginManager(String uname, String password){
-	      String sql =  "SELECT m.username, m.password " +
+	public static void loginManager(String uname, String password) throws SQLException{
+	    String sql =  	"SELECT m.username, m.password " +
                   		"FROM managers m " +
-                  		"WHERE (m.username LIKE '%"+uname+"%') AND (m.password LIKE '%"+password+"%')"; 
-	    try {
+                  		"WHERE m.username = '"+uname+"' AND m.password = '"+password+"'"; 
+	    
 			ResultSet rs = stmt.executeQuery(sql);
-		} catch (SQLException e) {
-			e.printStackTrace();
-		}
+			if (!rs.next())
+				//empty result
+				System.out.println("\t"+ uname + " not authenticated");
+			else{
+				System.out.println("\t"+uname+" authentication successful");
+			    sql = 	"update managers "+
+	    				"set loggedIn = 1 " +
+	    				"where username = '"+uname+"'";
+	    		stmt.executeUpdate(sql);
+	    		Manager.showManagerMenu();
+			}
 		
+	}
+	public static void addEmployee(String table,String fname,String lname,String uname, String password) throws SQLException{
+		String sql = "insert ignore into "+ table +" values (" +
+					 	"'"+fname+"',"+
+					 	"'"+lname+"',"+
+					 	"'"+uname+"',"+
+					 	"'"+password+"',"+
+					 	"'"+0+"'"+
+					 	")";
+		stmt.executeUpdate(sql);	
 	}
 	private static void createAssociatesTable() {
 		System.out.println("Creating Table: associates...");
         //init table
         String associatesTable = "create table if not exists associates (" +
-        					 	"fname		varchar(15)		not null"+
-        					 	"lname		varchar(15)		not null"+
-        					 	"username	varchar(15)		not null"+
-        					 	"password	varchar(15)		not null"+
+        					 	"fname		varchar(15)		not null,"+
+        					 	"lname		varchar(15)		not null,"+
+        					 	"username	varchar(15)		not null,"+
+        					 	"password	varchar(15)		not null,"+
+        					 	"loggedIn	boolean					,"+
         					 	"primarykey(username));";
         try {
             stmt.executeUpdate(associatesTable);
@@ -88,13 +97,14 @@ public class Library{
 		System.out.println("Creating Table: members...");
         //init table
         String membersTable = "create table if not exists members (" +
-        					 	"fname			varchar(15)		not null"+
-        					 	"lname			varchar(15)		not null"+
-        					 	"address		varchar(50)		not null"+
-        					 	"phone			varchar(10)		not null"+
-        					 	"username		varchar(15)		not null"+
-        					 	"password		varchar(15)		not null"+
-        					 	"code			varchar(4)		not null"+
+        					 	"fname			varchar(15)		not null,"+
+        					 	"lname			varchar(15)		not null,"+
+        					 	"address		varchar(50)		not null,"+
+        					 	"phone			varchar(10)		not null,"+
+        					 	"username		varchar(15)		not null,"+
+        					 	"password		varchar(15)		not null,"+
+        					 	"code			varchar(4)		not null,"+
+        					 	"loggedIn		boolean					,"+
         					 	"primarykey(username));";
         try {
             stmt.executeUpdate(membersTable);

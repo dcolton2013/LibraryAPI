@@ -11,9 +11,7 @@ public class LibraryAPI{
     public static void main(String[] args) throws ClassNotFoundException, SQLException{
         System.out.println("Library API");
         showMainMenu();
-       
     }
-
     private static void showMainMenu() throws ClassNotFoundException, SQLException {
     	int selection = 0;
         System.out.println("*****************************");
@@ -21,22 +19,22 @@ public class LibraryAPI{
         System.out.println("2. Login Library Manager");
         System.out.println("3. Login Library Associate");
         System.out.println("4. Login Library Member");
+        System.out.println("5. Search DB");
         System.out.println("\t-1 to exit");
         System.out.println("*****************************");
         System.out.print("\tSelection:  ");
         selection = scan.nextInt();
         startApp(selection);
 	}
-
 	public static void startApp(int selection) throws ClassNotFoundException, SQLException{
-		//while(selection != -1){
+		while(selection != -1){
 	         if (selection>0 && selection<5){
 	             switch(selection){
 	                 case 1: initLibrary();
 	                         break;
-	                 case 2: System.out.println("\tusername: lbjames");
-	                 		 System.out.println("\tusername: manpass1");
-	                	 	 lib.loginManager("lbjames","manpass1");
+	                 case 2: System.out.println("\tusername: admin");
+	                 		 System.out.println("\tpassword: admin");
+	                	 	 Library.loginManager("admin","admin");
 	                         break;
 	//                 case 3: lib.loginAssociate;
 	//                         break;
@@ -46,9 +44,8 @@ public class LibraryAPI{
 	             }
 	         }
 	         showMainMenu();
-		//}
+		}
      }
-    
     public static void initLibrary() throws ClassNotFoundException, SQLException{
     	lib = new Library();
     }
