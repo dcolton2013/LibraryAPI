@@ -8,8 +8,8 @@ public class Manager{
 		while (selection != -1){
 	        System.out.println("*****************************");
 	        System.out.println("1. Create new manager");
-	        System.out.println("2. Create new member");
-	        System.out.println("3. Create new associate");
+	        System.out.println("2. Create new associate");
+	        System.out.println("3. Create new member");
 	        System.out.println("4. Logout");
 	        System.out.println("\t-1 return to main menu");
 	        System.out.println("*****************************");
@@ -21,9 +21,9 @@ public class Manager{
 
 	private static void start(int selection) throws SQLException {
 		switch(selection){
-			case 1: getManagerInfo();
+			case 1: createEmployee("managers");
 					break;
-			case 2:
+			case 2: createEmployee("associates");
 					break;
 			case 3:
 					break;
@@ -33,8 +33,8 @@ public class Manager{
 		}
 	}
 
-	private static void getManagerInfo() {
+	private static void getEmployeeInfo(String table) {
 		//prompt for manager info
-		//Library.addEmployee("managers", "Kobe", "Bryant", "kbryant", "manpass0");
+		//Library.addEmployee(table, "Kobe", "Bryant", "kbryant", "manpass0");
 	}
 }

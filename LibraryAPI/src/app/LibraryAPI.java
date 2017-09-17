@@ -8,10 +8,13 @@ import java.util.logging.Logger;
 public class LibraryAPI{
 	public static Library lib;
 	private static Scanner scan = new Scanner(System.in);
-    public static void main(String[] args) throws ClassNotFoundException, SQLException{
+    //Main class allow login (manager,associate,member) and nonmembers to search db
+	public static void main(String[] args) throws ClassNotFoundException, SQLException{
         System.out.println("Library API");
         showMainMenu();
     }
+	
+    //Main menu interface
     private static void showMainMenu() throws ClassNotFoundException, SQLException {
     	int selection = 0;
         System.out.println("*****************************");
@@ -26,19 +29,19 @@ public class LibraryAPI{
         selection = scan.nextInt();
         startApp(selection);
 	}
-	public static void startApp(int selection) throws ClassNotFoundException, SQLException{
+    
+	//Handle main menu options
+    public static void startApp(int selection) throws ClassNotFoundException, SQLException{
 		while(selection != -1){
 	         if (selection>0 && selection<5){
 	             switch(selection){
 	                 case 1: initLibrary();
 	                         break;
-	                 case 2: System.out.println("\tusername: admin");
-	                 		 System.out.println("\tpassword: admin");
-	                	 	 Library.loginManager("admin","admin");
+	                 case 2: Library.loginManager("admin","admin");
 	                         break;
-	//                 case 3:
+	//                 case 3: lib.loginAssociate;
 	//                         break;
-	//                 case 4: 
+	//                 case 4: lib.loginMember;
 	//                         break;
 	                 case -1: System.exit(0);
 	             }
@@ -46,6 +49,8 @@ public class LibraryAPI{
 	         showMainMenu();
 		}
      }
+    
+    //initialize library
     public static void initLibrary() throws ClassNotFoundException, SQLException{
     	lib = new Library();
     }
