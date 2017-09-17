@@ -36,9 +36,9 @@ public class LibraryAPI{
 	                 		 System.out.println("\tpassword: admin");
 	                	 	 Library.loginManager("admin","admin");
 	                         break;
-	//                 case 3: lib.loginAssociate;
+	//                 case 3:
 	//                         break;
-	//                 case 4: lib.loginMember;
+	//                 case 4: 
 	//                         break;
 	                 case -1: System.exit(0);
 	             }
