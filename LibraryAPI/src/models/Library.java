@@ -1,4 +1,5 @@
 package models;
+import config.dbconfig;
 
 import java.util.*;
 import java.io.*;
@@ -7,9 +8,11 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Library{
-	private static final String url = "jdbc:mysql://localhost:3306/Library?useSSL=false";    
-	private static final String user = "root";
-	private static final String password = "drc_DB2016";
+	//db configuration*******************
+	private static String url= dbconfig.URL;;    
+	private static String user = dbconfig.USER;;
+	private static String password= dbconfig.PASSWORD;;
+    //***********************************
 	private static Connection conn;
 	private static Statement stmt;
 	private static ResultSet rs;
