@@ -21,9 +21,9 @@ public class Manager{
 
 	private static void start(int selection) throws SQLException {
 		switch(selection){
-			case 1: createEmployee("managers");
+			case 1: //createEmployee("managers");
 					break;
-			case 2: createEmployee("associates");
+			case 2: //createEmployee("associates");
 					break;
 			case 3:
 					break;
