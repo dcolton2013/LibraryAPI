@@ -576,3 +576,13 @@ Java Model Exception: Java Model Status [createEmployee(String, String, String, 
 !MESSAGE Unhandled event loop exception
 !STACK 0
 java.lang.NullPointerException
+
+!ENTRY org.eclipse.ui 4 0 2017-09-20 22:37:40.261
+!MESSAGE Unhandled event loop exception
+!STACK 0
+java.lang.NullPointerException
+
+!ENTRY org.eclipse.ui 4 0 2017-09-20 22:37:44.184
+!MESSAGE Unhandled event loop exception
+!STACK 0
+java.lang.NullPointerException
