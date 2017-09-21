@@ -1,4 +1,5 @@
 package models;
+import config.dbconfig;
 
 import java.util.*;
 import java.io.*;
@@ -7,13 +8,26 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Library{
+<<<<<<< HEAD
 	private static final String url = "jdbc:mysql://localhost:3306/Library?useSSL=false";    
 	private static final String user = "root";
 	private static final String password = "";
+=======
+	//db configuration*******************
+	private static String url= dbconfig.URL;;    
+	private static String user = dbconfig.USER;;
+	private static String password= dbconfig.PASSWORD;;
+    //***********************************
+>>>>>>> 895cc570e047f67b35184f5f3e6c261eeb786142
 	private static Connection conn;
 	private static Statement stmt;
 	private static ResultSet rs;
 	private static String query;
+	
+	//currently logged in
+	private static String manager = ""; 
+	private static String associate = "";
+	private static String member = "";
 	  
 	//create db connection  
 	public Library() throws ClassNotFoundException, SQLException{
@@ -26,23 +40,24 @@ public class Library{
 	
 	//initialize db/create tables
 	//*******************************************
-	private static void createDB(){
+	private static void createDB() throws SQLException{
 	    try {
 	        stmt.executeUpdate("create schema if not exists Library;");
 	    } catch (SQLException ex) {
 	    }
 		createManagersTable();
-	//    	createAssociatesTable();
+    	createAssociatesTable();
 	//    	createMembersTable();
-	//    	createBooksTable();
+    	createBooksTable();
+    	createBookKeywordsTable();
 	}
 	
 	private static void createManagersTable() {
 		System.out.println("Creating Table: managers...");
 	    //init table
 	    String managersTable = "create table if not exists managers (" +
-	    					 	"fname		varchar(15)		not null,"+
-	    					 	"lname		varchar(15)		not null,"+
+	    					 	//"fname		varchar(15)		not null,"+
+	    					 	//"lname		varchar(15)		not null,"+
 	    					 	"username	varchar(15)		not null,"+
 	    					 	"password	varchar(15)		not null,"+
 	    					 	"loggedIn	boolean					,"+
@@ -58,12 +73,12 @@ public class Library{
 		System.out.println("Creating Table: associates...");
 	    //init table
 	    String associatesTable = "create table if not exists associates (" +
-	    					 	"fname		varchar(15)		not null,"+
-	    					 	"lname		varchar(15)		not null,"+
+	    					 	//"fname		varchar(15)		not null,"+
+	    					 	//"lname		varchar(15)		not null,"+
 	    					 	"username	varchar(15)		not null,"+
 	    					 	"password	varchar(15)		not null,"+
 	    					 	"loggedIn	boolean					,"+
-	    					 	"primarykey(username));";
+	    					 	"primary key(username));";
 	    try {
 	        stmt.executeUpdate(associatesTable);
 	    } catch (SQLException ex) {
@@ -75,15 +90,16 @@ public class Library{
 		System.out.println("Creating Table: members...");
 	    //init table
 	    String membersTable = "create table if not exists members (" +
-	    					 	"fname			varchar(15)		not null,"+
-	    					 	"lname			varchar(15)		not null,"+
-	    					 	"address		varchar(50)		not null,"+
-	    					 	"phone			varchar(10)		not null,"+
-	    					 	"username		varchar(15)		not null,"+
-	    					 	"password		varchar(15)		not null,"+
-	    					 	"code			varchar(4)		not null,"+
-	    					 	"loggedIn		boolean					,"+
-	    					 	"primarykey(username));";
+	    					 	"fname						varchar(15)		not null,"+
+	    					 	"lname						varchar(15)		not null,"+
+	    					 	"address					varchar(50)		not null,"+
+	    					 	"phone						varchar(10)		not null,"+
+	    					 	"username					varchar(15)		not null,"+
+	    					 	"password					varchar(15)		not null,"+
+	    					 	"code						varchar(4)		not null,"+
+	    					 	"numBooksCheckedOut			int						,"+
+	    					 	"loggedIn					boolean					,"+
+	    					 	"primary key(username));";
 	    try {
 	        stmt.executeUpdate(membersTable);
 	    } catch (SQLException ex) {
@@ -91,19 +107,36 @@ public class Library{
 	    }
 	}
 	
-	private static void createBooksTable() {
+	private static void createBooksTable() throws SQLException {
 		System.out.println("Creating Table: books...");
+		String booksTable = "create table if not exists books( "+
+							 "isbn				varchar(15)		not null, "+
+							 "author			varchar(20)		not null, "+
+							 "name				varchar(250)	not null, "+
+							 "year				varchar(4)		not null, "+
+							 "availableCopies	int				not null, "+
+							 "holds				int				not null, "+
+							 "price				double				not null, "+
+				 			 "primary key(isbn,author))";
+		stmt.executeUpdate(booksTable);
+		loadBooks();
+	}
+	private static void createBookKeywordsTable() throws SQLException {
+		System.out.println("Creating Table: books_keywords...");
+		String bookKeywords = 	"create table if not exists books_keywords( "+
+								"isbn		varchar(15)		not null, 		"+
+								"keyword	varchar(25)				,		"+
+								"primary key(isbn,keyword))";
+		stmt.executeUpdate(bookKeywords);
+		loadBookKeywords();
+				
 	}
 	//********************************************
-	
 	//functions to add tuples to the db
-	//method adds managers and employees to specified table ---- managers or associates
 	//loggedIn initially set to false
-	public static void addEmployee(String table,String fname,String lname,String uname, String password) throws SQLException{
-		System.out.println("adding user: " + uname + " to "+  table);
-		String sql = 	"insert ignore into "+ table +" values (" +
-					 	"'"+fname+"',"+
-					 	"'"+lname+"',"+
+	public static void createManager(String uname,String password) throws SQLException{
+		System.out.println("adding manager: " + uname + " to managers");
+		String sql = 	"insert ignore into managers values (" +
 					 	"'"+uname+"',"+
 					 	"'"+password+"',"+
 					 	"'"+0+"'"+
@@ -111,8 +144,38 @@ public class Library{
 		stmt.executeUpdate(sql);	
 	}
 	
+	public static void createAssociate(String uname,String password) throws SQLException{
+		System.out.println("adding associate: " + uname );
+		String sql = 	"insert ignore into associates values (" +
+					 	"'"+uname+"',"+
+					 	"'"+password+"',"+
+					 	"'"+0+"'"+
+					 	")";
+		stmt.executeUpdate(sql);	
+	}
+	
+	private static void loadBookKeywords() throws SQLException {
+		System.out.println("populating table: books_keywords...");
+		File f = new File("src/config/books_keywords");
+		String sql = "LOAD DATA LOCAL INFILE '"+f.getAbsolutePath()+".txt' "+
+					 "INTO TABLE books_keywords "+
+					 "COLUMNS TERMINATED BY ',' "+
+					 "LINES STARTING BY '.'";
+		stmt.executeUpdate(sql);
+	}
+
+	private static void loadBooks() throws SQLException {
+		System.out.println("populating table: books...");
+		File f = new File("src/config/books");
+		String sql = "LOAD DATA LOCAL INFILE '"+f.getAbsolutePath()+".txt' "+
+					 "INTO TABLE books "+ 
+					 "COLUMNS TERMINATED BY ',' "+
+					 "LINES STARTING BY '.'";
+		stmt.executeUpdate(sql);
+	}
+
 	//login functions
-	//manager/associate
+	//manager
 	public static void loginManager(String uname, String password) throws SQLException{
 	String sql =  	"SELECT m.username, m.password " +
 	          		"FROM managers m " +
@@ -128,8 +191,21 @@ public class Library{
 					"set loggedIn = 1 " +
 					"where username = '"+uname+"'";
 	    		stmt.executeUpdate(sql);
-	    		Manager.showManagerMenu();
+	    		manager = uname;
+	    		Manager.start();
 			}
 		
 	}
+	
+	//logout functions
+	//manager
+	public static void logoutManager() throws SQLException {
+		String sql = "update managers "+
+					"set loggedIn = 0 "+
+					"where username = '"+ manager +"'";
+		stmt.executeUpdate(sql);
+	}
+	
+	
+	//Search Functions
 }

@@ -20,11 +20,11 @@ public class Associate{
 	/*getters/setters of data field*/
 
 /* Validate book, update availabilty*/
-	public void scanInBook(Book book){
+	public void scanInBook(String book){
 		
 	}
 
-	public void scanOutBook(Book book){
+	public void scanOutBook(String book){
 		
 	}
 /**/
