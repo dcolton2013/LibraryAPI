@@ -2,7 +2,10 @@
 
 ### Eclipse ###
 
+*.classpath
+
 .metadata
+
 bin/
 tmp/
 *.tmp
@@ -46,7 +49,6 @@ local.properties
 
 # Code Recommenders
 .recommenders/
-
 # Scala IDE specific (Scala & Java development for Eclipse)
 .cache-main
 .scala_dependencies
@@ -55,9 +57,8 @@ local.properties
 ### Eclipse Patch ###
 # Eclipse Core		
 .project
-
+*.classpath
 # JDT-specific (Eclipse Java Development Tools)		
-.classpath
 
 ### Java ###
 # Compiled class file
@@ -70,8 +71,7 @@ local.properties
 *.ctxt
 
 # Mobile Tools for Java (J2ME)
-.mtj.tmp/
-
+.mtj.tmp/ 
 # Package Files #
 *.jar
 *.war
