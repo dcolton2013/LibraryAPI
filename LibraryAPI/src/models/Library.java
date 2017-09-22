@@ -9,7 +9,7 @@ import java.util.logging.Logger;
 public class Library{
 	  private static final String url = "jdbc:mysql://localhost:3306/Library?useSSL=false";    
 	  private static final String user = "root";
-	  private static final String password = "drc_DB2016";
+	  private static final String password = "faisal";
 	  private static Connection conn;
 	  private static Statement stmt;
 	  private static ResultSet rs;
