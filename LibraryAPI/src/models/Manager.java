@@ -70,8 +70,7 @@ public class Manager{
         	int selection = scan.nextInt();
             scan.nextLine();
         	switch (selection){
-        	case 1: //Library.createBook("11", "sean john", "blah", "1996", 30, 19.66);
-        			//Library.createBook("0011",new String[] {"pablo","shamboni"}, "blah", "1996", 30, 19.66);
+        	case 1:	Library.createBook("0011",new String[] {"pablo","shamboni"}, "blah", "1996", 30, 19.66,new String[] {"mystery"});
         			break;
         	case 2: 
         			break;

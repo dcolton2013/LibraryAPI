@@ -44,6 +44,8 @@ public class Library{
     	createBooksTable();
     	createBookAuthorsTable();
     	createBookKeywordsTable();
+    	
+    	System.out.println(getISBN("books_authors","Radric "));
 	}
 	
 	private static void createManagersTable() {
@@ -188,30 +190,61 @@ public class Library{
 		stmt.executeUpdate(sql);
 	}
 	
-	public static void createBook(String isbn, String author,String name, String year,int avail, double price ) throws SQLException{
+	public static void createBook(String isbn, String[] authors,String name, String year,int avail, double price, String[] keywords  ) throws SQLException{
+		if (authors.length == 0)
+			return;
 		String sql = 	"insert ignore into books values( "+
 						"'"+isbn	+"', "+ 
-						"'"+author	+"', "+ 
 						"'"+name	+"', "+
 						"'"+year	+"', "+
 						"'"+avail	+"', "+ 
 						"0				,"+
 						price			  + " )";
 		stmt.executeUpdate(sql);
+		
+		for (String a: authors){
+			sql = 	"insert ignore into books_authors values( "+
+					"'"+isbn	+"', "+ 
+					"'"+a	+"')";
+			stmt.executeUpdate(sql);
+		}
+		
+		if (keywords.length > 0){
+			for (String k: keywords){
+				sql = 	"insert ignore into books_keywords values( "+
+						"'"+isbn	+"', "+ 
+						"'"+k		+"')";
+				stmt.executeUpdate(sql);
+			}
+		}
 	}
 	
-	public static void createBook(String isbn, String[] authors,String name, String year,int avail, double price ) throws SQLException{
-		for (String a: authors){
-			String sql = 	"insert ignore into books values( "+
-					"'"+isbn	+"', "+ 
-					"'"+a		+"', "+ 
-					"'"+name	+"', "+
-					"'"+year	+"', "+
-					"'"+avail	+"', "+ 
-					"0				,"+
-					price		+ " )";
-			stmt.executeUpdate(sql);	
-		}
+	//Remove Functions
+		//remove books by isbn
+	public static void removeBookISBN(String isbn) throws SQLException{
+		//remove from books table if isbn is of required length
+		if(isbn.length() < 7) return;
+		
+		String sql = "delete from books "+
+					 "where ISBN LIKE %'"+isbn+"'%";
+		stmt.executeUpdate(sql);
+		
+		//remove from books_keywords
+		sql = "delete from books_keywords "+
+			  "where ISBN LIKE %'"+isbn+"'%";
+		stmt.executeUpdate(sql);
+		
+		//remove from books_authors
+		sql = "delete from books_keywords "+
+			  "where ISBN LIKE %'"+isbn+"'%";
+		stmt.executeUpdate(sql);
+	}
+		//remove by name
+	public static void removeBookNAME(String name){
+		
+	}
+		//remove by author
+	public static void removeBookAUTHOR(String name){
 		
 	}
 	
@@ -268,5 +301,21 @@ public class Library{
 	}
 	
 	//Search Functions
+	private static String getISBN(String table,String value) throws SQLException{
+		String sql=null;
+		if (table.equals("books_authors")){
+			sql = 	"select distinct isbn "+
+					"from "+table+" "+
+					"where author LIKE '%"+value+"%'";
+		}else{
+			sql = 	"select distinct isbn "+
+					"from "+table+" "+
+					"where name LIKE '%"+value+"%'";
+		}
+		
+		rs = stmt.executeQuery(sql);
+		rs.next();
+		return rs.getString(1);				
+	}
 	
 }
