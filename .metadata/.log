@@ -586,3 +586,22 @@ java.lang.NullPointerException
 !MESSAGE Unhandled event loop exception
 !STACK 0
 java.lang.NullPointerException
+
+!ENTRY org.eclipse.ui 4 0 2017-09-20 23:22:34.970
+!MESSAGE Unhandled event loop exception
+!STACK 0
+java.lang.NullPointerException
+
+!ENTRY org.eclipse.equinox.p2.metadata.repository 4 1000 2017-09-22 08:17:46.956
+!MESSAGE No repository found at file:/Users/KingDono/Documents/Eclipse.app/Contents/Eclipse/.eclipseextension.
+
+!ENTRY org.eclipse.equinox.p2.metadata.repository 4 1000 2017-09-22 08:18:06.767
+!MESSAGE No repository found at file:/Users/KingDono/Documents/Eclipse.app/Contents/Eclipse/configuration/org.eclipse.osgi/338/data/listener_1925729951/.
+
+!ENTRY org.eclipse.equinox.p2.repository 2 0 2017-09-22 08:18:10.060
+!MESSAGE Server returned lastModified <= 0 for https://github.com/florianingerl/com.florianingerl.javacodedcompletionproposals/raw/master/releng/com.florianingerl.javacodedtemplates.updatesite/target/repository/content.xml.xz
+
+!ENTRY org.eclipse.ui 4 0 2017-09-24 20:03:23.619
+!MESSAGE Unhandled event loop exception
+!STACK 0
+java.lang.NullPointerException
