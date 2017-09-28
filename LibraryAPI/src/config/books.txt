@@ -21,5 +21,5 @@
 
 .0439064872,Harry Potter and The Chamber Of Secrets,2000,1,0,17.96
 
-.9780789331144,The Bob's Burgers Burger Book: Real Recipes for Joke Burgers, 2016,1,0,13.01
+.9780789331144,The Bob's Burgers Burger Book: Real Recipes for Joke Burgers,2016,1,0,13.01
 ------------------------------------------------------------------------------------------------------------------
