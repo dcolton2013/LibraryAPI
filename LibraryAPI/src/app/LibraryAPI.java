@@ -8,6 +8,7 @@ import java.util.logging.Logger;
 public class LibraryAPI{
 	public static Library lib;
 	private static Scanner scan = new Scanner(System.in);
+	
     //Main class allow login (manager,associate,member) and nonmembers to search db
 	public static void main(String[] args) throws ClassNotFoundException, SQLException{
         System.out.println("Library API");
@@ -17,11 +18,10 @@ public class LibraryAPI{
     //Main menu interface
     private static void showMainMenu() throws ClassNotFoundException, SQLException {
 	        System.out.println("*****************************");
-	        System.out.println("1. Initialize Library");
-	        System.out.println("2. Login Library Manager");
-	        System.out.println("3. Login Library Associate");
-	        System.out.println("4. Login Library Member");
-	        System.out.println("5. Search DB");
+	        System.out.println("1. Login Library Manager");
+	        System.out.println("2. Login Library Associate");
+	        System.out.println("3. Login Library Member");
+	        System.out.println("4. Search DB");
 	        System.out.println("\t-1 to exit");
 	        System.out.println("*****************************");
 	        System.out.print("\tSelection:  ");
@@ -29,15 +29,14 @@ public class LibraryAPI{
     
 	//Handle main menu options
     public static void startApp() throws ClassNotFoundException, SQLException{
+    	initLibrary();
     	int selection = 0;
     	showMainMenu();
     	while (true){
     			selection = scan.nextInt();
     			scan.nextLine();
     			switch(selection){
-	            	case 1: initLibrary();
-	                        break;
-	                case 2: System.out.print("\tusername: ");
+	                case 1: System.out.print("\tusername: ");
 	                 		 String username = scan.nextLine();
 	                 		 
 	                 		 System.out.print("\tpassword: ");

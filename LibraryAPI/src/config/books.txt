@@ -1,26 +1,25 @@
-.0440445450,Thomas Rockwell,How to Eat Fried Worms,1953,1,0,5.99
+----------------------------------------------------------------------------------------------DONO
+.0440445450,How to Eat Fried Worms,1953,1,0,5.99
 
-.9780345803481,E.L.James,Fifty Shades of Grey Series (Book 1),2011,2,0,8.40
+.9780345803481,Fifty Shades of Grey Series (Book 1),2011,2,0,8.40
 
-.9781501175565,Hillary Rodham Clinton,What Happened,2017,4,0,17.99
+.9781501175565,What Happened,2017,4,0,17.99
 
-.9780825305931,O.J. Simpson,If I Did It: Confessions of the Killer,2008,1,0,12.33
-.9780825305931,Kim Goldman,If I Did It: Confessions of the Killer,2008,1,0,12.33
+.9780825305931,If I Did It: Confessions of the Killer,2008,1,0,12.33
 
-.1400082773,Barack Obama,Dreams from My Father: A Story of Race and Inheritance,2004,5,0,9.90
+.1400082773,Dreams from My Father: A Story of Race and Inheritance,2004,5,0,9.90
 
-.0397001517,Harper Lee,To Kill a Mockingbird,1960,1,0,10.52
+.0397001517,To Kill a Mockingbird,1960,1,0,10.52
 
-.0394900014,Dr. Suess,The Cat In The Hat,1957,2,0,5.71
+.0394900014,The Cat In The Hat,1957,2,0,5.71
 
-.9781501165320,Radric Davis,The Autobiography of Gucci Mane,2017,3,0,16.20
-.9781501165320,Neil Martinez-Belkin,The Autobiography of Gucci Mane,2017,3,0,16.20
+.9781501165320,The Autobiography of Gucci Mane,2017,3,0,16.20
 
-.9780849946158,Todd Burpo,Heaven Is For Real,2010,1,0,9.24
-.9780849946158,Lynn Vincent,Heaven Is For Real,2010,1,0,9.24
+.9780849946158,Heaven Is For Real,2010,1,0,9.24
 
-.0439708184,J.K. Rowling,Harry Potter and the Sorcerer's Stone,1999,2,0,19.82
+.0439708184,Harry Potter and the Sorcerer's Stone,1999,2,0,19.82
 
-.0439064872,J.K. Rowling,Harry Potter and the Sorcerer's Stone,2000,1,0,17.96
+.0439064872,Harry Potter and The Chamber Of Secrets,2000,1,0,17.96
 
-.9780789331144,Loren Bouchard,The Bob's Burgers Burger Book: Real Recipes for Joke Burgers, 2016,1,0,13.01
+.9780789331144,The Bob's Burgers Burger Book: Real Recipes for Joke Burgers,2016,1,0,13.01
+------------------------------------------------------------------------------------------------------------------
