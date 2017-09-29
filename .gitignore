@@ -3,6 +3,8 @@
 ### Eclipse ###
 
 *.classpath
+.classpath
+dbconfig.java
 
 .metadata
 
