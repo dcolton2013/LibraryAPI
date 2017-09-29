@@ -798,3 +798,6 @@ java.lang.NullPointerException
 	at org.eclipse.equinox.launcher.Main.invokeFramework(Main.java:669)
 	at org.eclipse.equinox.launcher.Main.basicRun(Main.java:608)
 	at org.eclipse.equinox.launcher.Main.run(Main.java:1515)
+
+!ENTRY org.eclipse.equinox.p2.repository 2 0 2017-09-28 10:57:13.767
+!MESSAGE Server returned lastModified <= 0 for https://github.com/florianingerl/com.florianingerl.javacodedcompletionproposals/raw/master/releng/com.florianingerl.javacodedtemplates.updatesite/target/repository/content.xml.xz
