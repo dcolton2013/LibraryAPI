@@ -35,16 +35,17 @@ public class Library{
 	    stmt = conn.createStatement();
 	    System.out.println("Database connected successfully");
 	    dbinit.createDB(stmt);
+	    //search tests
+	    System.out.println(searchISBN("9780345803481"));
+	    System.out.println(searchAuthor("Rowling"));
+	    System.out.println(searchKeyword("Biography"));
+	    
 	    Manager.stmt = stmt;
 	    Associate.stmt = stmt;
 	}
 	
-	//login
-	
-	//functions to add tuples to the db	
 	//login functions
 		//manager
-
 	public static void loginManager(String uname, String password) throws SQLException{
 	String sql =  	"SELECT m.username, m.password " +
 	          		"FROM managers m " +
@@ -67,8 +68,6 @@ public class Library{
 	}
 	
 		//associate
-	
-	
 	public static void loginAssociate(String uname, String password) throws SQLException{
 	String sql =  	"SELECT a.username, a.password " +
 	          		"FROM associates a " +
@@ -92,9 +91,6 @@ public class Library{
 	
 	//logout functions
 		//manager
-	
-	
-	//logout
 	public static void logoutManager() throws SQLException {
 		String sql = "update managers "+
 					 "set loggedIn = 0 "+
@@ -103,12 +99,7 @@ public class Library{
 		authorityLevel = 3;
 	}
 	
-	//Search Functions
-		//get ISBN by name
-	
 	//Queries
-	//getISBN given name
-	
 	//getISBN by name
 	public static String getISBN(String value) throws SQLException{
 		String sql = 	"select distinct isbn "+
@@ -119,11 +110,67 @@ public class Library{
 		return rs.getString(1);				
 	}
 	
-		//searches
-
-	//searches
-	
-	//dispay info
+	//Searches
+		//by ISBN
+	public static String searchISBN(String isbn) throws SQLException{
+		if (isbn.length()<6) return "";
+		
+		String sql =	"select b.isbn, b.name "
+					+ 	"from books b "
+					+ 	"where b.isbn like '%"+isbn+"%'";
+		
+		rs = stmt.executeQuery(sql);
+		
+		//add results to output
+		String output = String.format("%-15s%-50s","isbn","title" );
+		while (rs.next()){
+			output += String.format("\n%-15s%-50s", rs.getString(1),rs.getString(2));
+		}
+		output += "\n";
+		return output;
+	}
+		//by author
+	public static String searchAuthor(String authors) throws SQLException{
+		if (authors.length() < 3) return "";
+		String output = "";
+			
+		for(String a: authors.split(",( |)")){
+			String sql =	"select distinct b.isbn, b.name,a.author "
+						+ 	"from books b, books_authors a "
+						+	"inner join books_authors on a.author like '%"+a+"%' "
+						+ 	"where b.isbn = a.isbn";
+			
+			rs = stmt.executeQuery(sql);
+			//add results to output
+			output += String.format("%-15s%-50s%-50s","isbn","title","author" );
+			while (rs.next()){
+				output += String.format("\n%-15s%-50s%-25s", rs.getString(1),rs.getString(2),rs.getString(3));
+			}
+		}
+		output += "\n";
+		return output;
+	}
+		//by Keyword
+	public static String searchKeyword(String keywords) throws SQLException{		
+		if (keywords.length()<3) return "";
+		String output = "";
+		for(String k: keywords.split(",( |)")){
+			String sql =	"select distinct b.isbn, b.name, k.keyword "
+						+ 	"from books b, books_keywords k "
+						+	"inner join books_keywords on k.keyword like '%"+k+"%' "
+						+ 	"where b.isbn = k.isbn";
+			
+			rs = stmt.executeQuery(sql);
+			
+			//add results to output
+			output += String.format("%-15s%-40s%-25s","isbn","title","keywords" );
+			while (rs.next()){
+				output += String.format("\n%-15s%-40s%-25s", rs.getString(1),rs.getString(2),rs.getString(3));
+			}
+		}
+		output += "\n";
+		return output;
+	}
 	//Display info
 	private static void printBooks(String isbn) throws SQLException{
 		String sql =	"select distinct b.isbn, b.name,b.year, a.author,b.availableCopies "+
