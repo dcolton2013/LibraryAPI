@@ -1,9 +1,12 @@
 package models;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.*;
+
 
 public class Manager{
 	static Scanner scan = new Scanner(System.in);
+	static Statement stmt;
 	
 	public static void showManagerMenu() throws SQLException{
 	        System.out.println("*****************************");
@@ -29,6 +32,7 @@ public class Manager{
         System.out.print("\tSelection: ");
 	}
 	
+	//handles manager menu
 	public static void handleMain() throws SQLException {
 		int selection = 0;
     	showManagerMenu();
@@ -63,14 +67,15 @@ public class Manager{
 			showManagerMenu();
     	}
 	}
-
+	
+	//handles inventory menu
 	public static void handleInventory() throws SQLException{
         showInventoryMenu();
         while(true){
         	int selection = scan.nextInt();
             scan.nextLine();
         	switch (selection){
-        	case 1:	Library.createBook("0011",new String[] {"pablo","shamboni"}, "blah", "1996", 30, 19.66,new String[] {"mystery"});
+        	case 1:	createBook("0011","pablo,shamboni", "blah", "1996", 30, 19.66,"mystery");
         			break;
         	case 2: 
         			break;
@@ -82,14 +87,14 @@ public class Manager{
         	showInventoryMenu();
         }
 	}
-	//actions
+	
+	//prompt for info
 	private static void addAssociate() throws SQLException {
 		System.out.print("\tusername: ");
 		String username = scan.nextLine();
 		System.out.print("\tpassword: ");
 		String password = scan.nextLine();
-		
-		Library.createAssociate(username,password);
+		createAssociate(username,password);
 		
 	}
 
@@ -98,6 +103,88 @@ public class Manager{
 		String username = scan.nextLine();
 		System.out.print("\tpassword: ");
 		String password = scan.nextLine();
-		Library.createManager(username,password);
+		createManager(username,password);
+	}
+	
+	//functions to add tuples to the db
+	public static void createManager(String uname,String password) throws SQLException{
+		System.out.println("adding manager: " + uname);
+		String sql = 	"insert ignore into managers values (" +
+					 	"'"+uname+"',"+
+					 	"'"+password+"',"+
+					 	"'"+0+"'"+
+					 	")";
+		stmt.executeUpdate(sql);	
+	}
+	
+	public static void createAssociate(String uname,String password) throws SQLException{
+		System.out.println("adding associate: " + uname );
+		String sql = 	"insert ignore into associates values (" +
+					 	"'"+uname+"',"+
+					 	"'"+password+"',"+
+					 	"'"+0+"'"+
+					 	")";
+		stmt.executeUpdate(sql);	
+	}
+	
+	//creaate books
+	//accepts authors and keywords as a string
+	//seperate each author/keyword with a comma
+	public static void createBook(String isbn, String authors,String name, String year,int avail, double price, String keywords  ) throws SQLException{
+		if (isbn.length() < 10) return;
+		if (authors.length() == 0) return;
+		
+		String sql = 	"insert ignore into books values( "+
+						"'"+isbn	+"', "+ 
+						"'"+name	+"', "+
+						"'"+year	+"', "+
+						"'"+avail	+"', "+ 
+						"0				,"+
+						price			  + " )";
+		stmt.executeUpdate(sql);
+		
+		for (String a: authors.split(",( |)")){
+			sql = 	"insert ignore into books_authors values( "+
+					"'"+isbn	+"', "+ 
+					"'"+a	+"')";
+			stmt.executeUpdate(sql);
+		}
+		
+		if (keywords.length() == 0) return;
+		
+		for (String k: keywords.split(",( |)")){
+			sql = 	"insert ignore into books_keywords values( "+
+					"'"+isbn	+"', "+ 
+					"'"+k		+"')";
+			stmt.executeUpdate(sql);
+		}
+		
+	}
+	
+	//remove books
+	//Remove Functions
+		//remove books by isbn
+	public static void removeBookISBN(String isbn) throws SQLException{
+		//remove from books table if isbn is of required length
+		if(isbn.length() < 7) return;
+		String sql = "delete from books "+
+					 "where ISBN LIKE %'"+isbn+"'%";
+		stmt.executeUpdate(sql);
+		
+		//remove from books_keywords
+		sql = "delete from books_keywords "+
+			  "where ISBN LIKE %'"+isbn+"'%";
+		stmt.executeUpdate(sql);
+		
+		//remove from books_authors
+		sql = "delete from books_keywords "+
+			  "where ISBN LIKE %'"+isbn+"'%";
+		stmt.executeUpdate(sql);
+	}
+
+		//remove by name
+
+	public static void removeBookNAME(String name) throws SQLException{
+		removeBookISBN(Library.getISBN(name));
 	}
 }

@@ -1,4 +1,5 @@
 package models;
+import java.sql.Statement;
 //may need to import book.java
 import java.util.ArrayList;
 
@@ -7,6 +8,7 @@ public class Associate{
 	private String username;
 	private String name;
 	private int id;
+	static Statement stmt;
 
 	//DS to keep up with Associate activity
 	private ArrayList<String> activity;

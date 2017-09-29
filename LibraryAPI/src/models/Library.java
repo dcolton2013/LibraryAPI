@@ -35,94 +35,16 @@ public class Library{
 	    stmt = conn.createStatement();
 	    System.out.println("Database connected successfully");
 	    dbinit.createDB(stmt);
-	    printBooks();
+	    Manager.stmt = stmt;
+	    Associate.stmt = stmt;
 	}
 	
-	//functions to add tuples to the db
-	public static void createManager(String uname,String password) throws SQLException{
-		if (authorityLevel != 0) return;
-		
-		System.out.println("adding manager: " + uname);
-		String sql = 	"insert ignore into managers values (" +
-					 	"'"+uname+"',"+
-					 	"'"+password+"',"+
-					 	"'"+0+"'"+
-					 	")";
-		stmt.executeUpdate(sql);	
-	}
+	//login
 	
-	public static void createAssociate(String uname,String password) throws SQLException{
-		if (authorityLevel != 0) return;
-		System.out.println("adding associate: " + uname );
-		String sql = 	"insert ignore into associates values (" +
-					 	"'"+uname+"',"+
-					 	"'"+password+"',"+
-					 	"'"+0+"'"+
-					 	")";
-		stmt.executeUpdate(sql);	
-	}
-	
-	
-	public static void createBook(String isbn, String[] authors,String name, String year,int avail, double price, String[] keywords  ) throws SQLException{
-		if (authorityLevel != 0) return;
-		if (authors.length == 0)
-			return;
-		String sql = 	"insert ignore into books values( "+
-						"'"+isbn	+"', "+ 
-						"'"+name	+"', "+
-						"'"+year	+"', "+
-						"'"+avail	+"', "+ 
-						"0				,"+
-						price			  + " )";
-		stmt.executeUpdate(sql);
-		
-		for (String a: authors){
-			sql = 	"insert ignore into books_authors values( "+
-					"'"+isbn	+"', "+ 
-					"'"+a	+"')";
-			stmt.executeUpdate(sql);
-		}
-		
-		if (keywords.length > 0){
-			for (String k: keywords){
-				sql = 	"insert ignore into books_keywords values( "+
-						"'"+isbn	+"', "+ 
-						"'"+k		+"')";
-				stmt.executeUpdate(sql);
-			}
-		}
-	}
-	
-	//Remove Functions
-		//remove books by isbn
-	public static void removeBookISBN(String isbn) throws SQLException{
-		if (authorityLevel != 0) return;
-		//remove from books table if isbn is of required length
-		if(isbn.length() < 7) return;
-		String sql = "delete from books "+
-					 "where ISBN LIKE %'"+isbn+"'%";
-		stmt.executeUpdate(sql);
-		
-		//remove from books_keywords
-		sql = "delete from books_keywords "+
-			  "where ISBN LIKE %'"+isbn+"'%";
-		stmt.executeUpdate(sql);
-		
-		//remove from books_authors
-		sql = "delete from books_keywords "+
-			  "where ISBN LIKE %'"+isbn+"'%";
-		stmt.executeUpdate(sql);
-	}
-
-		//remove by name
-	
-	public static void removeBookNAME(String name) throws SQLException{
-		removeBookISBN(getISBN(name));
-	}
-	
+	//functions to add tuples to the db	
 	//login functions
 		//manager
-	
+
 	public static void loginManager(String uname, String password) throws SQLException{
 	String sql =  	"SELECT m.username, m.password " +
 	          		"FROM managers m " +
@@ -145,6 +67,7 @@ public class Library{
 	}
 	
 		//associate
+	
 	
 	public static void loginAssociate(String uname, String password) throws SQLException{
 	String sql =  	"SELECT a.username, a.password " +
@@ -170,18 +93,24 @@ public class Library{
 	//logout functions
 		//manager
 	
+	
+	//logout
 	public static void logoutManager() throws SQLException {
 		String sql = "update managers "+
 					 "set loggedIn = 0 "+
 					 "where username = '"+ currentUser +"'";
 		stmt.executeUpdate(sql);
+		authorityLevel = 3;
 	}
 	
 	//Search Functions
 		//get ISBN by name
 	
 	//Queries
-	private static String getISBN(String value) throws SQLException{
+	//getISBN given name
+	
+	//getISBN by name
+	public static String getISBN(String value) throws SQLException{
 		String sql = 	"select distinct isbn "+
 						"from books "+
 						"where name LIKE '%"+value+"%'";
@@ -190,9 +119,13 @@ public class Library{
 		return rs.getString(1);				
 	}
 	
+		//searches
+
+	//searches
 	
+	//dispay info
 	//Display info
-	private static void printBooks() throws SQLException{
+	private static void printBooks(String isbn) throws SQLException{
 		String sql =	"select distinct b.isbn, b.name,b.year, a.author,b.availableCopies "+
 					 	"from books b, books_authors a "+
 						"inner join books_authors "+
@@ -209,7 +142,7 @@ public class Library{
 				System.out.print(", "+ rs.getString(4));
 				continue;
 			}else if (previsbn != null){
-				System.out.println("");
+				System.out.println();
 			}
 			previsbn = rs.getString(1);
 			

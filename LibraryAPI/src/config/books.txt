@@ -17,7 +17,7 @@
 
 .9780849946158,Heaven Is For Real,2010,1,0,9.24
 
-.0439708184,Harry Potter and the Sorcerer's Stone,1999,2,0,19.82
+.0439708184,Harry Potter and The Sorcerer's Stone,1999,2,0,19.82
 
 .0439064872,Harry Potter and The Chamber Of Secrets,2000,1,0,17.96
 

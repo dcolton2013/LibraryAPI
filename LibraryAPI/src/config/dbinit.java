@@ -13,7 +13,6 @@ import java.sql.Statement;
 
 public class dbinit {
 	private static Statement stmt;
-
 	//create tables
 	public static void createDB(Statement s) throws SQLException{
 	    stmt = s;
@@ -152,7 +151,6 @@ public class dbinit {
 	private static void loadBooks() throws SQLException {
 		System.out.println("populating table: books...");
 		File f = new File("src/config/books");
-		System.out.println(f.getPath());
 		String sql = "LOAD DATA LOCAL INFILE '"+f.getPath()+".txt' "+
 					 "INTO TABLE books "+ 
 					 "COLUMNS TERMINATED BY ',' "+
