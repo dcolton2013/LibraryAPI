@@ -22,4 +22,16 @@
 .0439064872,Harry Potter and The Chamber Of Secrets,2000,1,0,17.96
 
 .9780789331144,The Bob's Burgers Burger Book: Real Recipes for Joke Burgers,2016,1,0,13.01
-------------------------------------------------------------------------------------------------------------------
+-------------------------------------------------------------------------------------------------------------
+-----faisal
+
+.1590080270,Losing My Religion: A Call for Help,2004,1,0,52.34
+
+.0060854936,Profiles in Courage,1961,3,0,20.15
+
+.0915957264,Struggling to Surrender:Some Impressions of an American Convert to Islam,1994,2,0,27.87
+
+.0743233212,Them: Adventures with Extremists,2002,1,0,33.10
+
+.1594771537,Muhammad: His Life Based on the Earliest Sources,1983,1,0,22.67
+--------
