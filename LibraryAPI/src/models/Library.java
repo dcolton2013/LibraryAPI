@@ -36,10 +36,9 @@ public class Library{
 	    System.out.println("Database connected successfully");
 	    dbinit.createDB(stmt);
 	    //search tests
-	    System.out.println(searchISBN("9780345803481"));
-	    System.out.println(searchAuthor("Rowling"));
-	    System.out.println(searchKeyword("Biography"));
-	    
+	    //System.out.println(searchISBN("9780345803481"));
+	    //System.out.println(searchAuthor("Rowling"));
+	    //System.out.println(searchKeyword("Biography"));
 	    Manager.stmt = stmt;
 	    Associate.stmt = stmt;
 	}
@@ -171,6 +170,7 @@ public class Library{
 		output += "\n";
 		return output;
 	}
+	
 	//Display info
 	private static void printBooks(String isbn) throws SQLException{
 		String sql =	"select distinct b.isbn, b.name,b.year, a.author,b.availableCopies "+

@@ -183,6 +183,7 @@ public class Manager{
 	}
 
 		//remove by name
+	
 	public static void removeBookNAME(String name) throws SQLException{
 		removeBookISBN(Library.getISBN(name));
 	}
