@@ -16,20 +16,7 @@ public class Manager{
 	        System.out.print("\tSelection: ");
 	}
 
-<<<<<<< HEAD
-	private static void start(int selection) throws SQLException {
-		switch(selection){
-			case 1: //createEmployee("managers");
-					break;
-			case 2: //createEmployee("associates");
-					break;
-			case 3:
-					break;
-			case 4:
-					break;
-			case -1:break;
-		}
-=======
+
 	public static void start() throws SQLException {
 		int selection = 0;
     	showManagerMenu();
@@ -64,7 +51,6 @@ public class Manager{
 		
 		Library.createAssociate(username,password);
 		
->>>>>>> 895cc570e047f67b35184f5f3e6c261eeb786142
 	}
 
 	private static void addManager() throws SQLException {

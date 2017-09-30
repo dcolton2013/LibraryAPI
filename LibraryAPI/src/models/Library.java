@@ -8,17 +8,13 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Library{
-<<<<<<< HEAD
-	private static final String url = "jdbc:mysql://localhost:3306/Library?useSSL=false";    
-	private static final String user = "root";
-	private static final String password = "";
-=======
+
 	//db configuration*******************
 	private static String url= dbconfig.URL;;    
 	private static String user = dbconfig.USER;;
 	private static String password= dbconfig.PASSWORD;;
     //***********************************
->>>>>>> 895cc570e047f67b35184f5f3e6c261eeb786142
+
 	private static Connection conn;
 	private static Statement stmt;
 	private static ResultSet rs;
@@ -49,7 +45,7 @@ public class Library{
     	createAssociatesTable();
 	//    	createMembersTable();
     	createBooksTable();
-    	createBookKeywordsTable();
+    	//createBookKeywordsTable();
 	}
 	
 	private static void createManagersTable() {
@@ -157,7 +153,13 @@ public class Library{
 	private static void loadBookKeywords() throws SQLException {
 		System.out.println("populating table: books_keywords...");
 		File f = new File("src/config/books_keywords");
-		String sql = "LOAD DATA LOCAL INFILE '"+f.getAbsolutePath()+".txt' "+
+		String s = f.getAbsolutePath();
+		//put system here
+		if (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0){
+			System.out.println("windows");
+			s = s.replaceAll("/", "\\");
+		}
+		String sql = "LOAD DATA LOCAL INFILE '"+s+ ".txt' "+
 					 "INTO TABLE books_keywords "+
 					 "COLUMNS TERMINATED BY ',' "+
 					 "LINES STARTING BY '.'";
@@ -167,11 +169,20 @@ public class Library{
 	private static void loadBooks() throws SQLException {
 		System.out.println("populating table: books...");
 		File f = new File("src/config/books");
-		String sql = "LOAD DATA LOCAL INFILE '"+f.getAbsolutePath()+".txt' "+
-					 "INTO TABLE books "+ 
-					 "COLUMNS TERMINATED BY ',' "+
-					 "LINES STARTING BY '.'";
-		stmt.executeUpdate(sql);
+		String s = f.getAbsolutePath();
+		System.out.println(f.getAbsolutePath());
+		if (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0){
+			System.out.println("windows");
+			s = s.replace("\\", "//");
+			System.out.println(s);
+		}
+			String sql = "LOAD DATA LOCAL INFILE '"+s+".txt' "+
+					 	 "INTO TABLE books "+ 
+						 "COLUMNS TERMINATED BY ',' "+
+						 "LINES STARTING BY '.'";
+		
+			stmt.executeUpdate(sql);
+		
 	}
 
 	//login functions
