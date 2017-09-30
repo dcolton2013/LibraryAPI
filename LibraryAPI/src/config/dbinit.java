@@ -151,7 +151,12 @@ public class dbinit {
 	private static void loadBooks() throws SQLException {
 		System.out.println("populating table: books...");
 		File f = new File("src/config/books");
-		String sql = "LOAD DATA LOCAL INFILE '"+f.getPath()+".txt' "+
+		String path = f.getPath();
+		if (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0){
+			System.out.println("windows");
+			path = path.replaceAll("/", "\\");
+		}
+		String sql = "LOAD DATA LOCAL INFILE '"+path+".txt' "+
 					 "INTO TABLE books "+ 
 					 "COLUMNS TERMINATED BY ',' "+
 					 "LINES STARTING BY '.'";
@@ -161,7 +166,12 @@ public class dbinit {
 	private static void loadBookAuthors() throws SQLException {
 		System.out.println("populating table: books_authors...");
 		File f = new File("src/config/books_authors");
-		String sql = "LOAD DATA LOCAL INFILE '"+f.getPath()+".txt' "+
+		String path = f.getPath();
+		if (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0){
+			System.out.println("windows");
+			path = path.replaceAll("/", "\\");
+		}
+		String sql = "LOAD DATA LOCAL INFILE '"+path+".txt' "+
 					 "INTO TABLE books_authors "+ 
 					 "COLUMNS TERMINATED BY ',' "+
 					 "LINES STARTING BY '.'";
