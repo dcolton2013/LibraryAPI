@@ -1,13 +1,14 @@
-0440445450,Values
-0440445450,Social Skills
-0440445450,Children's Books
-0440445450,Freindship
+----------------------------DONO
+.0440445450,Values
+.0440445450,Social Skills
+.0440445450,Children's Books
+.0440445450,Friendship
 
-9780345803481,Womens Fiction
-9780345803481,Sagas
-9780345803481,Romance
+.9780345803481,Womens Fiction
+.9780345803481,Sagas
+.9780345803481,Romance
 
-9781501175565,Politics
+.9781501175565,Politics
 .9781501175565,Biography
 .9781501175565,Civics
 .9781501175565,Women
@@ -28,7 +29,7 @@
 .0394900014,Poetry
 .0394900014,Cats
 
-.9781501165320,Biographies
+.9781501165320,Biography
 .9781501165320,Rap
 .9781501165320,Hip-Hip
 .9781501165320,Memoirs
@@ -51,3 +52,27 @@
 .9780789331144,Humor
 .9780789331144,Cooking
 .9780789331144,Burgers
+
+----------------faisal
+
+.1590080270,Islam
+.1590080270,Biography
+.1590080270,Social Sciences
+
+.0060854936,Legislative Branch
+.0060854936,Ethics & Morality
+.0060854936,Political
+
+.0915957264,Islam
+.0915957264,Social Sciences
+.0915957264,Politics
+
+.0743233212,Fascism
+.0743233212,Radicalism
+.0743233212,Political Advocacy
+
+.1594771537,Saudi Arabia
+.1594771537,Muhammed
+.1594771537,Reference & Collections
+
+-----------------

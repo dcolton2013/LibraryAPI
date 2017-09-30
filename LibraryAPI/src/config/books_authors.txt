@@ -1,0 +1,40 @@
+------------------------------------Dono
+.0440445450,Thomas Rockwell
+
+.9780345803481,E.L.James
+
+.9781501175565,Hillary Rodham Clinton
+
+.9780825305931,O.J. Simpson
+.9780825305931,Kim Goldman
+
+.1400082773,Barack Obama
+
+.0397001517,Harper Lee
+
+.0394900014,Dr. Suess
+
+.9781501165320,Radric Davis
+.9781501165320,Neil Martinez-Belkin
+
+.9780849946158,Todd Burpo
+.9780849946158,Lynn Vincent
+
+.0439708184,J.K. Rowling
+
+.0439064872,J.K. Rowling
+
+.9780789331144,Loren Bouchard
+-------------------------------------------
+faisal
+
+.1590080270,Jeffrey Lang
+
+.0060854936,John F. Kennedy
+
+.0915957264,Jeffrey Lang
+
+.0743233212,Jon Ronson
+
+.1594771537,Martin Lings
+-----------
