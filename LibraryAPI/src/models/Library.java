@@ -27,6 +27,7 @@ public class Library{
 	//2: members
 	//else: nonmembers
 	private static int authorityLevel = 3;
+	private static String username="";
 	  
 	//create db connection  
 	public Library() throws ClassNotFoundException, SQLException{
