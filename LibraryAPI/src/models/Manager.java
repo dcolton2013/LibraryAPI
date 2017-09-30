@@ -22,7 +22,6 @@ public class Manager{
 	        System.out.println("*****************************");
 	        System.out.print("\tSelection: ");
 	}
-	
 	public static void showInventoryMenu() throws SQLException{
         System.out.println("*****************************");
         System.out.println("1. Create new book");

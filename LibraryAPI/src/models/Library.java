@@ -8,12 +8,12 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Library{
+
 	//db configuration*******************
 	private static String url= dbconfig.URL;  
 	private static String user = dbconfig.USER;
 	private static String password= dbconfig.PASSWORD;
     //***********************************
-	
 	private static Connection conn;
 	private static Statement stmt;
 	private static ResultSet rs;
