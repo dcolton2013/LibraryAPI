@@ -21,9 +21,21 @@ public class Library{
 	private static String query;
 	
 	//currently logged in
+<<<<<<< HEAD
 	private static String manager = ""; 
 	private static String associate = "";
 	private static String member = "";
+=======
+	private static String currentUser = "";
+	
+	//authority levels
+	//0: admin, managers
+	//1: associates
+	//2: members
+	//else: nonmembers
+	private static int authorityLevel = 3;
+	private static String username="";
+>>>>>>> 896a00ca4acce6353b486634db007f380bcab446
 	  
 	//create db connection  
 	public Library() throws ClassNotFoundException, SQLException{
