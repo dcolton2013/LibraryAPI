@@ -141,7 +141,12 @@ public class dbinit {
 	private static void loadBookKeywords() throws SQLException {
 		System.out.println("populating table: books_keywords...");
 		File f = new File("src/config/books_keywords");
-		String sql = "LOAD DATA LOCAL INFILE '"+f.getPath()+".txt' "+
+		String path =f.getPath();
+		if (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0){
+			System.out.println("windows");
+			path = path.replaceAll("/", "\\");
+		}
+		String sql = "LOAD DATA LOCAL INFILE '"+path+".txt' "+
 					 "INTO TABLE books_keywords "+
 					 "COLUMNS TERMINATED BY ',' "+
 					 "LINES STARTING BY '.'";
