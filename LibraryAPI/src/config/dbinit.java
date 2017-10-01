@@ -143,8 +143,7 @@ public class dbinit {
 		File f = new File("src/config/books_keywords");
 		String path =f.getPath();
 		if (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0){
-			System.out.println("windows");
-			path = path.replaceAll("/", "\\");
+			path = path.replace("\\", "/");
 		}
 		String sql = "LOAD DATA LOCAL INFILE '"+path+".txt' "+
 					 "INTO TABLE books_keywords "+
@@ -158,8 +157,7 @@ public class dbinit {
 		File f = new File("src/config/books");
 		String path = f.getPath();
 		if (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0){
-			System.out.println("windows");
-			path = path.replaceAll("/", "\\");
+			path = path.replace("\\", "/");
 		}
 		String sql = "LOAD DATA LOCAL INFILE '"+path+".txt' "+
 					 "INTO TABLE books "+ 
@@ -173,8 +171,7 @@ public class dbinit {
 		File f = new File("src/config/books_authors");
 		String path = f.getPath();
 		if (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0){
-			System.out.println("windows");
-			path = path.replaceAll("/", "\\");
+			path = path.replace("\\", "//");
 		}
 		String sql = "LOAD DATA LOCAL INFILE '"+path+".txt' "+
 					 "INTO TABLE books_authors "+ 
