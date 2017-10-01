@@ -22,7 +22,6 @@ public class Manager{
 	        System.out.println("*****************************");
 	        System.out.print("\tSelection: ");
 	}
-	
 	public static void showInventoryMenu() throws SQLException{
         System.out.println("*****************************");
         System.out.println("1. Create new book");
@@ -183,6 +182,7 @@ public class Manager{
 	}
 
 		//remove by name
+	
 	public static void removeBookNAME(String name) throws SQLException{
 		removeBookISBN(Library.getISBN(name));
 	}

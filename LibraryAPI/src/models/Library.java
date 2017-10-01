@@ -1,6 +1,6 @@
 package models;
 import config.dbconfig;
-import config.dbinit;
+
 import java.util.*;
 import java.io.*;
 import java.sql.*;
@@ -8,17 +8,24 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 public class Library{
+
 	//db configuration*******************
-	private static String url= dbconfig.URL;  
-	private static String user = dbconfig.USER;
-	private static String password= dbconfig.PASSWORD;
+	private static String url= dbconfig.URL;;    
+	private static String user = dbconfig.USER;;
+	private static String password= dbconfig.PASSWORD;;
     //***********************************
-	
+
 	private static Connection conn;
 	private static Statement stmt;
 	private static ResultSet rs;
+	private static String query;
 	
 	//currently logged in
+<<<<<<< HEAD
+	private static String manager = ""; 
+	private static String associate = "";
+	private static String member = "";
+=======
 	private static String currentUser = "";
 	
 	//authority levels
@@ -27,6 +34,8 @@ public class Library{
 	//2: members
 	//else: nonmembers
 	private static int authorityLevel = 3;
+	private static String username="";
+>>>>>>> 896a00ca4acce6353b486634db007f380bcab446
 	  
 	//create db connection  
 	public Library() throws ClassNotFoundException, SQLException{
@@ -34,18 +43,26 @@ public class Library{
 	    conn = DriverManager.getConnection(url, user, password);
 	    stmt = conn.createStatement();
 	    System.out.println("Database connected successfully");
-	    dbinit.createDB(stmt);
-	    //search tests
-	    System.out.println(searchISBN("9780345803481"));
-	    System.out.println(searchAuthor("Rowling"));
-	    System.out.println(searchKeyword("Biography"));
-	    
-	    Manager.stmt = stmt;
-	    Associate.stmt = stmt;
+	    createDB();
 	}
 	
+	//initialize db/create tables
+	//*******************************************
+	private static void createDB() throws SQLException{
+	    try {
+	        stmt.executeUpdate("create schema if not exists Library;");
+	    } catch (SQLException ex) {
+	    }
+		createManagersTable();
+    	createAssociatesTable();
+	//    	createMembersTable();
+    	createBooksTable();
+    	//createBookKeywordsTable();
+	}
+	
+
 	//login functions
-		//manager
+	//manager
 	public static void loginManager(String uname, String password) throws SQLException{
 	String sql =  	"SELECT m.username, m.password " +
 	          		"FROM managers m " +
@@ -61,53 +78,19 @@ public class Library{
 					"set loggedIn = 1 " +
 					"where username = '"+uname+"'";
 	    		stmt.executeUpdate(sql);
-	    		currentUser = uname;
-	    		authorityLevel = 0;
-	    		Manager.handleMain();
+	    		manager = uname;
+	    		Manager.start();
 			}
-	}
-	
-		//associate
-	public static void loginAssociate(String uname, String password) throws SQLException{
-	String sql =  	"SELECT a.username, a.password " +
-	          		"FROM associates a " +
-	          		"WHERE m.username = '"+uname+"' AND m.password = '"+password+"'"; 
-	
-		ResultSet rs = stmt.executeQuery(sql);
-		if (!rs.next())
-			//empty result
-			System.out.println("\t"+ uname + " not authenticated");
-		else{
-			System.out.println("\t"+uname+" authentication successful");
-		    sql = 	"update associates "+
-					"set loggedIn = 1 " +
-					"where username = '"+uname+"'";
-	    		stmt.executeUpdate(sql);
-	    		currentUser = uname;
-	    		authorityLevel = 1;
-	    		Manager.handleMain();
-			}
+		
 	}
 	
 	//logout functions
-		//manager
+	//manager
 	public static void logoutManager() throws SQLException {
 		String sql = "update managers "+
-					 "set loggedIn = 0 "+
-					 "where username = '"+ currentUser +"'";
+					"set loggedIn = 0 "+
+					"where username = '"+ manager +"'";
 		stmt.executeUpdate(sql);
-		authorityLevel = 3;
-	}
-	
-	//Queries
-	//getISBN by name
-	public static String getISBN(String value) throws SQLException{
-		String sql = 	"select distinct isbn "+
-						"from books "+
-						"where name LIKE '%"+value+"%'";
-		rs = stmt.executeQuery(sql);
-		rs.next();
-		return rs.getString(1);				
 	}
 	
 	//Searches
