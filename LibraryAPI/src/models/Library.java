@@ -41,6 +41,10 @@ public class Library{
 	    //System.out.println(searchKeyword("Biography"));
 	    Manager.stmt = stmt;
 	    Associate.stmt = stmt;
+	    
+	    System.out.println(Member.generateUsername("sam","watkins"));
+	    System.out.println(Member.generatePassword());
+	    System.out.println(Member.generateLibrarycode());
 	}
 	
 	//login functions
