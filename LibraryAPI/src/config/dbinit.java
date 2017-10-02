@@ -63,7 +63,7 @@ public class dbinit {
 	    }
 	}
 	
-	private static void createMembersTable() {
+	private static void createMembersTable() throws SQLException {
 		System.out.println("Creating Table: members...");
 	    //init table
 	    String membersTable = "create table if not exists members (" +
@@ -82,7 +82,8 @@ public class dbinit {
 	        stmt.executeUpdate(membersTable);
 	    } catch (SQLException ex) {
 	        System.out.println(ex.toString());
-	    }   
+	    }
+	    addMemberConstraints();
 	}
 	
 	private static void createBooksTable() throws SQLException {
@@ -134,6 +135,15 @@ public class dbinit {
 		//uname isbn fees status(returned,checkedout,late,lost) checkoutdate/time returndate/time
 		//sql insert ex. 1,NOW(),DATE_ADD(NOW(), INTERVAL 2 WEEK)
 		System.out.println("Creating table: member_checkouts...");
+	}
+	
+	private static void addMemberConstraints() throws SQLException{
+		String sql = "ALTER TABLE members "+
+					 "ADD CONSTRAINT username UNIQUE (username)";
+		stmt.executeUpdate(sql);
+			   sql = "ALTER TABLE members "+
+				 	 "ADD CONSTRAINT code UNIQUE (code)";
+	    stmt.executeUpdate(sql);
 	}
 	
 	//load prepopulated data
