@@ -14,7 +14,7 @@ public class Library{
 	private static String user = dbconfig.USER;
 	private static String password= dbconfig.PASSWORD;
     //***********************************
-	private static Connection conn;
+	public static Connection conn;
 	private static Statement stmt;
 	private static ResultSet rs;
 	
@@ -35,16 +35,11 @@ public class Library{
 	    stmt = conn.createStatement();
 	    System.out.println("Database connected successfully");
 	    dbinit.createDB(stmt);
-	    //search tests
-	    //System.out.println(searchISBN("9780345803481"));
-	    //System.out.println(searchAuthor("Rowling"));
-	    //System.out.println(searchKeyword("Biography"));
 	    Manager.stmt = stmt;
 	    Associate.stmt = stmt;
 	    
-	    System.out.println(Member.generateUsername("sam","watkins"));
-	    System.out.println(Member.generatePassword());
-	    System.out.println(Member.generateLibrarycode());
+	    
+	    Associate.conn = conn;
 	}
 	
 	//login functions

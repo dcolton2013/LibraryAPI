@@ -22,12 +22,13 @@ public class dbinit {
 	    }
 		createManagersTable();
     	createAssociatesTable();
-    	//createMembersTable();
+    	createMembersTable();
     	createBooksTable();
     	createBookAuthorsTable();
     	createBookKeywordsTable();
     	//createMemberHoldsTable();
     	//createMemberCheckoutsTable();
+ 	
 	}
 	
 	private static void createManagersTable() {
@@ -51,8 +52,6 @@ public class dbinit {
 		System.out.println("Creating Table: associates...");
 	    //init table
 	    String associatesTable = "create table if not exists associates (" +
-	    					 	//"fname		varchar(15)		not null,"+
-	    					 	//"lname		varchar(15)		not null,"+
 	    					 	"username	varchar(15)		not null,"+
 	    					 	"password	varchar(15)		not null,"+
 	    					 	"loggedIn	boolean					,"+
@@ -83,7 +82,7 @@ public class dbinit {
 	        stmt.executeUpdate(membersTable);
 	    } catch (SQLException ex) {
 	        System.out.println(ex.toString());
-	    }
+	    }   
 	}
 	
 	private static void createBooksTable() throws SQLException {
