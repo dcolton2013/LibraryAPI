@@ -69,7 +69,7 @@ public class Library{
 	public static void loginAssociate(String uname, String password) throws SQLException{
 	String sql =  	"SELECT a.username, a.password " +
 	          		"FROM associates a " +
-	          		"WHERE m.username = '"+uname+"' AND m.password = '"+password+"'"; 
+	          		"WHERE a.username = '"+uname+"' AND a.password = '"+password+"'"; 
 	
 		ResultSet rs = stmt.executeQuery(sql);
 		if (!rs.next())
@@ -98,7 +98,7 @@ public class Library{
 	}
 	
 	//Queries
-	//getISBN by name
+		//getISBN by name
 	public static String getISBN(String value) throws SQLException{
 		String sql = 	"select distinct isbn "+
 						"from books "+
@@ -108,24 +108,41 @@ public class Library{
 		return rs.getString(1);				
 	}
 	
+		//getTitle by ISBN
+	public static String getTitle(String value) throws SQLException{
+		String sql = 	"select distinct name "+
+						"from books "+
+						"where isbn LIKE '%"+value+"%'";
+		rs = stmt.executeQuery(sql);
+		rs.next();
+		return rs.getString(1);				
+	}
+	
+	
 	//Searches
 		//by ISBN
-	public static String searchISBN(String isbn) throws SQLException{
+	public static String searchISBN(String isbn){
 		if (isbn.length()<6) return "";
-		
 		String sql =	"select b.isbn, b.name "
 					+ 	"from books b "
 					+ 	"where b.isbn like '%"+isbn+"%'";
-		
-		rs = stmt.executeQuery(sql);
-		
-		//add results to output
-		String output = String.format("%-15s%-50s","isbn","title" );
-		while (rs.next()){
-			output += String.format("\n%-15s%-50s", rs.getString(1),rs.getString(2));
+		try{
+			rs = stmt.executeQuery(sql);
+			
+			if(!rs.next())
+				return "no matches";
+			else{
+				String output = String.format("%-15s%-50s","isbn","title" );
+				output += String.format("\n%-15s%-50s", rs.getString(1),rs.getString(2));
+				while (rs.next()){
+					output += String.format("\n%-15s%-50s", rs.getString(1),rs.getString(2));
+				}
+				output += "\n";
+				return output;
+			}
+		}catch (SQLException e){
+			return e.getMessage();
 		}
-		output += "\n";
-		return output;
 	}
 		//by author
 	public static String searchAuthor(String authors) throws SQLException{
@@ -139,6 +156,7 @@ public class Library{
 						+ 	"where b.isbn = a.isbn";
 			
 			rs = stmt.executeQuery(sql);
+			
 			//add results to output
 			output += String.format("%-15s%-50s%-50s","isbn","title","author" );
 			while (rs.next()){

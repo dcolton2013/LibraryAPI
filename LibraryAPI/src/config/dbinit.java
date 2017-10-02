@@ -138,12 +138,18 @@ public class dbinit {
 	}
 	
 	private static void addMemberConstraints() throws SQLException{
+		try{
 		String sql = "ALTER TABLE members "+
 					 "ADD CONSTRAINT username UNIQUE (username)";
 		stmt.executeUpdate(sql);
-			   sql = "ALTER TABLE members "+
+		}catch(Exception e){}
+		
+		try{
+		String sql = "ALTER TABLE members "+
 				 	 "ADD CONSTRAINT code UNIQUE (code)";
 	    stmt.executeUpdate(sql);
+		}catch(Exception e){}
+		
 	}
 	
 	//load prepopulated data

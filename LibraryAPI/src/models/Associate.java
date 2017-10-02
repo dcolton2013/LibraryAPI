@@ -11,6 +11,7 @@ public class Associate{
 	private String username;
 	private String name;
 	private int id;
+	
 	private static Scanner scan = new Scanner(System.in);
 	
 	static Statement stmt;
@@ -35,21 +36,58 @@ public class Associate{
 		
 	}
 	
+	public static void showAssociateMenu() throws SQLException{
+        System.out.println("*****************************");
+        System.out.println("1. Create new member");
+        System.out.println("2. Check out book");
+        System.out.println("3. Return book");
+        System.out.println("4. Logout");
+        System.out.println("*****************************");
+        System.out.print("\tSelection: ");
+	}
+	public static void handleMain() throws SQLException {
+		int selection = 0;
+    	showAssociateMenu();
+    	while (true){
+			selection = scan.nextInt();
+			scan.nextLine();
+			switch(selection){
+				case 1:	promptUserInfo();
+						break;
+				case 2: 
+						break;
+				case 3:
+						break;
+				case 4:	selection = -1;
+						break;
+				default: System.out.println("invalid selection");
+			}
+			if (selection == -1) break;
+				showAssociateMenu();
+    	}
+		
+	}
+	
 	public static void promptUserInfo() throws SQLException{
-		System.out.println("First Name:");
+		System.out.print("First Name:");
 		String fname = scan.nextLine();
+		System.out.println();
 		
-		System.out.println("Last Name:");
+		System.out.print("Last Name:");
 		String lname = scan.nextLine();
+		System.out.println();
 		
-		System.out.println("Address:");
+		System.out.print("Address:");
 		String addr = scan.nextLine();
+		System.out.println();
 		
-		System.out.println("Phone:");
+		System.out.print("Phone:");
 		String phone = scan.nextLine();
+		System.out.println();
 		
-		System.out.println("Username:");
+		System.out.print("Username:");
 		String username = scan.nextLine();
+		System.out.println();
 		
 		String code = Member.generateLibrarycode();
 		int returncode = addMember(fname,lname,addr,phone,username,code);
@@ -101,8 +139,4 @@ public class Associate{
 		return 0;
 	}
 
-	
-	public static void handleMain() {
-		// TODO Auto-generated method stub
-	}
 }

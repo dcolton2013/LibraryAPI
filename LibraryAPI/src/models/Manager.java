@@ -13,12 +13,11 @@ public class Manager{
 	        System.out.println("1. Create new manager");
 	        System.out.println("2. Create new associate");
 	        System.out.println("3. Create new member");
-	        System.out.println("4. Remove manager");
-	        System.out.println("5. Remove associate");
-	        System.out.println("6. Remove member");
+	        System.out.println("4. Remove manager (NYI)");
+	        System.out.println("5. Remove associate (NYI)");
+	        System.out.println("6. Remove member (NYI)");
 	        System.out.println("7. Inventory options");
 	        System.out.println("8. Logout");
-	        System.out.println("\t-1 return to main menu");
 	        System.out.println("*****************************");
 	        System.out.print("\tSelection: ");
 	}
@@ -26,6 +25,7 @@ public class Manager{
         System.out.println("*****************************");
         System.out.println("1. Create new book");
         System.out.println("2. Remove book");
+        System.out.println("3. Edit book (NYI)");
         System.out.println("\t-1 return to manager options");
         System.out.println("*****************************");
         System.out.print("\tSelection: ");
@@ -43,7 +43,7 @@ public class Manager{
 						break;
 				case 2: addAssociate();
 						break;
-				case 3:
+				case 3: Associate.promptUserInfo();
 						break;
 				case 4:
 						break;
@@ -58,8 +58,6 @@ public class Manager{
 				case 8: Library.logoutManager();
 						selection = -1;
 						break;
-						
-				case -1:break;
 				default: System.out.println("invalid selection");
 			}
 			if (selection == -1) break;
@@ -74,12 +72,18 @@ public class Manager{
         	int selection = scan.nextInt();
             scan.nextLine();
         	switch (selection){
-        	case 1:	createBook("0011","pablo,shamboni", "blah", "1996", 30, 19.66,"mystery");
+        	case 1:	//createBook("0011","pablo,shamboni", "blah", "1996", 30, 19.66,"mystery");
         			break;
-        	case 2: 
+        	case 2: System.out.print("Enter ISBN: ");
+//        			String isbn = scan.nextLine();
+        			System.out.println();
+        			removeBookISBN("0060854936");
         			break;
+        	case 3: 
+    				break;
+        	case -1: selection = -1;
+    				break;
         	default:System.out.println("invalid selection"); 
-        			selection = -1;
         			break;
         	}
         	if (selection == -1) break;
@@ -166,19 +170,24 @@ public class Manager{
 	public static void removeBookISBN(String isbn) throws SQLException{
 		//remove from books table if isbn is of required length
 		if(isbn.length() < 7) return;
+		
+		String title = Library.getTitle(isbn);
+		
 		String sql = "delete from books "+
-					 "where ISBN LIKE %'"+isbn+"'%";
+					 "where ISBN LIKE '%"+isbn+"%'";
 		stmt.executeUpdate(sql);
 		
 		//remove from books_keywords
 		sql = "delete from books_keywords "+
-			  "where ISBN LIKE %'"+isbn+"'%";
+			  "where ISBN LIKE '%"+isbn+"%'";
 		stmt.executeUpdate(sql);
 		
 		//remove from books_authors
 		sql = "delete from books_keywords "+
-			  "where ISBN LIKE %'"+isbn+"'%";
+			  "where ISBN LIKE '%"+isbn+"%'";
 		stmt.executeUpdate(sql);
+		
+		System.out.println("Book: "+isbn+" "+title+" removed");
 	}
 
 		//remove by name
