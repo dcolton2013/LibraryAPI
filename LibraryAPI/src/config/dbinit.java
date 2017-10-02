@@ -84,6 +84,7 @@ public class dbinit {
 	    } catch (SQLException ex) {
 	        System.out.println(ex.toString());
 	    }
+	      addMemberConstraints();
 	}
 	
 	private static void createBooksTable() throws SQLException {
@@ -135,6 +136,15 @@ public class dbinit {
 		//uname isbn fees status(returned,checkedout,late,lost) checkoutdate/time returndate/time
 		//sql insert ex. 1,NOW(),DATE_ADD(NOW(), INTERVAL 2 WEEK)
 		System.out.println("Creating table: member_checkouts...");
+	}
+	
+	private static void addMemberConstraints() throws SQLException{
+		String sql = "ALTER TABLE members "+
+					 "ADD CONSTRAINT username UNIQUE (username)";
+		stmt.executeUpdate(sql);
+			   sql = "ALTER TABLE members "+
+				 	 "ADD CONSTRAINT code UNIQUE (code)";
+	    stmt.executeUpdate(sql);
 	}
 	
 	//load prepopulated data
