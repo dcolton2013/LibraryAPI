@@ -35,9 +35,9 @@ public class Library{
 	    stmt = conn.createStatement();
 	    System.out.println("Database connected successfully");
 	    dbinit.createDB(stmt);
+	    
 	    Manager.stmt = stmt;
 	    Associate.stmt = stmt;
-	    
 	    
 	    Associate.conn = conn;
 	}
@@ -83,7 +83,7 @@ public class Library{
 	    		stmt.executeUpdate(sql);
 	    		currentUser = uname;
 	    		authorityLevel = 1;
-	    		Manager.handleMain();
+	    		Associate.handleMain();
 			}
 	}
 	

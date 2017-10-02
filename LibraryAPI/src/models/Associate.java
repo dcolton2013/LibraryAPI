@@ -12,6 +12,7 @@ public class Associate{
 	private String name;
 	private int id;
 	private static Scanner scan = new Scanner(System.in);
+	
 	static Statement stmt;
 	static Connection conn;
 
@@ -25,7 +26,6 @@ public class Associate{
 	}
 
 	/*getters/setters of data field*/
-
 	/* Validate book, update availabilty*/
 	public void scanInBook(String book){
 		
@@ -33,11 +33,6 @@ public class Associate{
 
 	public void scanOutBook(String book){
 		
-	}
-	/**/
-
-	public String toString(){ 
-		return " ";
 	}
 	
 	public static void promptUserInfo() throws SQLException{
@@ -104,5 +99,10 @@ public class Associate{
 			}
 		}
 		return 0;
+	}
+
+	
+	public static void handleMain() {
+		// TODO Auto-generated method stub
 	}
 }
