@@ -26,7 +26,7 @@ public class Associate{
 		this.id=id;
 		this.activity = new ArrayList<String>();
 	}
-
+	
 	/*getters/setters of data field*/
 	/* Validate book, update availability*/
 	public static void scanInBook(String memberUsername, String bookISBN){
@@ -177,12 +177,14 @@ public class Associate{
 	public static void showAssociateMenu() throws SQLException{
         System.out.println("*****************************");
         System.out.println("1. Create new member");
-        System.out.println("2. Check out book");
-        System.out.println("3. Return book");
+        System.out.println("2. Check out book (NYI)");
+        System.out.println("3. Return books (NYI)");
         System.out.println("4. Logout");
         System.out.println("*****************************");
         System.out.print("\tSelection: ");
 	}
+	
+	//handles Associate menu options
 	public static void handleMain() throws SQLException {
 		int selection = 0;
     	showAssociateMenu();
@@ -227,23 +229,19 @@ public class Associate{
 	}
 	
 	public static void promptUserInfo() throws SQLException{
-		System.out.print("First Name:");
+		System.out.print("\tFirst Name:");
 		String fname = scan.nextLine();
-		System.out.println();
 		
-		System.out.print("Last Name:");
+		System.out.print("\tLast Name:");
 		String lname = scan.nextLine();
-		System.out.println();
 		
-		System.out.print("Address:");
+		System.out.print("\tAddress:");
 		String addr = scan.nextLine();
-		System.out.println();
-		
-		System.out.print("Phone:");
+
+		System.out.print("\tPhone:");
 		String phone = scan.nextLine();
-		System.out.println();
 		
-		System.out.print("Username:");
+		System.out.print("\tUsername:");
 		String username = scan.nextLine();
 		System.out.println();
 		
@@ -252,16 +250,21 @@ public class Associate{
 		
 		while(returncode != 0){
 			if (returncode == 1){
+				//duplicate username
 				System.out.println("uname in use");
 				System.out.println("Username:");
 				username = scan.nextLine();
 			}
 			if (returncode == 2){
+				//duplicatecode
 				code = Member.generateLibrarycode();
 			}
 			returncode = addMember(fname,lname,addr,phone,username,code);
 		}	
-		System.out.println("user added.");
+		System.out.println("\tuser added.");
+		System.out.println("\tCredentials: ");
+		System.out.println("\tUsername: " + username);
+		System.out.println("\tLibrary Code: " + code);
 	}
 	
 	public static int addMember(String fname, String lname,
