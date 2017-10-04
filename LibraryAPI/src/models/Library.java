@@ -39,6 +39,7 @@ public class Library{
 	    Manager.stmt = stmt;
 	    Associate.stmt = stmt;
 	    
+	    Manager.conn = conn;
 	    Associate.conn = conn;
 	}
 	
