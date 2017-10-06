@@ -1,6 +1,7 @@
 package models;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 //may need to import book.java
@@ -14,7 +15,7 @@ public class Associate{
 	
 	private static Scanner scan = new Scanner(System.in);
 	
-	static Statement stmt;
+	static Statement stmt,stmt2;
 	static Connection conn;
 
 	//DS to keep up with Associate activity
@@ -27,13 +28,150 @@ public class Associate{
 	}
 	
 	/*getters/setters of data field*/
-	/* Validate book, update availabilty*/
-	public void scanInBook(String book){
-		
+	/* Validate book, update availability*/
+	public static void scanInBook(String memberUsername, String bookISBN){
+	    String memberQuery = "select * from members m where m.username = '" + memberUsername + "' limit 1;";
+	    String bookQuery = "select * from books b where b.isbn = '" + bookISBN + "' limit 1;";
+	    String updateBookQuery = "UPDATE books b SET b.availableCopies = (b.availableCopies + 1) WHERE b.isbn= "+ bookISBN+ " ;" ;
+	  //  String updateMemberQuery = "UPDATE members m SET m.numBooksCheckedOut = (m.numBooksCheckedOut - 1) WHERE m.username= '"+ memberUsername+ "' ;" ;	
+	    try {
+	        stmt = conn.createStatement();
+	        stmt2 = conn.createStatement();
+	        
+	        ResultSet rs = stmt.executeQuery(memberQuery);
+	
+	        while (rs.next()) {
+	            String memberName = rs.getString("fname") + " " + rs.getString("lname");
+	        //    int booksCheckedOut = rs.getInt("numBooksCheckedOut");
+	            System.out.printf("%s has been successfully retrieved.%n", memberName);
+	        //    System.out.printf("Number of books checked out as of %s: %d%n", new Date().toString(), booksCheckedOut);
+	        }
+	    //    int responseMember = stmt2.executeUpdate(updateMemberQuery);
+	        
+	        rs = stmt2.executeQuery(bookQuery);
+	        int copies=0;
+	        while (rs.next()) {
+	            String bookName = rs.getString("name");
+	            copies = rs.getInt("availableCopies");
+	            System.out.printf("%s has been successfully scanned in.%n", bookName);
+		     //   updateBookInfo(bs, "in");
+	        }
+	        int response = stmt.executeUpdate(updateBookQuery);
+
+	           if(response == 1){
+					System.out.println("Book copies available: " + (copies+1));
+	           }
+	        stmt.close();
+	        stmt2.close();
+	        
+	    } catch (SQLException e ) {
+	        e.printStackTrace();
+	    } 
+	    
 	}
 
-	public void scanOutBook(String book){
+	@SuppressWarnings("resource")
+	public static void scanOutBook(String member, String bookISBN){
+		 String memberQuery = "select * from members m where m.username = '" + member + "' limit 1;";
+		 String bookQuery = "select * from books b where b.isbn = '" + bookISBN + "' limit 1;";
+		 String updateBookQuery = "UPDATE books b SET b.availableCopies = (b.availableCopies - 1) WHERE b.isbn= "+ bookISBN+ " ;" ;
+	//	 String updateMemberQuery = "UPDATE members m SET m.numBooksCheckedOut = (m.numBooksCheckedOut + 1) WHERE m.username= "+ member+ " ;" ;	
+		//	book = stmt.executeQuery(updateBookQuery);
+	    try {
+	        stmt = conn.createStatement();
+	        stmt2 = conn.createStatement();
+	        ResultSet rs = stmt.executeQuery(memberQuery);
+	        
+	        while (rs.next()) {
+	            String memberName = rs.getString("fname") + " " + rs.getString("lname");
+	            int booksCheckedOut = rs.getInt("numBooksCheckedOut");
+	            
+	            if(booksCheckedOut >= 10) {
+	            		System.out.printf("Unfortunately this member has reached maxed checkouts.\n");
+	            		System.out.printf("Number of books checked out as of %s: %d%n", new Date().toString(), booksCheckedOut);
+	            		System.out.println("|--------------------------------------------|");
+	            		System.out.printf(" Will list books the member has checked out. ");
+	            		System.out.println("|--------------------------------------------|");
+	            }
+	            else {
+	            	   rs = stmt2.executeQuery(bookQuery); //book query
+		    	        while (rs.next()) {
+		    	            String bookName = rs.getString("name");
+
+		    	            if(rs.getInt("availableCopies") >= 1) {
+		    	            		System.out.printf("%s has been successfully scanned out to %s.%n",bookName, memberName);
+		    	            		System.out.println("----------------------------------");
+		    	            		System.out.printf("%S - Membership Summary %n",memberName);
+		    	            		System.out.printf("Number of books checked out as of %s: %d%n", new Date().toString(), booksCheckedOut);
+			 	            System.out.printf("Remaining rentals: %d%n", (10-booksCheckedOut)); //update in db via stmt3 to avoid set closing
+			 	           int response = stmt.executeUpdate(updateBookQuery);
+			 	           int copies=rs.getInt("availableCopies");
+			 	           if(response == 1){
+								System.out.println("Book copies available: " + (copies-1));
+			 	           }
+		    	            }
+		    	            else {
+		    	            		System.out.println(bookName+ " is out of stock. Sorry.");
+		    	            }
+		    	        }
+	            }
+	            /*Can see a members book list if they are maxed out. 
+	             * Might as well allow them to be visible regardless of 1 or 0.*/
+	            //updateBookInfo(rs, "out");
+	        }
+	        
+	        stmt.close(); stmt2.close();
+	        
+	    } catch (SQLException e ) {
+	        e.printStackTrace();
+	    } 
+	}
+	
+	private static void updateBookInfo(ResultSet book, String method) {
+		try {
+			if(book.isClosed()) {
+				System.out.println("closed");
+			}
+			else {
+				System.out.println("opended");
+			}
+		} catch (SQLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+		String updateBookQuery;
+		if(method.equalsIgnoreCase("out")) {
+			try {
+				System.out.println("testing:"+book.getInt("availableCopies"));
+				updateBookQuery = "UPDATE books b SET b.availableCopies = " + (book.getInt("availableCopies")-1) + 
+						" WHERE b.isbn= "+ book.getInt("isbn")+ " ;" ;
+				
+				book = stmt.executeQuery(updateBookQuery);
+				while(book.next()){
+					int copies=book.getInt("availableCopies");
+					System.out.println("Book copies available: " + copies);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 		
+		if(method.equalsIgnoreCase("in")) {
+			try {
+				updateBookQuery = "UPDATE books b SET b.availableCopies = " + (book.getInt("availableCopies")+1) + 
+						" WHERE b.isbn= '"+ book.getString("isbn")+ "' ;" ;
+				
+				stmt.executeUpdate(updateBookQuery);
+				
+				while(book.next()){
+					int copies=book.getInt("availableCopies");
+					System.out.println("Book copies available: " + copies);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+			
 	}
 	
 	public static void showAssociateMenu() throws SQLException{
@@ -56,9 +194,9 @@ public class Associate{
 			switch(selection){
 				case 1:	promptUserInfo();
 						break;
-				case 2: 
+				case 2: promptScanOut();
 						break;
-				case 3:
+				case 3: promptScanIn(); 
 						break;
 				case 4:	selection = -1;
 						break;
@@ -68,6 +206,26 @@ public class Associate{
 				showAssociateMenu();
     	}
 		
+	}
+	
+	public static void promptScanIn() {
+		System.out.print("What's the member's username? ");
+		String memberUName = scan.nextLine();
+		System.out.println();
+		System.out.print("Enter the book's isbn#: ");
+		String isbnBeingReturned = scan.nextLine();
+		System.out.println();
+		scanInBook(memberUName, isbnBeingReturned);
+	}
+	
+	public static void promptScanOut() {
+		System.out.print("Enter the book's ISBN# :  ");
+		String bookISBN = scan.nextLine();
+		System.out.println();
+		System.out.print("Enter the member username: ");
+		String memberCheckingOut = scan.nextLine();
+		System.out.println();
+		scanOutBook(memberCheckingOut, bookISBN);
 	}
 	
 	public static void promptUserInfo() throws SQLException{
