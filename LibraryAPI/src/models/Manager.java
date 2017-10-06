@@ -77,7 +77,8 @@ public class Manager{
         	int selection = scan.nextInt();
             scan.nextLine();
         	switch (selection){
-        	case 1:	createBook("0011000000333","pablo,shamboni", "blah", "2009", 30, 19.66,"mystery");
+        	case 1:	promptBookInfo();
+        			//createBook("0011000000333","pablo,shamboni", "blah", "2009", 30, 19.66,"mystery");
         			break;
         	case 2: System.out.print("\tEnter ISBN: ");
         			String isbn = scan.nextLine();
@@ -95,6 +96,16 @@ public class Manager{
         }
 	}
 	
+	private static void promptBookInfo() throws SQLException {
+		System.out.println("Enter isbn: 9780439023528");
+		System.out.println("Enter authors (seperated by comma): Suzanne Collins");
+		System.out.println("Enter title: The Hunger Games (Book 1)");
+		System.out.println("Enter year: 2010");
+		System.out.println("Enter copies: 3");
+		System.out.println("Enter price: 8.70");
+		System.out.println("Enter keywords: Dystopian, Science-Fiction, Survival, Action");
+		createBook("9780439023528","Suzanne Collins","The Hunger Games (Book 1)","2010", 3, 8.70, "Dystopian, Science-Fiction, Survival, Action" );
+	}
 	//prompt for info
 	private static void addAssociate() throws SQLException {
 		System.out.print("\tusername: ");
@@ -153,8 +164,12 @@ public class Manager{
 		pstmt.setInt(4,avail);
 		pstmt.setInt(5,0);
 		pstmt.setDouble(6,price);
-		
+		try{
 		pstmt.execute();
+		}catch (Exception e){
+			System.out.println(e.getMessage());
+		}
+		
 //		String sql = 	"insert ignore into books values( "+
 //						"'"+isbn	+"', "+ 
 //						"'"+name	+"', "+
