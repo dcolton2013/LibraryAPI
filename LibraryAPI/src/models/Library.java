@@ -124,6 +124,7 @@ public class Library{
 		//by ISBN
 	public static String searchISBN(String isbn){
 		if (isbn.length()<6) return "";
+		
 		String sql =	"select b.isbn, b.name "
 					+ 	"from books b "
 					+ 	"where b.isbn like '%"+isbn+"%'";
@@ -146,7 +147,7 @@ public class Library{
 		}
 	}
 		//by author
-	public static String searchAuthor(String authors) throws SQLException{
+	public static String searchAuthor(String authors){
 		if (authors.length() < 3) return "";
 		String output = "";
 			
@@ -155,20 +156,23 @@ public class Library{
 						+ 	"from books b, books_authors a "
 						+	"inner join books_authors on a.author like '%"+a+"%' "
 						+ 	"where b.isbn = a.isbn";
-			
-			rs = stmt.executeQuery(sql);
-			
+			try {
+				rs = stmt.executeQuery(sql);
+
 			//add results to output
-			output += String.format("%-15s%-50s%-50s","isbn","title","author" );
-			while (rs.next()){
-				output += String.format("\n%-15s%-50s%-25s", rs.getString(1),rs.getString(2),rs.getString(3));
+				output += String.format("%-15s%-50s%-50s","isbn","title","author" );
+				while (rs.next())
+					output += String.format("\n%-15s%-50s%-25s", rs.getString(1),rs.getString(2),rs.getString(3));
+			}catch (SQLException e) {
+				return e.getMessage();
 			}
+		
 		}
 		output += "\n";
 		return output;
 	}
 		//by Keyword
-	public static String searchKeyword(String keywords) throws SQLException{		
+	public static String searchKeyword(String keywords){		
 		if (keywords.length()<3) return "";
 		String output = "";
 		for(String k: keywords.split(",( |)")){
@@ -176,13 +180,16 @@ public class Library{
 						+ 	"from books b, books_keywords k "
 						+	"inner join books_keywords on k.keyword like '%"+k+"%' "
 						+ 	"where b.isbn = k.isbn";
-			
-			rs = stmt.executeQuery(sql);
-			
-			//add results to output
-			output += String.format("%-15s%-40s%-25s","isbn","title","keywords" );
-			while (rs.next()){
-				output += String.format("\n%-15s%-40s%-25s", rs.getString(1),rs.getString(2),rs.getString(3));
+			try{
+				rs = stmt.executeQuery(sql);
+				
+				//add results to output
+				output += String.format("%-15s%-40s%-25s","isbn","title","keywords" );
+				while (rs.next()){
+					output += String.format("\n%-15s%-40s%-25s", rs.getString(1),rs.getString(2),rs.getString(3));
+			}
+			}catch (SQLException e){
+				return e.getMessage();
 			}
 		}
 		output += "\n";

@@ -1,5 +1,7 @@
 package app;
 import models.Library;
+import tests.nonmembers;
+
 import java.util.*;
 import java.io.*;
 import java.sql.*;
@@ -13,7 +15,10 @@ public class LibraryAPI{
     //Main class allow login (manager,associate,member) and nonmembers to search db
 	public static void main(String[] args) throws ClassNotFoundException, SQLException{
         System.out.println("Library API");
-        startApp();
+        initLibrary();
+        System.out.println();
+        nonmembers.main(new String[]{"Radric Davis","Biography","0060854936"});
+        //startApp();
     }
 	
     //Main menu interface
@@ -42,7 +47,6 @@ public class LibraryAPI{
     
 	//Handle main menu options
     public static void startApp() throws ClassNotFoundException, SQLException{
-    	initLibrary();
     	int selection = 0;
     	showMainMenu();
     	while (true){
@@ -80,7 +84,7 @@ public class LibraryAPI{
     	}
      }
     
-    public static void handleSearch() throws SQLException{
+    public static void handleSearch(){
         showSearchMenu();
         while(true){
         	int selection = scan.nextInt();

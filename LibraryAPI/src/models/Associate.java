@@ -177,8 +177,8 @@ public class Associate{
 	public static void showAssociateMenu() throws SQLException{
         System.out.println("*****************************");
         System.out.println("1. Create new member");
-        System.out.println("2. Check out book (NYI)");
-        System.out.println("3. Return books (NYI)");
+        System.out.println("2. Check out book");
+        System.out.println("3. Return books");
         System.out.println("4. Logout");
         System.out.println("*****************************");
         System.out.print("\tSelection: ");
