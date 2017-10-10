@@ -21,7 +21,7 @@ public class LibraryAPI{
         System.out.println("*****************************");
         System.out.println("1. Login Library Manager");
         System.out.println("2. Login Library Associate");
-        System.out.println("3. Login Library Member");
+        System.out.println("3. Login Library Member (NYI)");
         System.out.println("4. Search DB");
         System.out.println("\t-1 to exit");
         System.out.println("*****************************");

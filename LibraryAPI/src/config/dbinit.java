@@ -35,8 +35,6 @@ public class dbinit {
 		System.out.println("Creating Table: managers...");
 	    //init table
 	    String managersTable = "create table if not exists managers (" +
-	    					 	//"fname		varchar(15)		not null,"+
-	    					 	//"lname		varchar(15)		not null,"+
 	    					 	"username	varchar(15)		not null,"+
 	    					 	"password	varchar(15)		not null,"+
 	    					 	"loggedIn	boolean					,"+

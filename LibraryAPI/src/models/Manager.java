@@ -72,10 +72,10 @@ public class Manager{
         	int selection = scan.nextInt();
             scan.nextLine();
         	switch (selection){
-        	case 1:	//createBook("0011","pablo,shamboni", "blah", "1996", 30, 19.66,"mystery");
+        	case 1:	//createBook("0011000000","pablo,shamboni", "blah", "1996", 30, 19.66,"mystery");
         			break;
         	case 2: System.out.print("Enter ISBN: ");
-//        			String isbn = scan.nextLine();
+        			//String isbn = scan.nextLine();
         			System.out.println();
         			removeBookISBN("0060854936");
         			break;
