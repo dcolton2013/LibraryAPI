@@ -1,12 +1,15 @@
 package models;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.util.*;
 
 
 public class Manager{
 	static Scanner scan = new Scanner(System.in);
 	static Statement stmt;
+	static Connection conn;
 	
 	public static void showManagerMenu() throws SQLException{
 	        System.out.println("*****************************");
@@ -16,8 +19,9 @@ public class Manager{
 	        System.out.println("4. Remove manager (NYI)");
 	        System.out.println("5. Remove associate (NYI)");
 	        System.out.println("6. Remove member (NYI)");
-	        System.out.println("7. Inventory options");
-	        System.out.println("8. Logout");
+	        System.out.println("7. Suspend member (NYI)");
+	        System.out.println("8. Inventory options");
+	        System.out.println("9. Logout");
 	        System.out.println("*****************************");
 	        System.out.print("\tSelection: ");
 	}
@@ -51,11 +55,12 @@ public class Manager{
 						break;
 				case 6:
 						break;
-					
-				case 7:	handleInventory();
+				case 7:
+						break;	
+				case 8:	handleInventory();
 						break;
 				
-				case 8: Library.logoutManager();
+				case 9: Library.logoutManager();
 						selection = -1;
 						break;
 				default: System.out.println("invalid selection");
@@ -72,12 +77,12 @@ public class Manager{
         	int selection = scan.nextInt();
             scan.nextLine();
         	switch (selection){
-        	case 1:	//createBook("0011000000","pablo,shamboni", "blah", "1996", 30, 19.66,"mystery");
+        	case 1:	promptBookInfo();
+        			//createBook("0011000000333","pablo,shamboni", "blah", "2009", 30, 19.66,"mystery");
         			break;
-        	case 2: System.out.print("Enter ISBN: ");
-        			//String isbn = scan.nextLine();
-        			System.out.println();
-        			removeBookISBN("0060854936");
+        	case 2: System.out.print("\tEnter ISBN: ");
+        			String isbn = scan.nextLine();
+        			removeBookISBN(isbn);
         			break;
         	case 3: 
     				break;
@@ -91,6 +96,16 @@ public class Manager{
         }
 	}
 	
+	private static void promptBookInfo() throws SQLException {
+		System.out.println("Enter isbn: 9780439023528");
+		System.out.println("Enter authors (seperated by comma): Suzanne Collins");
+		System.out.println("Enter title: The Hunger Games (Book 1)");
+		System.out.println("Enter year: 2010");
+		System.out.println("Enter copies: 3");
+		System.out.println("Enter price: 8.70");
+		System.out.println("Enter keywords: Dystopian, Science-Fiction, Survival, Action");
+		createBook("9780439023528","Suzanne Collins","The Hunger Games (Book 1)","2010", 3, 8.70, "Dystopian, Science-Fiction, Survival, Action" );
+	}
 	//prompt for info
 	private static void addAssociate() throws SQLException {
 		System.out.print("\tusername: ");
@@ -111,7 +126,7 @@ public class Manager{
 	
 	//functions to add tuples to the db
 	public static void createManager(String uname,String password) throws SQLException{
-		System.out.println("adding manager: " + uname);
+		System.out.println("\tadding manager: " + uname);
 		String sql = 	"insert ignore into managers values (" +
 					 	"'"+uname+"',"+
 					 	"'"+password+"',"+
@@ -121,7 +136,7 @@ public class Manager{
 	}
 	
 	public static void createAssociate(String uname,String password) throws SQLException{
-		System.out.println("adding associate: " + uname );
+		System.out.println("\tadding associate: " + uname );
 		String sql = 	"insert ignore into associates values (" +
 					 	"'"+uname+"',"+
 					 	"'"+password+"',"+
@@ -134,17 +149,35 @@ public class Manager{
 	//accepts authors and keywords as a string
 	//seperate each author/keyword with a comma
 	public static void createBook(String isbn, String authors,String name, String year,int avail, double price, String keywords  ) throws SQLException{
-		if (isbn.length() < 10) return;
 		if (authors.length() == 0) return;
 		
-		String sql = 	"insert ignore into books values( "+
-						"'"+isbn	+"', "+ 
-						"'"+name	+"', "+
-						"'"+year	+"', "+
-						"'"+avail	+"', "+ 
-						"0				,"+
-						price			  + " )";
-		stmt.executeUpdate(sql);
+		if (Integer.parseInt(year) < 2007){
+			if(isbn.length() != 10) return;
+		}else{
+			if (isbn.length() != 13) return;
+		}
+		String sql = "insert ignore into books values(?,?,?,?,?,?)";
+		PreparedStatement pstmt = conn.prepareStatement(sql);
+		pstmt.setString(1,isbn);
+		pstmt.setString(2,name);
+		pstmt.setString(3,year);
+		pstmt.setInt(4,avail);
+		pstmt.setInt(5,0);
+		pstmt.setDouble(6,price);
+		try{
+		pstmt.execute();
+		}catch (Exception e){
+			System.out.println(e.getMessage());
+		}
+		
+//		String sql = 	"insert ignore into books values( "+
+//						"'"+isbn	+"', "+ 
+//						"'"+name	+"', "+
+//						"'"+year	+"', "+
+//						"'"+avail	+"', "+ 
+//						"0				,"+
+//						price			  + " )";
+//		stmt.executeUpdate(sql);
 		
 		for (String a: authors.split(",( |)")){
 			sql = 	"insert ignore into books_authors values( "+
