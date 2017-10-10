@@ -3,7 +3,7 @@ package tests;
 import models.Library;
 
 public class booksearch {
-	public static void main(String[]args){
+	public static void test(String[]args){
 		System.out.println("****Search by Author searchAuthor(author name)");
 		System.out.println(Library.searchAuthor(args[0]));
 		System.out.println();

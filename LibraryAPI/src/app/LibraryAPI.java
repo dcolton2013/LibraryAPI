@@ -1,8 +1,9 @@
 package app;
 import models.Library;
-import tests.nonmembers;
+import tests.*;
 
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.io.*;
 import java.sql.*;
 import java.util.logging.Level;
@@ -13,16 +14,23 @@ public class LibraryAPI{
 	private static Scanner scan = new Scanner(System.in);
 	
     //Main class allow login (manager,associate,member) and nonmembers to search db
-	public static void main(String[] args) throws ClassNotFoundException, SQLException{
+	public static void main(String[] args) throws InterruptedException{
         System.out.println("Library API");
         initLibrary();
         System.out.println();
-        nonmembers.main(new String[]{"Radric Davis","Biography","0060854936"});
+        
+	        //Test searching
+	        //booksearch.test(new String[]{"Rowling","Biography","0060854936"});
+        
+        	//login/logout tests
+        	//login_logout.testManager(new String[]{"admin","admin"});
+        	//login_logout.testAssociate(new String[]{"assoc1","assoc1"});
+        
         //startApp();
     }
 	
     //Main menu interface
-    private static void showMainMenu() throws ClassNotFoundException, SQLException {
+    private static void showMainMenu(){
         System.out.println("*****************************");
         System.out.println("1. Login Library Manager");
         System.out.println("2. Login Library Associate");
@@ -46,7 +54,7 @@ public class LibraryAPI{
     }
     
 	//Handle main menu options
-    public static void startApp() throws ClassNotFoundException, SQLException{
+    public static void startApp(){
     	int selection = 0;
     	showMainMenu();
     	while (true){
@@ -112,8 +120,8 @@ public class LibraryAPI{
     }
     
     //initialize library
-    public static void initLibrary() throws ClassNotFoundException, SQLException{
-    	lib = new Library();
+    public static void initLibrary(){
+		lib = new Library();
     }
 }
 

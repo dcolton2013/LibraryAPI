@@ -29,12 +29,22 @@ public class Library{
 	private static int authorityLevel = 3;
 	  
 	//create db connection  
-	public Library() throws ClassNotFoundException, SQLException{
-	    Class.forName("com.mysql.jdbc.Driver");
-	    conn = DriverManager.getConnection(url, user, password);
-	    stmt = conn.createStatement();
-	    System.out.println("Database connected successfully");
-	    dbinit.createDB(stmt);
+	public Library(){
+	    try {
+			Class.forName("com.mysql.jdbc.Driver");
+		} catch (ClassNotFoundException e) {
+			System.out.println(e.getMessage());
+			System.exit(0);
+		}
+	    try {
+			conn = DriverManager.getConnection(url, user, password);
+			stmt = conn.createStatement();
+		    System.out.println("Database connected successfully");
+		    dbinit.createDB(stmt);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+			System.exit(0);
+		}
 	    
 	    Manager.stmt = stmt;
 	    Associate.stmt = stmt;
@@ -45,59 +55,81 @@ public class Library{
 	
 	//login functions
 		//manager
-	public static void loginManager(String uname, String password) throws SQLException{
+	public static void loginManager(String uname, String password){
 	String sql =  	"SELECT m.username, m.password " +
 	          		"FROM managers m " +
 	          		"WHERE m.username = '"+uname+"' AND m.password = '"+password+"'"; 
-	
-		ResultSet rs = stmt.executeQuery(sql);
-		if (!rs.next())
-			//empty result
-			System.out.println("\t"+ uname + " not authenticated");
-		else{
-			System.out.println("\t"+uname+" authentication successful");
-		    sql = 	"update managers "+
-					"set loggedIn = 1 " +
-					"where username = '"+uname+"'";
-	    		stmt.executeUpdate(sql);
-	    		currentUser = uname;
-	    		authorityLevel = 0;
-	    		Manager.handleMain();
+		try{
+			ResultSet rs = stmt.executeQuery(sql);
+			if (!rs.next())
+				//empty result
+				System.out.println("\t"+ uname + " not authenticated");
+			else{
+				System.out.println("\t"+uname+" authentication successful");
+			    sql = 	"update managers "+
+						"set loggedIn = 1 " +
+						"where username = '"+uname+"'";
+		    		stmt.executeUpdate(sql);
+		    		currentUser = uname;
+		    		authorityLevel = 0;
+		    		Manager.handleMain();
 			}
+		}catch(SQLException e){
+			System.out.println(e.getMessage());
+		}
 	}
 	
 		//associate
-	public static void loginAssociate(String uname, String password) throws SQLException{
+	public static void loginAssociate(String uname, String password){
 	String sql =  	"SELECT a.username, a.password " +
 	          		"FROM associates a " +
 	          		"WHERE a.username = '"+uname+"' AND a.password = '"+password+"'"; 
-	
-		ResultSet rs = stmt.executeQuery(sql);
-		if (!rs.next())
-			//empty result
-			System.out.println("\t"+ uname + " not authenticated");
-		else{
-			System.out.println("\t"+uname+" authentication successful");
-		    sql = 	"update associates "+
-					"set loggedIn = 1 " +
-					"where username = '"+uname+"'";
-	    		stmt.executeUpdate(sql);
-	    		currentUser = uname;
-	    		authorityLevel = 1;
-	    		Associate.handleMain();
-			}
+		try{
+			ResultSet rs = stmt.executeQuery(sql);
+			if (!rs.next())
+				//empty result
+				System.out.println("\t"+ uname + " not authenticated");
+			else{
+				System.out.println("\t"+uname+" authentication successful");
+			    sql = 	"update associates "+
+						"set loggedIn = 1 " +
+						"where username = '"+uname+"'";
+		    		stmt.executeUpdate(sql);
+		    		currentUser = uname;
+		    		authorityLevel = 1;
+		    		Associate.handleMain();
+				}
+		}catch(SQLException e){
+			System.out.println(e.getMessage());
+		}
 	}
 	
 	//logout functions
 		//manager
-	public static void logoutManager() throws SQLException {
+	public static void logoutManager() {
 		String sql = "update managers "+
 					 "set loggedIn = 0 "+
 					 "where username = '"+ currentUser +"'";
-		stmt.executeUpdate(sql);
+		try {
+			stmt.executeUpdate(sql);
+			System.out.println("\t"+currentUser + " succesfully logged out");
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
 		authorityLevel = 3;
 	}
-	
+	public static void logoutAssociate() {
+		String sql = "update associates "+
+					 "set loggedIn = 0 "+
+					 "where username = '"+ currentUser +"'";
+		try {
+			stmt.executeUpdate(sql);
+			System.out.println("\t" + currentUser + " succesfully logged out");
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		authorityLevel = 3;
+	}
 	//Queries
 		//getISBN by name
 	public static String getISBN(String value) throws SQLException{
