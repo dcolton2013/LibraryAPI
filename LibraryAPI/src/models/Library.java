@@ -24,7 +24,6 @@ public class Library{
 	//currently logged in
 	private static String currentUser = "";
 
-	
 	//authority levels
 	//0: admin, managers
 	//1: associates
@@ -47,7 +46,6 @@ public class Library{
 		    dbinit.createDB(stmt);
 		} catch (SQLException e) {
 			e.printStackTrace();
-			//System.out.println(e.getMessage());
 			System.exit(0);
 		}
 	    
@@ -60,8 +58,6 @@ public class Library{
 	    Member.conn = conn;
 	}
 	
-	//login functions
-		//manager
 	public static void loginManager(String uname, String password){
 	String sql =  	"SELECT m.username, m.password " +
 	          		"FROM managers m " +
@@ -85,8 +81,7 @@ public class Library{
 			System.out.println(e.getMessage());
 		}
 	}
-	
-		//associate
+		
 	public static void loginAssociate(String uname, String password){
 	String sql =  	"SELECT a.username, a.password " +
 	          		"FROM associates a " +
@@ -104,15 +99,36 @@ public class Library{
 		    		stmt.executeUpdate(sql);
 		    		currentUser = uname;
 		    		authorityLevel = 1;
-		    		Associate.handleMain();
+		    		//Associate.handleMain();
 				}
 		}catch(SQLException e){
 			System.out.println(e.getMessage());
 		}
 	}
-	
-	//logout functions
-		//manager
+		
+	public static void loginMember(String uname, String password){
+		String sql =  	"SELECT m.username, m.password " +
+          				"FROM members m " +
+          				"WHERE m.username = '"+uname+"' AND m.password = '"+password+"'"; 
+		try{
+			ResultSet rs = stmt.executeQuery(sql);
+			if (!rs.next())
+				//empty result
+				System.out.println("\t"+ uname + " not authenticated");
+			else{
+				System.out.println("\t"+uname+" authentication successful");
+			    sql = 	"update members "+
+						"set loggedIn = 1 " +
+						"where username = '"+uname+"'";
+		    		stmt.executeUpdate(sql);
+		    		currentUser = uname;
+		    		authorityLevel = 2;
+			}
+		}catch(SQLException e){
+			System.out.println(e.getMessage());
+		}
+	}
+
 	public static void logoutManager() {
 		String sql = "update managers "+
 					 "set loggedIn = 0 "+
@@ -138,6 +154,20 @@ public class Library{
 		}
 		authorityLevel = 3;
 	}
+	
+	public static void logoutMember() {
+		String sql = "update members "+
+					 "set loggedIn = 0 "+
+					 "where username = '"+ currentUser +"'";
+		try {
+			stmt.executeUpdate(sql);
+			System.out.println("\t" + currentUser + " succesfully logged out");
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		authorityLevel = 3;
+	}
+	
 	//Queries
 		//getISBN by name
 	public static String getISBN(String value){

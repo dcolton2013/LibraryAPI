@@ -21,7 +21,7 @@ public class LibraryAPI{
         System.out.println("Library API");
         initLibrary();
         System.out.println();
-        
+        Library.logoutMember();
         //startApp();
     }
 	
