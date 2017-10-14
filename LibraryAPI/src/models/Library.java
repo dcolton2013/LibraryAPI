@@ -42,7 +42,8 @@ public class Library{
 		    System.out.println("Database connected successfully");
 		    dbinit.createDB(stmt);
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			e.printStackTrace();
+			//System.out.println(e.getMessage());
 			System.exit(0);
 		}
 	    
@@ -118,6 +119,7 @@ public class Library{
 		}
 		authorityLevel = 3;
 	}
+	
 	public static void logoutAssociate() {
 		String sql = "update associates "+
 					 "set loggedIn = 0 "+
@@ -132,28 +134,38 @@ public class Library{
 	}
 	//Queries
 		//getISBN by name
-	public static String getISBN(String value) throws SQLException{
+	public static String getISBN(String value){
 		String sql = 	"select distinct isbn "+
 						"from books "+
 						"where name LIKE '%"+value+"%'";
-		rs = stmt.executeQuery(sql);
-		rs.next();
-		return rs.getString(1);				
+		try {
+			rs = stmt.executeQuery(sql);
+			rs.next();
+			return rs.getString(1);	
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			return e.getMessage();
+		}			
 	}
 	
 		//getTitle by ISBN
-	public static String getTitle(String value) throws SQLException{
+	public static String getTitle(String value){
 		String sql = 	"select distinct name "+
 						"from books "+
 						"where isbn LIKE '%"+value+"%'";
-		rs = stmt.executeQuery(sql);
-		rs.next();
-		return rs.getString(1);				
+		try {
+			rs = stmt.executeQuery(sql);
+			rs.next();
+			return rs.getString(1);	
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			return e.getMessage();
+		}
+		
 	}
 	
-	
 	//Searches
-		//by ISBN
+		//by ISBN - search by isbn or partial isbn must be of length 6 or more
 	public static String searchISBN(String isbn){
 		if (isbn.length()<6) return "";
 		
@@ -178,6 +190,7 @@ public class Library{
 			return e.getMessage();
 		}
 	}
+		
 		//by author
 	public static String searchAuthor(String authors){
 		if (authors.length() < 3) return "";
@@ -203,6 +216,7 @@ public class Library{
 		output += "\n";
 		return output;
 	}
+		
 		//by Keyword
 	public static String searchKeyword(String keywords){		
 		if (keywords.length()<3) return "";

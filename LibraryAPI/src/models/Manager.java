@@ -124,6 +124,33 @@ public class Manager{
 		createManager(username,password);
 	}
 	
+	public static void suspendMember(String uname){
+		String sql = "update members "+
+					 "set suspended = 1 "+
+					 "where username = ?";
+		PreparedStatement pstmt;
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, uname);
+			pstmt.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	public static void reactivateMember(String uname){
+		String sql = "update members "+
+					 "set suspended = 0 "+
+					 "where username = ?";
+		PreparedStatement pstmt;
+		try {
+			pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, uname);
+			pstmt.execute();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+	}
 	//functions to add tuples to the db
 	public static void createManager(String uname,String password) throws SQLException{
 		System.out.println("\tadding manager: " + uname);
@@ -145,7 +172,7 @@ public class Manager{
 		stmt.executeUpdate(sql);	
 	}
 	
-	//creaate books
+	//create books
 	//accepts authors and keywords as a string
 	//seperate each author/keyword with a comma
 	public static void createBook(String isbn, String authors,String name, String year,int avail, double price, String keywords  ) throws SQLException{
@@ -197,7 +224,6 @@ public class Manager{
 		
 	}
 	
-	//remove books
 	//Remove Functions
 		//remove books by isbn
 	public static void removeBookISBN(String isbn) throws SQLException{
@@ -224,7 +250,6 @@ public class Manager{
 	}
 
 		//remove by name
-	
 	public static void removeBookNAME(String name) throws SQLException{
 		removeBookISBN(Library.getISBN(name));
 	}

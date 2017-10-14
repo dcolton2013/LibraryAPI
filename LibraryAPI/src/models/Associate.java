@@ -293,7 +293,7 @@ public class Associate{
 				//duplicate username
 				return 1;
 			}else if (s.contains("code")){
-				//duplicate code;
+				//duplicate library code;
 				return 2;
 			}
 		}

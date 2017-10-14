@@ -1,5 +1,6 @@
 package app;
 import models.Library;
+import models.Manager;
 import tests.*;
 
 import java.util.*;
@@ -8,8 +9,8 @@ import java.io.*;
 import java.sql.*;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-public class LibraryAPI{
-	
+
+public class LibraryAPI{	
 	public static Library lib;
 	private static Scanner scan = new Scanner(System.in);
 	
@@ -25,7 +26,9 @@ public class LibraryAPI{
         	//login/logout tests
         	//login_logout.testManager(new String[]{"admin","admin"});
         	//login_logout.testAssociate(new String[]{"assoc1","assoc1"});
-        
+        	
+        	Manager.suspendMember("");
+        	
         //startApp();
     }
 	

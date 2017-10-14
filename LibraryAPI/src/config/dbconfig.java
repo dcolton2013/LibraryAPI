@@ -5,6 +5,7 @@ public class dbconfig {
 	 * MySQL username and password
 	 */
 	public static final String URL = "jdbc:mysql://localhost:3306/Library?useSSL=false";
-	public static final String USER = "root";
-	public static final String PASSWORD = "faisal";
+	//String urlString = “jdbc:mysql://address=(protocol=tcp)(host=your-ipv6-address)(port=3306)(useSSL=false)/Library”;
+	public static final String USER = "team";
+	public static final String PASSWORD = "entry17";
 }

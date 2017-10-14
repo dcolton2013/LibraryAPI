@@ -90,6 +90,7 @@ public class dbinit {
 							 "isbn				varchar(15)		not null, "+
 							 "name				varchar(250)	not null, "+
 							 "year				varchar(4)		not null, "+
+							 "totalCopies	int				not null, "+
 							 "availableCopies	int				not null, "+
 							 "holds				int				not null, "+
 							 "price				double			not null, "+
