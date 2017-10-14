@@ -1,12 +1,14 @@
 package app;
 import models.Library;
 import models.Manager;
+import models.Member;
 import tests.*;
 
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 import java.io.*;
 import java.sql.*;
+import java.text.ParseException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -15,20 +17,11 @@ public class LibraryAPI{
 	private static Scanner scan = new Scanner(System.in);
 	
     //Main class allow login (manager,associate,member) and nonmembers to search db
-	public static void main(String[] args) throws InterruptedException{
+	public static void main(String[] args) throws InterruptedException, ParseException{
         System.out.println("Library API");
         initLibrary();
         System.out.println();
         
-	        //Test searching
-	        //booksearch.test(new String[]{"Rowling","Biography","0060854936"});
-        
-        	//login/logout tests
-        	//login_logout.testManager(new String[]{"admin","admin"});
-        	//login_logout.testAssociate(new String[]{"assoc1","assoc1"});
-        	
-        	Manager.suspendMember("");
-        	
         //startApp();
     }
 	

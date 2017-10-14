@@ -2,8 +2,11 @@ package models;
 import config.dbconfig;
 import config.dbinit;
 import java.util.*;
+import java.util.Date;
 import java.io.*;
 import java.sql.*;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -20,6 +23,7 @@ public class Library{
 	
 	//currently logged in
 	private static String currentUser = "";
+
 	
 	//authority levels
 	//0: admin, managers
@@ -49,9 +53,11 @@ public class Library{
 	    
 	    Manager.stmt = stmt;
 	    Associate.stmt = stmt;
+	    Member.stmt = stmt;
 	    
 	    Manager.conn = conn;
 	    Associate.conn = conn;
+	    Member.conn = conn;
 	}
 	
 	//login functions
@@ -164,6 +170,19 @@ public class Library{
 		
 	}
 	
+	public static Double getBookCost(String isbn){
+		String sql = "select b.price "+
+					 "from books b "+
+					 "where b.isbn ="+isbn;
+		try {
+			rs = stmt.executeQuery(sql);
+			rs.next();
+			return Double.parseDouble(rs.getString(1));
+		} catch (SQLException e) {
+			e.printStackTrace();
+			return 0.0;
+		}
+	}
 	//Searches
 		//by ISBN - search by isbn or partial isbn must be of length 6 or more
 	public static String searchISBN(String isbn){

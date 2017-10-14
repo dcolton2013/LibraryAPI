@@ -25,6 +25,7 @@ public class Manager{
 	        System.out.println("*****************************");
 	        System.out.print("\tSelection: ");
 	}
+	
 	public static void showInventoryMenu() throws SQLException{
         System.out.println("*****************************");
         System.out.println("1. Create new book");
@@ -96,6 +97,17 @@ public class Manager{
         }
 	}
 	
+	public static void applyCharges(){
+		String sql = "update member_checkouts "+
+					 "set latefees = latefees+.10 "+
+					 "where returndate < NOW() AND status <> 'lost'";
+		try {
+			stmt.executeUpdate(sql);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
 	private static void promptBookInfo() throws SQLException {
 		System.out.println("Enter isbn: 9780439023528");
 		System.out.println("Enter authors (seperated by comma): Suzanne Collins");
@@ -106,6 +118,7 @@ public class Manager{
 		System.out.println("Enter keywords: Dystopian, Science-Fiction, Survival, Action");
 		createBook("9780439023528","Suzanne Collins","The Hunger Games (Book 1)","2010", 3, 8.70, "Dystopian, Science-Fiction, Survival, Action" );
 	}
+	
 	//prompt for info
 	private static void addAssociate() throws SQLException {
 		System.out.print("\tusername: ");
@@ -134,7 +147,7 @@ public class Manager{
 			pstmt.setString(1, uname);
 			pstmt.execute();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 	}
 	
@@ -148,9 +161,10 @@ public class Manager{
 			pstmt.setString(1, uname);
 			pstmt.execute();
 		} catch (SQLException e) {
-			e.printStackTrace();
+			System.out.println(e.getMessage());
 		}
 	}
+	
 	//functions to add tuples to the db
 	public static void createManager(String uname,String password) throws SQLException{
 		System.out.println("\tadding manager: " + uname);
@@ -175,7 +189,7 @@ public class Manager{
 	//create books
 	//accepts authors and keywords as a string
 	//seperate each author/keyword with a comma
-	public static void createBook(String isbn, String authors,String name, String year,int avail, double price, String keywords  ) throws SQLException{
+	public static void createBook(String isbn, String authors,String name, String year,int avail, double price, String keywords  ){
 		if (authors.length() == 0) return;
 		
 		if (Integer.parseInt(year) < 2007){
@@ -184,73 +198,67 @@ public class Manager{
 			if (isbn.length() != 13) return;
 		}
 		String sql = "insert ignore into books values(?,?,?,?,?,?)";
-		PreparedStatement pstmt = conn.prepareStatement(sql);
-		pstmt.setString(1,isbn);
-		pstmt.setString(2,name);
-		pstmt.setString(3,year);
-		pstmt.setInt(4,avail);
-		pstmt.setInt(5,0);
-		pstmt.setDouble(6,price);
+
 		try{
-		pstmt.execute();
-		}catch (Exception e){
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1,isbn);
+			pstmt.setString(2,name);
+			pstmt.setString(3,year);
+			pstmt.setInt(4,avail);
+			pstmt.setInt(5,0);
+			pstmt.setDouble(6,price);
+			pstmt.execute();
+			
+			for (String a: authors.split(",( |)")){
+				sql = 	"insert ignore into books_authors values( "+
+						"'"+isbn	+"', "+ 
+						"'"+a	+"')";
+				stmt.executeUpdate(sql);
+			}
+			
+			if (keywords.length() == 0) return;
+			
+			for (String k: keywords.split(",( |)")){
+				sql = 	"insert ignore into books_keywords values( "+
+						"'"+isbn	+"', "+ 
+						"'"+k		+"')";
+				stmt.executeUpdate(sql);
+			}
+			
+		}catch (SQLException e){
 			System.out.println(e.getMessage());
 		}
-		
-//		String sql = 	"insert ignore into books values( "+
-//						"'"+isbn	+"', "+ 
-//						"'"+name	+"', "+
-//						"'"+year	+"', "+
-//						"'"+avail	+"', "+ 
-//						"0				,"+
-//						price			  + " )";
-//		stmt.executeUpdate(sql);
-		
-		for (String a: authors.split(",( |)")){
-			sql = 	"insert ignore into books_authors values( "+
-					"'"+isbn	+"', "+ 
-					"'"+a	+"')";
-			stmt.executeUpdate(sql);
-		}
-		
-		if (keywords.length() == 0) return;
-		
-		for (String k: keywords.split(",( |)")){
-			sql = 	"insert ignore into books_keywords values( "+
-					"'"+isbn	+"', "+ 
-					"'"+k		+"')";
-			stmt.executeUpdate(sql);
-		}
-		
 	}
 	
 	//Remove Functions
 		//remove books by isbn
-	public static void removeBookISBN(String isbn) throws SQLException{
+	public static void removeBookISBN(String isbn){
 		//remove from books table if isbn is of required length
 		if(isbn.length() < 7) return;
 		
 		String title = Library.getTitle(isbn);
-		
-		String sql = "delete from books "+
-					 "where ISBN LIKE '%"+isbn+"%'";
-		stmt.executeUpdate(sql);
-		
-		//remove from books_keywords
-		sql = "delete from books_keywords "+
-			  "where ISBN LIKE '%"+isbn+"%'";
-		stmt.executeUpdate(sql);
-		
-		//remove from books_authors
-		sql = "delete from books_keywords "+
-			  "where ISBN LIKE '%"+isbn+"%'";
-		stmt.executeUpdate(sql);
-		
+		try{
+			String sql = "delete from books "+
+						 "where ISBN LIKE '%"+isbn+"%'";
+			stmt.executeUpdate(sql);
+			
+			//remove from books_keywords
+			sql = "delete from books_keywords "+
+				  "where ISBN LIKE '%"+isbn+"%'";
+			stmt.executeUpdate(sql);
+			
+			//remove from books_authors
+			sql = "delete from books_keywords "+
+				  "where ISBN LIKE '%"+isbn+"%'";
+			stmt.executeUpdate(sql);
+		}catch (SQLException e){
+			System.out.println(e.getMessage());
+		}
 		System.out.println("Book: "+isbn+" "+title+" removed");
 	}
 
 		//remove by name
-	public static void removeBookNAME(String name) throws SQLException{
+	public static void removeBookNAME(String name){
 		removeBookISBN(Library.getISBN(name));
 	}
 }
