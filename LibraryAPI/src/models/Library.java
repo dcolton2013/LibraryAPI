@@ -22,7 +22,7 @@ public class Library{
 	private static ResultSet rs;
 	
 	//currently logged in
-	private static String currentUser = "";
+	public static String currentUser = "";
 
 	//authority levels
 	//0: admin, managers
@@ -213,6 +213,42 @@ public class Library{
 			return 0.0;
 		}
 	}
+	
+	public static int getNumHolds(String isbn){
+		String sql = "select b.holds "+
+					 "from books b "+
+					 "where b.isbn = "+isbn;
+		try{
+			rs = stmt.executeQuery(sql);
+			rs.next();
+			return rs.getInt(1);
+		}catch(SQLException e){
+			System.out.println(e.getMessage());
+			return 0;
+		}
+	}
+	
+	public static void increaseHolds(String isbn){
+		String sql = "update books "+
+					 "set holds = holds+1 "+
+					 "where isbn = "+isbn;
+		try {
+			stmt.executeUpdate(sql);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	public static void decreaseHolds(String isbn){
+		String sql = "update books "+
+				 	 "set holds = holds-1 "+
+				 	 "where isbn = "+isbn;
+		try {
+			stmt.executeUpdate(sql);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
 	//Searches
 		//by ISBN - search by isbn or partial isbn must be of length 6 or more
 	public static String searchISBN(String isbn){

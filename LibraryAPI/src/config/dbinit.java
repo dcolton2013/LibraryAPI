@@ -131,10 +131,11 @@ public class dbinit {
 	private static void createMemberHoldsTable(){
 		System.out.println("Creating table: member_holds...");
 		String userHolds = 	"create table if not exists member_holds( "+
-							"username	varchar(15)		not null,  "+
-							"isbn		varchar(15)		not null, "+ 
-							"holdpos	int						, "+ 
-							"primary key(username))";
+							"username		varchar(15)		not null,  "+
+							"isbn			varchar(15)		not null, "+ 
+							"holdpos		int						, "+
+							"holdexpiration	DATETIME				, "+ 
+							"primary key(username,isbn))";
 		try {
 			stmt.executeUpdate(userHolds);
 		} catch (SQLException e) {
