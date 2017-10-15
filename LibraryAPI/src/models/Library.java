@@ -223,6 +223,7 @@ public class Library{
 			rs.next();
 			return rs.getInt(1);
 		}catch(SQLException e){
+			//isbn not found
 			System.out.println(e.getMessage());
 			return 0;
 		}
@@ -238,6 +239,7 @@ public class Library{
 			System.out.println(e.getMessage());
 		}
 	}
+	
 	public static void decreaseHolds(String isbn){
 		String sql = "update books "+
 				 	 "set holds = holds-1 "+
@@ -249,6 +251,20 @@ public class Library{
 		}
 	}
 	
+	public static void addHoldExpirationDate(String username, String isbn){
+		String sql =  "update member_holds mh "+
+					  "set mh.holdexpiration = DATE_ADD(NOW(),INTERVAL 4 DAY) "+
+					  "where (mh.username = ? and mh.isbn = ?)";
+		try{
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, username);
+			pstmt.setString(2, isbn);
+			pstmt.executeUpdate();
+		}catch(SQLException e){
+			System.out.println(e.getMessage());
+		}
+		
+	}
 	//Searches
 		//by ISBN - search by isbn or partial isbn must be of length 6 or more
 	public static String searchISBN(String isbn){

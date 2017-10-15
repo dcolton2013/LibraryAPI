@@ -17,6 +17,7 @@ public class Associate{
 	
 	static Statement stmt,stmt2;
 	static Connection conn;
+	private static ResultSet rs;
 
 	//DS to keep up with Associate activity
 	private ArrayList<String> activity;
@@ -299,5 +300,4 @@ public class Associate{
 		}
 		return 0;
 	}
-
 }

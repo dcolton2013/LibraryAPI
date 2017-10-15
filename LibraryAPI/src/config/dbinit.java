@@ -153,6 +153,7 @@ public class dbinit {
 								  "status 		varchar(15)	 not null, "+
 								  "checkoutdate	DATETIME	not null, "+
 								  "returndate	DATETIME	not null, "+
+								  "renewals 	int, "+
 								  "latefees 	double, "+
 								  "bookfees 	double "+
 								  ")";

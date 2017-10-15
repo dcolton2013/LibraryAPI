@@ -51,10 +51,10 @@ public class Member {
 			pstmt.setInt(3, Library.getNumHolds(isbn)+1);
 			pstmt.setDate(4, null);
 			pstmt.execute();
+			Library.increaseHolds(isbn);
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
-		Library.increaseHolds(isbn);
 	}
 	
 	public static void makePayment(double amount){

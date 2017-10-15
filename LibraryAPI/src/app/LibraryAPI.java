@@ -22,8 +22,9 @@ public class LibraryAPI{
         initLibrary();
         System.out.println();
         Library.currentUser = "memb1";
-        Member.requestHold("0394900014");
         
+        //Member.requestHold("0394900014");
+        Library.addHoldExpirationDate("memb1", "0394900014");
         //startApp();
     }
 	

@@ -3,13 +3,15 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.*;
 
 
 public class Manager{
-	static Scanner scan = new Scanner(System.in);
+	private static Scanner scan = new Scanner(System.in);
 	static Statement stmt;
 	static Connection conn;
+	private static ResultSet rs;
 	
 	public static void showManagerMenu() throws SQLException{
 	        System.out.println("*****************************");
@@ -188,15 +190,28 @@ public class Manager{
 	
 	//create books
 	//accepts authors and keywords as a string
-	//seperate each author/keyword with a comma
+	//separate each author/keyword with a comma
 	public static void createBook(String isbn, String authors,String name, String year,int avail, double price, String keywords  ){
+		//no author
 		if (authors.length() == 0) return;
 		
-		if (Integer.parseInt(year) < 2007){
+		//improper isbn length
+		if (Integer.parseInt(year) < 2007)
 			if(isbn.length() != 10) return;
-		}else{
+		else
 			if (isbn.length() != 13) return;
-		}
+		
+		//no title
+		if (name == null || name == "") return;
+
+		insertIntoBooks(isbn,name,year,avail,price);
+			
+		insertIntoBookAuthors(isbn,authors);
+			
+		insertIntoBookKeywords(isbn, keywords);
+	}
+	
+	private static void insertIntoBooks(String isbn, String name, String year, int avail, double price){
 		String sql = "insert ignore into books values(?,?,?,?,?,?)";
 
 		try{
@@ -205,31 +220,44 @@ public class Manager{
 			pstmt.setString(2,name);
 			pstmt.setString(3,year);
 			pstmt.setInt(4,avail);
-			pstmt.setInt(5,0);
-			pstmt.setDouble(6,price);
-			pstmt.execute();
-			
-			for (String a: authors.split(",( |)")){
-				sql = 	"insert ignore into books_authors values( "+
-						"'"+isbn	+"', "+ 
-						"'"+a	+"')";
-				stmt.executeUpdate(sql);
-			}
-			
-			if (keywords.length() == 0) return;
-			
-			for (String k: keywords.split(",( |)")){
-				sql = 	"insert ignore into books_keywords values( "+
-						"'"+isbn	+"', "+ 
-						"'"+k		+"')";
-				stmt.executeUpdate(sql);
-			}
-			
-		}catch (SQLException e){
+			pstmt.setInt(5,avail);
+			pstmt.setInt(6,0);
+			pstmt.setDouble(7,price);
+		}catch(SQLException e){
 			System.out.println(e.getMessage());
 		}
 	}
 	
+	private static void insertIntoBookKeywords(String isbn, String keywords) {
+		try{
+			if (keywords.length() == 0) return;
+			
+			for (String k: keywords.split(",( |)")){
+				String sql = 	"insert ignore into books_keywords values( "+
+								"'"+isbn	+"', "+ 
+								"'"+k		+"')";
+				stmt.executeUpdate(sql);
+			}
+		}catch(SQLException e){
+			System.out.println(e.getMessage());
+		}
+		
+	}
+
+	private static void insertIntoBookAuthors(String isbn,String authors) {
+		try{
+			for (String a: authors.split(",( |)")){
+				String sql = 	"insert ignore into books_authors values( "+
+								"'"+isbn	+"', "+ 
+								"'"+a	+"')";
+				stmt.executeUpdate(sql);
+			}
+		}catch(SQLException e){
+			System.out.println(e.getMessage());
+		}
+		
+	}
+
 	//Remove Functions
 		//remove books by isbn
 	public static void removeBookISBN(String isbn){
@@ -258,7 +286,7 @@ public class Manager{
 	}
 
 		//remove by name
-	public static void removeBookNAME(String name){
+	public static void removeBookName(String name){
 		removeBookISBN(Library.getISBN(name));
 	}
 }
