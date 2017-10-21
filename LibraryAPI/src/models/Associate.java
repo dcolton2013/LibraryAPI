@@ -300,4 +300,57 @@ public class Associate{
 		}
 		return 0;
 	}
+
+	public static void renewBook(String isbn, String code){
+		int returncode = getRenewals(isbn,code);
+		//num of renewals on book
+		if (returncode >= 2){ 
+			System.out.println("renewal limit for "+isbn+" reached");
+			return;
+		}
+		//user doesnt have book checked out
+		if (returncode < 0) {
+			System.out.println(code+" doesnt have this book checked out");
+			return;
+		}
+		
+		if (Library.getNumHolds(isbn) != 0){
+			System.out.println("active holds, renew not available");
+			return;
+		}
+		if (Library.checkNewRelease(isbn)){
+			System.out.println("new release, renew not available");
+			return;
+		}
+		
+		String sql = "update member_checkouts "+
+					 "set status = 'renewed', checkoutdate = NOW(), returndate = DATE_ADD(NOW(),INTERVAL 2 WEEK), renewals = renewals + 1 "+
+					 "where (isbn = ? and code = ?)";
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, isbn);
+			pstmt.setString(2, code);
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}	
+	}
+	
+	//get amount of renewals for a given isbn and library code
+	public static int getRenewals(String isbn, String code){
+		String sql =  "select renewals "+
+					  "from member_checkouts "+
+					  "where (isbn = ? and code = ?)";
+		try{
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, isbn);
+			ps.setString(2, code);
+			rs = ps.executeQuery();
+			if (rs.next())
+				return rs.getInt(1);
+		}catch(SQLException e){
+			System.out.println(e.getMessage());
+		}
+		return -1;
+	}
 }

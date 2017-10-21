@@ -28,25 +28,25 @@ public class Member {
 	public static void reportLost(String isbn,String code){
 		String sql = "update member_checkouts "+
 				     "set status = 'lost',bookfees = ?"+
-				     "where isbn = ?";
+				     "where (isbn = ? and code = ?)";
 		try {
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			pstmt.setDouble(1, Library.getBookCost(isbn));
 			pstmt.setString(2, isbn);
+			pstmt.setString(3, code);
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-	
 	}
-	
+
 	public static void requestHold(String isbn,String code){
 		String sql = "insert into member_holds values(?,?,?,?)";
 		PreparedStatement pstmt;
 		try {
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, Library.currentUser);
+			pstmt.setString(1, code);
 			pstmt.setString(2, isbn);
 			pstmt.setInt(3, Library.getNumHolds(isbn)+1);
 			pstmt.setDate(4, null);
@@ -57,6 +57,17 @@ public class Member {
 		}
 	}
 	
+	public static void requestRenewal(String isbn, String code){
+		if (!Library.bookExists(isbn)){
+			System.out.println("no matching isbn");
+			return;
+		}
+		if (!Library.userExists(code)){
+			System.out.println("invalid library code");
+			return;
+		}
+		Associate.renewBook(isbn,code);
+	}
 	//returns balance after payment
 	public static double makePayment(double amount,String code){
 		if (amount <= 0) return 0;

@@ -94,6 +94,7 @@ public class dbinit {
 							 "availableCopies	int				not null, "+
 							 "holds				int				not null, "+
 							 "price				double			not null, "+
+							 "newrelease		boolean			not null, "+
 				 			 "primary key(isbn))";
 		try{
 			stmt.executeUpdate(booksTable);
