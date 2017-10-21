@@ -25,7 +25,7 @@ public class Member {
 		return "" + code;
 	}
 	
-	public static void reportLost(String isbn){
+	public static void reportLost(String isbn,String code){
 		String sql = "update member_checkouts "+
 				     "set status = 'lost',bookfees = ?"+
 				     "where isbn = ?";
@@ -41,7 +41,7 @@ public class Member {
 	
 	}
 	
-	public static void requestHold(String isbn){
+	public static void requestHold(String isbn,String code){
 		String sql = "insert into member_holds values(?,?,?,?)";
 		PreparedStatement pstmt;
 		try {
@@ -58,26 +58,26 @@ public class Member {
 	}
 	
 	//returns balance after payment
-	public static double makePayment(double amount,String username){
+	public static double makePayment(double amount,String code){
 		if (amount <= 0) return 0;
 		
 		//do fees exist?
-		double bookfees = getBookFees(username);
-		double latefees = getLateFees(username);
+		double bookfees = getBookFees(code);
+		double latefees = getLateFees(code);
 		if (bookfees == 0 && latefees == 0) return amount;
 		
 		//all book fees must be paid in full before late fees
-		amount = payBookFees(username,amount,bookfees);
+		amount = payBookFees(code,amount,bookfees);
 		if (amount > 0)
-			amount = payLateFees(username,amount,bookfees);
+			amount = payLateFees(code,amount,bookfees);
 		
 		return amount;
 	}
 
-	private static double getLateFees(String username) {
+	private static double getLateFees(String code) {
 		String sql = "select sum(latefees) "+
 					 "from member_checkouts "+
-					 "where username = '"+username+"'";
+					 "where code = '"+code+"'";
 		Connection conn2 = conn;
 		try{
 			Statement stmt2 = conn2.createStatement();
@@ -90,10 +90,10 @@ public class Member {
 		return 0;
 	}
 
-	private static double getBookFees(String username) {
+	private static double getBookFees(String code) {
 		String sql = "select sum(bookfees) "+
 				 	 "from member_checkouts "+
-				 	 "where username = '"+username+"'";
+				 	 "where code = '"+code+"'";
 		Connection conn2 = conn;
 		try{
 			Statement stmt2 = conn2.createStatement();
@@ -107,10 +107,10 @@ public class Member {
 	}
 	
 	//pay methods find rows where fees need to be paid
-	private static double payBookFees(String username,double amount, double bookfees){
+	private static double payBookFees(String code,double amount, double bookfees){
 		String sql = "select bookfees, isbn "+
 			 	 	 "from member_checkouts "+
-			 	     "where (username = '"+username+"')";
+			 	     "where (code = '"+code+"')";
 		try {
 			rs = stmt.executeQuery(sql);
 			while (rs.next()){
@@ -119,13 +119,13 @@ public class Member {
 					double bookfee = rs.getDouble(1);
 					if (bookfee == 0) continue;
 					if (amount <= bookfee){
-						updateBookFees(rs.getString(2), amount, username);
+						updateBookFees(rs.getString(2), amount, code);
 						return 0;
 					}else{
-						updateBookFees(rs.getString(2), bookfee, username);
+						updateBookFees(rs.getString(2), bookfee, code);
 						amount -= bookfee;
 					}
-					bookfees = getBookFees(username);
+					bookfees = getBookFees(code);
 				}
 			}
 		}catch(SQLException e){
@@ -134,10 +134,10 @@ public class Member {
 		return amount;
 	}
 	
-	private static double payLateFees(String username,double amount, double latefees){
+	private static double payLateFees(String code,double amount, double latefees){
 		String sql = "select latefees, isbn "+
 			 	 	 "from member_checkouts "+
-			 	 	 "where (username = '"+username+"')";
+			 	 	 "where (code = '"+code+"')";
 		try{
 			rs = stmt.executeQuery(sql);
 			//handle late fees after all late books fees are paid
@@ -146,13 +146,13 @@ public class Member {
 					double latefee = rs.getDouble(1);
 					if(latefee == 0) continue;
 					if (amount <= latefee){
-						updateLateFees(rs.getString(2), amount, username);
+						updateLateFees(rs.getString(2), amount, code);
 						return 0;
 					}else{
-						updateLateFees(rs.getString(2), latefee, username);
+						updateLateFees(rs.getString(2), latefee, code);
 						amount -= latefee;
 					}
-					latefees = getLateFees(username);
+					latefees = getLateFees(code);
 				}
 			}
 		} catch (SQLException e) {
@@ -164,34 +164,34 @@ public class Member {
 	//update methods update the fee column based on the amount
 	//if amount >= fee (fee - book)
 	//if amount < fee (fee - amount)
-	private static void updateBookFees(String isbn, double amount,String username){
+	private static void updateBookFees(String isbn, double amount,String code){
 		String sql = "update member_checkouts "+
 					 "set bookfees = bookfees - ? "+
-					 "where (isbn = ? and username = ?)";
+					 "where (isbn = ? and code = ?)";
 		PreparedStatement pstmt;
 		
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setDouble(1, amount);
 			pstmt.setString(2, isbn);
-			pstmt.setString(3, username);
+			pstmt.setString(3, code);
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
 	}
 	
-	private static void updateLateFees(String isbn, double amount, String username) {
+	private static void updateLateFees(String isbn, double amount, String code) {
 		String sql = "update member_checkouts "+
 				 	 "set latefees = latefees - ? "+
-				 	 "where (isbn = ? and username = ?)";
+				 	 "where (isbn = ? and code = ?)";
 		PreparedStatement pstmt;
 		
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setDouble(1, amount);
 			pstmt.setString(2, isbn);
-			pstmt.setString(3, username);
+			pstmt.setString(3, code);
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());

@@ -199,6 +199,21 @@ public class Library{
 		
 	}
 	
+	public static String getUsername(String code){
+		if (code.length() != 4) return null;
+		
+		String sql = "select username "+
+					 "from members "+
+					 "where code = "+code;
+		try {
+			rs = stmt.executeQuery(sql);
+			if (rs.next())
+				return rs.getString(1);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return null;
+	}
 	public static Double getBookCost(String isbn){
 		String sql = "select b.price "+
 					 "from books b "+
