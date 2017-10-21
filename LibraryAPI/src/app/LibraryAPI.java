@@ -21,10 +21,8 @@ public class LibraryAPI{
         System.out.println("Library API");
         initLibrary();
         System.out.println();
-        Library.currentUser = "memb1";
         
-        //Member.requestHold("0394900014");
-        Library.addHoldExpirationDate("memb1", "0394900014");
+        System.out.println(Member.makePayment(250,"memb11"));
         //startApp();
     }
 	

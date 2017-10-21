@@ -168,8 +168,7 @@ public class Library{
 		authorityLevel = 3;
 	}
 	
-	//Queries
-		//getISBN by name
+	//getISBN by title
 	public static String getISBN(String value){
 		String sql = 	"select distinct isbn "+
 						"from books "+
@@ -184,7 +183,7 @@ public class Library{
 		}			
 	}
 	
-		//getTitle by ISBN
+	//getTitle by ISBN
 	public static String getTitle(String value){
 		String sql = 	"select distinct name "+
 						"from books "+
@@ -264,6 +263,23 @@ public class Library{
 			System.out.println(e.getMessage());
 		}
 		
+	}
+	
+	public static int getAvailableCopies(String isbn){
+		String sql = "select b.availableCopies "+
+					 "from books b "+
+					 "where b.isbn = '"+isbn+"'";
+		try{
+			rs = stmt.executeQuery(sql);
+			if (!rs.next())
+				return -1;
+			else
+				return rs.getInt(1);
+				
+		}catch(SQLException e){
+			System.out.println(e.getMessage());
+			return -1;
+		}
 	}
 	//Searches
 		//by ISBN - search by isbn or partial isbn must be of length 6 or more

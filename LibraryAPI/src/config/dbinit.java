@@ -155,8 +155,8 @@ public class dbinit {
 								  "returndate	DATETIME	not null, "+
 								  "renewals 	int, "+
 								  "latefees 	double, "+
-								  "bookfees 	double "+
-								  ")";
+								  "bookfees 	double, "+
+								  "primary key(username, isbn))";
 		try {
 			stmt.executeUpdate(member_checkouts);
 		} catch (SQLException e) {
@@ -164,23 +164,27 @@ public class dbinit {
 		}
 	}
 	
-	private static void addMemberConstraints() throws SQLException{
+	private static void addMemberConstraints(){
 		try{
-		String sql = "ALTER TABLE members "+
-					 "ADD CONSTRAINT username UNIQUE (username)";
-		stmt.executeUpdate(sql);
-		}catch(Exception e){}
-		
+			String sql = "ALTER TABLE members "+
+						 "ADD CONSTRAINT username UNIQUE (username)";
+			stmt.executeUpdate(sql);
+		}catch(Exception e){
+			//System.out.println(e.getMessage());
+		}
+			
 		try{
-		String sql = "ALTER TABLE members "+
-				 	 "ADD CONSTRAINT code UNIQUE (code)";
-	    stmt.executeUpdate(sql);
-		}catch(Exception e){}
+			String sql = "ALTER TABLE members "+
+					 	 "ADD CONSTRAINT code UNIQUE (code)";
+		    stmt.executeUpdate(sql);
+		}catch(Exception e){
+			//System.out.println(e.getMessage());
+		}
 		
 	}
 	
 	//load prepopulated data
-	private static void loadBookKeywords() throws SQLException {
+	private static void loadBookKeywords() {
 		System.out.println("populating table: books_keywords...");
 		File f = new File("src/config/books_keywords");
 		String path =f.getPath();
@@ -191,7 +195,11 @@ public class dbinit {
 					 "INTO TABLE books_keywords "+
 					 "COLUMNS TERMINATED BY ',' "+
 					 "LINES STARTING BY '.'";
-		stmt.executeUpdate(sql);
+		try {
+			stmt.executeUpdate(sql);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 
 	private static void loadBooks(){
