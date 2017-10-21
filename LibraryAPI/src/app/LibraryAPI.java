@@ -22,7 +22,7 @@ public class LibraryAPI{
         System.out.println("Library API");
         initLibrary();
         System.out.println();
-        Member.requestRenewal("0440445450", "4987");
+        Associate.addMember("don", "colt", "overthere", "678", "blahblahblah","efsddsf","9161");
         //startApp();
     }
 	

@@ -183,7 +183,6 @@ public class dbinit {
 		}catch(Exception e){
 			//System.out.println(e.getMessage());
 		}
-		
 	}
 	
 	//load prepopulated data
