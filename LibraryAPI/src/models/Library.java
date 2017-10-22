@@ -214,6 +214,59 @@ public class Library{
 		}
 		return null;
 	}
+	
+	public static boolean userExists(String code){
+		String sql = "select * 		"+ 
+				     "from members  "+
+				     "where code = ?";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, code);
+			rs = ps.executeQuery();
+			if (rs.next())
+				return true;
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return false;
+		
+	}
+	
+	public static boolean bookExists(String isbn){
+		String sql = "select * 		"+ 
+			     	 "from books  "+
+			     	 "where isbn = ?";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, isbn);
+			rs = ps.executeQuery();
+			if (rs.next())
+				return true;
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return false;
+	}
+	
+	public static boolean checkNewRelease(String isbn){
+		String sql = "select newrelease "+
+					 "from books "+
+					 "where isbn = ?";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, isbn);
+			rs = ps.executeQuery();
+			if (rs.next()){
+				int num = rs.getInt(1);
+				if (num == 1)
+					return true;
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return false;
+	}
+
 	public static Double getBookCost(String isbn){
 		String sql = "select b.price "+
 					 "from books b "+

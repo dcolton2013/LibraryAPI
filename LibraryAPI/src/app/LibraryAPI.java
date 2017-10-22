@@ -1,4 +1,5 @@
 package app;
+import models.Associate;
 import models.Library;
 import models.Manager;
 import models.Member;
@@ -21,7 +22,7 @@ public class LibraryAPI{
         System.out.println("Library API");
         initLibrary();
         System.out.println();
-        System.out.println(Member.makePayment(100, "4987"));
+        Associate.addMember("don", "colt", "overthere", "678", "blahblahblah","efsddsf","9161");
         //startApp();
     }
 	
