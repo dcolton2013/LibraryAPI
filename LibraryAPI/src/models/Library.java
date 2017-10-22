@@ -168,8 +168,7 @@ public class Library{
 		authorityLevel = 3;
 	}
 	
-	//Queries
-		//getISBN by name
+	//getISBN by title
 	public static String getISBN(String value){
 		String sql = 	"select distinct isbn "+
 						"from books "+
@@ -184,7 +183,7 @@ public class Library{
 		}			
 	}
 	
-		//getTitle by ISBN
+	//getTitle by ISBN
 	public static String getTitle(String value){
 		String sql = 	"select distinct name "+
 						"from books "+
@@ -200,6 +199,74 @@ public class Library{
 		
 	}
 	
+	public static String getUsername(String code){
+		if (code.length() != 4) return null;
+		
+		String sql = "select username "+
+					 "from members "+
+					 "where code = "+code;
+		try {
+			rs = stmt.executeQuery(sql);
+			if (rs.next())
+				return rs.getString(1);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return null;
+	}
+	
+	public static boolean userExists(String code){
+		String sql = "select * 		"+ 
+				     "from members  "+
+				     "where code = ?";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, code);
+			rs = ps.executeQuery();
+			if (rs.next())
+				return true;
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return false;
+		
+	}
+	
+	public static boolean bookExists(String isbn){
+		String sql = "select * 		"+ 
+			     	 "from books  "+
+			     	 "where isbn = ?";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, isbn);
+			rs = ps.executeQuery();
+			if (rs.next())
+				return true;
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return false;
+	}
+	
+	public static boolean checkNewRelease(String isbn){
+		String sql = "select newrelease "+
+					 "from books "+
+					 "where isbn = ?";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, isbn);
+			rs = ps.executeQuery();
+			if (rs.next()){
+				int num = rs.getInt(1);
+				if (num == 1)
+					return true;
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return false;
+	}
+
 	public static Double getBookCost(String isbn){
 		String sql = "select b.price "+
 					 "from books b "+
@@ -264,6 +331,23 @@ public class Library{
 			System.out.println(e.getMessage());
 		}
 		
+	}
+	
+	public static int getAvailableCopies(String isbn){
+		String sql = "select b.availableCopies "+
+					 "from books b "+
+					 "where b.isbn = '"+isbn+"'";
+		try{
+			rs = stmt.executeQuery(sql);
+			if (!rs.next())
+				return -1;
+			else
+				return rs.getInt(1);
+				
+		}catch(SQLException e){
+			System.out.println(e.getMessage());
+			return -1;
+		}
 	}
 	//Searches
 		//by ISBN - search by isbn or partial isbn must be of length 6 or more

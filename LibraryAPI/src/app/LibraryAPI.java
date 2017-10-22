@@ -1,4 +1,5 @@
 package app;
+import models.Associate;
 import models.Library;
 import models.Manager;
 import models.Member;
@@ -21,10 +22,7 @@ public class LibraryAPI{
         System.out.println("Library API");
         initLibrary();
         System.out.println();
-        Library.currentUser = "memb1";
-        
-        //Member.requestHold("0394900014");
-        Library.addHoldExpirationDate("memb1", "0394900014");
+        Associate.addMember("don", "colt", "overthere", "678", "blahblahblah","efsddsf","9161");
         //startApp();
     }
    
