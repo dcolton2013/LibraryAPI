@@ -456,5 +456,28 @@ public class Library{
 			System.out.print(rs.getString(4));
 		}
 		System.out.println("\n----------------------------------------------------------------------------------------");
-	}				 	
+	}
+	
+	public static String searchAvailability(){
+		String sql = "select isbn, name, availableCopies "+
+					 "from books "+
+					 "where availableCopies > 0";
+		try{	
+			PreparedStatement ps = conn.prepareStatement(sql);
+			rs = ps.executeQuery();
+			if(!rs.next())
+				return "no matches";
+			else{
+				String output = String.format("%-15s%-50s%-17s","isbn","title","availableCopies" );
+				output += String.format("\n%-15s%-50s%-17d", rs.getString(1),rs.getString(2).substring(0, Math.min(rs.getString(2).length(),47 )),rs.getInt(3));
+				while (rs.next()){
+					output += String.format("\n%-15s%-50s%-17d", rs.getString(1),rs.getString(2).substring(0, Math.min(rs.getString(2).length(), 47)),rs.getInt(3));
+				}
+				output += "\n";
+				return output;
+			}	
+		}catch(SQLException e){
+			return e.getMessage();
+		}
+	}
 }

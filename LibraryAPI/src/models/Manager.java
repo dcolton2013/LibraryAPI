@@ -101,15 +101,41 @@ public class Manager{
 	
 	public static void applyCharges(){
 		String sql = "update members_checkouts "+
-					 "set latefees = latefees+.10 "+
+					 "set latefees = latefees+.10, status = 'late'"+
 					 "where returndate < NOW() AND status <> 'lost'";
 		try {
 			stmt.executeUpdate(sql);
+			modifyMemberStatus();
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
 	}
 	
+	public static void modifyMemberStatus(){
+		suspendMembers();
+		reactivateMembers();
+	}
+	
+	public static void suspendMembers(){
+		String sql = "update members"+
+					 "set suspended = '1'"+
+					 "where code in ("+
+					 "	select code"+
+					 "	from members_checkouts"+
+					 "	where (latefees > 25 or status = 'lost')"+
+					 ")";
+		try {
+			stmt.executeUpdate(sql);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+					
+		
+	}
+	
+	public static void reactivateMembers(){
+		String sql = "";
+	}
 	private static void promptBookInfo() throws SQLException {
 		System.out.println("Enter isbn: 9780439023528");
 		System.out.println("Enter authors (seperated by comma): Suzanne Collins");

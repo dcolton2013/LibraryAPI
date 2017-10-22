@@ -196,15 +196,16 @@ public class Member {
 	
 	private static void updateLateFees(String isbn, double amount, String code) {
 		String sql = "update members_checkouts "+
-				 	 "set latefees = latefees - ? "+
+				 	 "set latefees = latefees - ?, set latepayments = latepayments + ? "+
 				 	 "where (isbn = ? and code = ?)";
 		PreparedStatement pstmt;
 		
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setDouble(1, amount);
-			pstmt.setString(2, isbn);
-			pstmt.setString(3, code);
+			pstmt.setDouble(2, amount);
+			pstmt.setString(3, isbn);
+			pstmt.setString(4, code);
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());

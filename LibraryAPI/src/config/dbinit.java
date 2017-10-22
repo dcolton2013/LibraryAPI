@@ -165,6 +165,7 @@ public class dbinit {
 								  "renewals 	int, 							"+
 								  "latefees 	double, 						"+
 								  "bookfees 	double, 						"+
+								  "latepayments double, 						"+
 								  "primary key(code, isbn),						"+
 								  "foreign key(code) references members(code),	"+
 								  "foreign key(isbn) references books(isbn))		";

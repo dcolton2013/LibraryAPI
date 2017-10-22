@@ -22,7 +22,8 @@ public class LibraryAPI{
 	public static void main(String[] args) throws InterruptedException, ParseException{
         System.out.println("Library API");
         initLibrary();
-        System.out.println();
+        System.out.println(Library.searchAvailability());
+       
         //startApp();
     }
 	
