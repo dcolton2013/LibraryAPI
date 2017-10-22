@@ -319,7 +319,7 @@ public class Library{
 	}
 	
 	public static void addHoldExpirationDate(String username, String isbn){
-		String sql =  "update member_holds mh "+
+		String sql =  "update members_holds mh "+
 					  "set mh.holdexpiration = DATE_ADD(NOW(),INTERVAL 4 DAY) "+
 					  "where (mh.username = ? and mh.isbn = ?)";
 		try{

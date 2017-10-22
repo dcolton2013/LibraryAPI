@@ -100,7 +100,7 @@ public class Manager{
 	}
 	
 	public static void applyCharges(){
-		String sql = "update member_checkouts "+
+		String sql = "update members_checkouts "+
 					 "set latefees = latefees+.10 "+
 					 "where returndate < NOW() AND status <> 'lost'";
 		try {
@@ -191,29 +191,31 @@ public class Manager{
 	//create books
 	//accepts authors and keywords as a string
 	//separate each author/keyword with a comma
-	public static void createBook(String isbn, String authors,String name, String year,int avail, double price, String keywords  ){
+	public static int createBook(String isbn, String authors,String name, String year,int avail, double price, String keywords){
 		//no author
-		if (authors.length() == 0) return;
+		if (authors.length() == 0) return 1;
 		
 		//improper isbn length
-		if (Integer.parseInt(year) < 2007)
-			if(isbn.length() != 10) return;
-		else
-			if (isbn.length() != 13) return;
+		if (Integer.parseInt(year) < 2007){
+			if(isbn.length() != 10) return 2;
+		}else{
+			if (isbn.length() != 13) return 3;
+		}
 		
 		//no title
-		if (name == null || name == "") return;
+		if (name == null || name == "") return 4;
 
 		insertIntoBooks(isbn,name,year,avail,price);
 			
 		insertIntoBookAuthors(isbn,authors);
 			
 		insertIntoBookKeywords(isbn, keywords);
+		
+		return 0;
 	}
 	
 	private static void insertIntoBooks(String isbn, String name, String year, int avail, double price){
-		String sql = "insert ignore into books values(?,?,?,?,?,?)";
-
+		String sql = "insert ignore into books values(?,?,?,?,?,?,?,?)";
 		try{
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1,isbn);
@@ -223,6 +225,8 @@ public class Manager{
 			pstmt.setInt(5,avail);
 			pstmt.setInt(6,0);
 			pstmt.setDouble(7,price);
+			pstmt.setInt(8,isNewRelease(year));
+			pstmt.execute();
 		}catch(SQLException e){
 			System.out.println(e.getMessage());
 		}
@@ -230,7 +234,7 @@ public class Manager{
 	
 	private static void insertIntoBookKeywords(String isbn, String keywords) {
 		try{
-			if (keywords.length() == 0) return;
+			if (keywords == null || keywords.length() == 0) return;
 			
 			for (String k: keywords.split(",( |)")){
 				String sql = 	"insert ignore into books_keywords values( "+
@@ -258,6 +262,28 @@ public class Manager{
 		
 	}
 
+	private static int isNewRelease(String year){
+		//Determine new release
+		//in 2017 year (2016-2017) will be new release
+        Calendar cal = Calendar.getInstance();
+        int currentyear = cal.get(Calendar.YEAR);
+        if (Integer.parseInt(year) >= (currentyear- 1))
+        	return 1;
+        return 0;
+	}
+	
+	public static void updateNewReleases(){
+		Calendar cal = Calendar.getInstance();
+        int currentyear = cal.get(Calendar.YEAR);
+		String sql = "update books "+
+					 "set newrelease = 0 "+
+					 "where year < "+(currentyear-1);
+		try{
+			stmt.executeUpdate(sql);
+		}catch(SQLException e){
+			System.out.println(e.getMessage());
+		}
+	}
 	//Remove Functions
 		//remove books by isbn
 	public static void removeBookISBN(String isbn){
@@ -265,23 +291,9 @@ public class Manager{
 		if(isbn.length() < 7) return;
 		
 		String title = Library.getTitle(isbn);
-		try{
-			String sql = "delete from books "+
-						 "where ISBN LIKE '%"+isbn+"%'";
-			stmt.executeUpdate(sql);
-			
-			//remove from books_keywords
-			sql = "delete from books_keywords "+
-				  "where ISBN LIKE '%"+isbn+"%'";
-			stmt.executeUpdate(sql);
-			
-			//remove from books_authors
-			sql = "delete from books_keywords "+
-				  "where ISBN LIKE '%"+isbn+"%'";
-			stmt.executeUpdate(sql);
-		}catch (SQLException e){
-			System.out.println(e.getMessage());
-		}
+		deleteFromBooksKeywords(isbn);
+		deleteFromBooksAuthors(isbn);
+		deleteFromBooks(isbn);
 		System.out.println("Book: "+isbn+" "+title+" removed");
 	}
 
@@ -289,4 +301,36 @@ public class Manager{
 	public static void removeBookName(String name){
 		removeBookISBN(Library.getISBN(name));
 	}
+	
+	public static void deleteFromBooks(String isbn){
+		String sql = "delete from books "+
+				 "where ISBN LIKE '%"+isbn+"%'";
+		try {
+			stmt.executeUpdate(sql);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	public static void deleteFromBooksAuthors(String isbn){
+		String sql = "delete from books_authors "+
+				 	 "where ISBN LIKE '%"+isbn+"%'";
+		try {
+			stmt.executeUpdate(sql);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	public static void deleteFromBooksKeywords(String isbn){
+		String sql = "delete from books_keywords "+
+				 	 "where ISBN LIKE '%"+isbn+"%'";
+		try {
+			stmt.executeUpdate(sql);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	
 }
