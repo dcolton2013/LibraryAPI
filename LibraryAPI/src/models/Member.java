@@ -79,8 +79,9 @@ public class Member {
 		if (bookfees == 0 && latefees == 0) return amount;
 		
 		//all book fees must be paid in full before late fees
-		amount = payBookFees(code,amount,bookfees);
-		if (amount > 0)
+		if (bookfees>0)
+			amount = payBookFees(code,amount,bookfees);
+		if (amount > 0 && latefees>0)
 			amount = payLateFees(code,amount,bookfees);
 		
 		return amount;
@@ -174,7 +175,7 @@ public class Member {
 	}
 	
 	//update methods update the fee column based on the amount
-	//if amount >= fee (fee - book)
+	//if amount >= fee (fee - fee)
 	//if amount < fee (fee - amount)
 	private static void updateBookFees(String isbn, double amount,String code){
 		String sql = "update members_checkouts "+
