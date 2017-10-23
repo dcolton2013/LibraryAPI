@@ -101,7 +101,7 @@ public class Manager{
 	
 	public static void applyCharges(){
 		String sql = "update members_checkouts "+
-					 "set latefees = latefees+.10, status = 'late'"+
+					 "set latefees = latefees+.1, status = 'late'"+
 					 "where returndate < NOW() AND status <> 'lost'";
 		try {
 			stmt.executeUpdate(sql);
@@ -112,30 +112,80 @@ public class Manager{
 	}
 	
 	public static void modifyMemberStatus(){
+		//suspends users where applicable
 		suspendMembers();
+		
+		//reactivates users who have paid the minimum payment
 		reactivateMembers();
 	}
 	
 	public static void suspendMembers(){
-		String sql = "update members"+
-					 "set suspended = '1'"+
-					 "where code in ("+
-					 "	select code"+
-					 "	from members_checkouts"+
-					 "	where (latefees > 25 or status = 'lost')"+
-					 ")";
+		String sql = "update members 			"+
+					 "set suspended = '1' 		"+
+					 "where code in ( 			"+
+					 "				select code "+
+					 "				from members_checkouts "+
+					 "				where (latefees > 25 or status = 'lost') "+
+					 "				)";
+		try {
+			stmt.executeUpdate(sql);
+			calculateMinimunPayments();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	private static void calculateMinimunPayments() {
+		String sql = "select code "+
+					 "from members "+
+					 "where suspended = 1";
+		try {
+			rs = stmt.executeQuery(sql);
+			while(rs.next()){
+				double latefees = Member.getLateFees(rs.getString(1));
+				double bookfees = Member.getBookFees(rs.getString(1));
+				double amount = 0;
+				if (latefees>25){
+					if(latefees>30)
+						amount += latefees - 25;
+					else
+						amount += 5;
+				}
+				amount += bookfees;
+				insertMinimumPayment(rs.getString(1),amount);
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
+	private static void insertMinimumPayment(String code, double amount) {
+		String sql = "update members "+
+					 "set minPayment = ? "+
+					 "where code = ?";
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setDouble(1, amount);
+			pstmt.setString(2, code);
+			pstmt.execute();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		
+	}
+
+	public static void reactivateMembers(){
+		String sql = "update members "+
+					 "set suspended = 0 "+
+					 "where suspended = 1 and minPayment = 0";
 		try {
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
-					
-		
 	}
 	
-	public static void reactivateMembers(){
-		String sql = "";
-	}
 	private static void promptBookInfo() throws SQLException {
 		System.out.println("Enter isbn: 9780439023528");
 		System.out.println("Enter authors (seperated by comma): Suzanne Collins");

@@ -71,12 +71,18 @@ public class Member {
 	
 	//returns balance after payment
 	public static double makePayment(double amount,String code){
+		if (!Library.userExists(code)) return -1;
+		
 		if (amount <= 0) return 0;
 		
 		//do fees exist?
 		double bookfees = getBookFees(code);
 		double latefees = getLateFees(code);
+		
 		if (bookfees == 0 && latefees == 0) return amount;
+		
+		double minPayment = getMinimumPayment(code);
+		updateMinimumPayment(code,amount,minPayment);
 		
 		//all book fees must be paid in full before late fees
 		if (bookfees>0)
@@ -87,7 +93,7 @@ public class Member {
 		return amount;
 	}
 
-	private static double getLateFees(String code) {
+	public static double getLateFees(String code) {
 		String sql = "select sum(latefees) "+
 					 "from members_checkouts "+
 					 "where code = '"+code+"'";
@@ -103,7 +109,7 @@ public class Member {
 		return 0;
 	}
 
-	private static double getBookFees(String code) {
+	public static double getBookFees(String code) {
 		String sql = "select sum(bookfees) "+
 				 	 "from members_checkouts "+
 				 	 "where code = '"+code+"'";
@@ -119,6 +125,20 @@ public class Member {
 		return 0;
 	}
 	
+	public static double getMinimumPayment(String code){
+		String sql = "select minPayment "+
+					 "from members "+
+					 "where code = '"+code+"'";
+		try{
+			rs=stmt.executeQuery(sql);
+			if(rs.next());
+				return rs.getDouble(1);
+		}catch(SQLException ex){
+			//System.out.println(ex.getMessage());
+			return -1;
+		}
+		
+	}
 	//pay methods find rows where fees need to be paid
 	private static double payBookFees(String code,double amount, double bookfees){
 		String sql = "select bookfees, isbn "+
@@ -196,21 +216,38 @@ public class Member {
 	
 	private static void updateLateFees(String isbn, double amount, String code) {
 		String sql = "update members_checkouts "+
-				 	 "set latefees = latefees - ?, set latepayments = latepayments + ? "+
+				 	 "set latefees = latefees - ? "+
 				 	 "where (isbn = ? and code = ?)";
 		PreparedStatement pstmt;
 		
 		try {
 			pstmt = conn.prepareStatement(sql);
 			pstmt.setDouble(1, amount);
-			pstmt.setDouble(2, amount);
-			pstmt.setString(3, isbn);
-			pstmt.setString(4, code);
+			pstmt.setString(2, isbn);
+			pstmt.setString(3, code);
 			pstmt.executeUpdate();
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
 		
 	}
-	
+
+	private static void updateMinimumPayment(String code, double amount,double minimumPayment){
+		if (amount < minimumPayment)
+			amount = minimumPayment - amount;
+		else if (amount >= minimumPayment)
+			amount = minimumPayment;
+		
+		String sql = "update members "+
+					 "set minPayment = minPayment - ? "+
+					 "where code = ?";
+		try{
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setDouble(1, amount);
+			ps.setString(2, code);
+			ps.executeUpdate();
+		}catch(SQLException ex){
+			System.out.println(ex.getMessage());
+		}
+	}
 }
