@@ -26,7 +26,7 @@ public class Member {
 	}
 	
 	public static void reportLost(String isbn,String code){
-		String sql = "update member_checkouts "+
+		String sql = "update members_checkouts "+
 				     "set status = 'lost',bookfees = ?"+
 				     "where (isbn = ? and code = ?)";
 		try {
@@ -42,7 +42,7 @@ public class Member {
 	}
 
 	public static void requestHold(String isbn,String code){
-		String sql = "insert into member_holds values(?,?,?,?)";
+		String sql = "insert into members_holds values(?,?,?,?)";
 		PreparedStatement pstmt;
 		try {
 			pstmt = conn.prepareStatement(sql);
@@ -68,6 +68,7 @@ public class Member {
 		}
 		Associate.renewBook(isbn,code);
 	}
+	
 	//returns balance after payment
 	public static double makePayment(double amount,String code){
 		if (amount <= 0) return 0;
@@ -78,8 +79,9 @@ public class Member {
 		if (bookfees == 0 && latefees == 0) return amount;
 		
 		//all book fees must be paid in full before late fees
-		amount = payBookFees(code,amount,bookfees);
-		if (amount > 0)
+		if (bookfees>0)
+			amount = payBookFees(code,amount,bookfees);
+		if (amount > 0 && latefees>0)
 			amount = payLateFees(code,amount,bookfees);
 		
 		return amount;
@@ -87,7 +89,7 @@ public class Member {
 
 	private static double getLateFees(String code) {
 		String sql = "select sum(latefees) "+
-					 "from member_checkouts "+
+					 "from members_checkouts "+
 					 "where code = '"+code+"'";
 		Connection conn2 = conn;
 		try{
@@ -103,7 +105,7 @@ public class Member {
 
 	private static double getBookFees(String code) {
 		String sql = "select sum(bookfees) "+
-				 	 "from member_checkouts "+
+				 	 "from members_checkouts "+
 				 	 "where code = '"+code+"'";
 		Connection conn2 = conn;
 		try{
@@ -120,7 +122,7 @@ public class Member {
 	//pay methods find rows where fees need to be paid
 	private static double payBookFees(String code,double amount, double bookfees){
 		String sql = "select bookfees, isbn "+
-			 	 	 "from member_checkouts "+
+			 	 	 "from members_checkouts "+
 			 	     "where (code = '"+code+"')";
 		try {
 			rs = stmt.executeQuery(sql);
@@ -147,7 +149,7 @@ public class Member {
 	
 	private static double payLateFees(String code,double amount, double latefees){
 		String sql = "select latefees, isbn "+
-			 	 	 "from member_checkouts "+
+			 	 	 "from members_checkouts "+
 			 	 	 "where (code = '"+code+"')";
 		try{
 			rs = stmt.executeQuery(sql);
@@ -173,10 +175,10 @@ public class Member {
 	}
 	
 	//update methods update the fee column based on the amount
-	//if amount >= fee (fee - book)
+	//if amount >= fee (fee - fee)
 	//if amount < fee (fee - amount)
 	private static void updateBookFees(String isbn, double amount,String code){
-		String sql = "update member_checkouts "+
+		String sql = "update members_checkouts "+
 					 "set bookfees = bookfees - ? "+
 					 "where (isbn = ? and code = ?)";
 		PreparedStatement pstmt;
@@ -193,7 +195,7 @@ public class Member {
 	}
 	
 	private static void updateLateFees(String isbn, double amount, String code) {
-		String sql = "update member_checkouts "+
+		String sql = "update members_checkouts "+
 				 	 "set latefees = latefees - ? "+
 				 	 "where (isbn = ? and code = ?)";
 		PreparedStatement pstmt;

@@ -6,6 +6,7 @@ import models.Member;
 //import tests.*;
 
 import java.util.*;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.io.*;
 import java.sql.*;
@@ -22,7 +23,6 @@ public class LibraryAPI{
         System.out.println("Library API");
         initLibrary();
         System.out.println();
-        Associate.addMember("don", "colt", "overthere", "678", "blahblahblah","efsddsf","9161");
         //startApp();
     }
    

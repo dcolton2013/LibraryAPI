@@ -246,26 +246,26 @@ public class Associate{
 		String username = scan.nextLine();
 		System.out.println();
 		
-		String code = Member.generateLibrarycode();
-		int returncode = addMember(fname,lname,addr,phone,username,code);
-		
-		while(returncode != 0){
-			if (returncode == 1){
-				//duplicate username
-				System.out.println("uname in use");
-				System.out.println("Username:");
-				username = scan.nextLine();
-			}
-			if (returncode == 2){
-				//duplicatecode
-				code = Member.generateLibrarycode();
-			}
-			returncode = addMember(fname,lname,addr,phone,username);
-		}	
-		System.out.println("\tuser added.");
-		System.out.println("\tCredentials: ");
-		System.out.println("\tUsername: " + username);
-		System.out.println("\tLibrary Code: " + code);
+//		String code = Member.generateLibrarycode();
+//		int returncode = addMember(fname,lname,addr,phone,username,code);
+//		
+//		while(returncode != 0){
+//			if (returncode == 1){
+//				//duplicate username
+//				System.out.println("uname in use");
+//				System.out.println("Username:");
+//				username = scan.nextLine();
+//			}
+//			if (returncode == 2){
+//				//duplicatecode
+//				code = Member.generateLibrarycode();
+//			}
+//			returncode = addMember(fname,lname,addr,phone,username);
+//		}	
+//		System.out.println("\tuser added.");
+//		System.out.println("\tCredentials: ");
+//		System.out.println("\tUsername: " + username);
+//		System.out.println("\tLibrary Code: " + code);
 	}
 	
 	public static int addMember(String fname, String lname,
@@ -275,6 +275,7 @@ public class Associate{
 		String code = Member.generateLibrarycode();
 		return addMember(fname,lname,addr,phone,username,password,code);
 	}
+	
 	public static int addMember(String fname, String lname,
 		 						String addr, String phone,
 		 						String username,String password,
@@ -338,7 +339,7 @@ public class Associate{
 			return;
 		}
 		
-		String sql = "update member_checkouts "+
+		String sql = "update members_checkouts "+
 					 "set status = 'renewed', checkoutdate = NOW(), returndate = DATE_ADD(NOW(),INTERVAL 2 WEEK), renewals = renewals + 1 "+
 					 "where (isbn = ? and code = ?)";
 		try {
@@ -354,7 +355,7 @@ public class Associate{
 	//get amount of renewals for a given isbn and library code
 	public static int getRenewals(String isbn, String code){
 		String sql =  "select renewals "+
-					  "from member_checkouts "+
+					  "from members_checkouts "+
 					  "where (isbn = ? and code = ?)";
 		try{
 			PreparedStatement ps = conn.prepareStatement(sql);
