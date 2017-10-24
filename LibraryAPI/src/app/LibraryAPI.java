@@ -22,11 +22,10 @@ public class LibraryAPI{
 	public static void main(String[] args) throws InterruptedException, ParseException{
         System.out.println("Library API");
         initLibrary();
-        Manager.applyCharges();
-//        TimeUnit.SECONDS.sleep(30);
-//        Member.makePayment(15, "4985");
-//        TimeUnit.SECONDS.sleep(30);
-//        Manager.applyCharges();
+     //Manager.applyCharges();
+     //TimeUnit.SECONDS.sleep(15);
+     Member.makePayment(45, "4986");
+      
         //startApp();
     }
 	

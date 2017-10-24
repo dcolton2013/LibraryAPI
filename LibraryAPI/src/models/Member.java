@@ -233,9 +233,7 @@ public class Member {
 	}
 
 	private static void updateMinimumPayment(String code, double amount,double minimumPayment){
-		if (amount < minimumPayment)
-			amount = minimumPayment - amount;
-		else if (amount >= minimumPayment)
+		if (amount >= minimumPayment)
 			amount = minimumPayment;
 		
 		String sql = "update members "+
