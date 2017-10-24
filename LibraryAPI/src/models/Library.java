@@ -426,35 +426,4 @@ public class Library{
 		output += "\n";
 		return output;
 	}
-	
-	//Display info
-	private static void printBooks(String isbn) throws SQLException{
-		String sql =	"select distinct b.isbn, b.name,b.year, a.author,b.availableCopies "+
-					 	"from books b, books_authors a "+
-						"inner join books_authors "+
-					 	"where b.isbn = a.isbn";
-		rs = stmt.executeQuery(sql);
-		
-		System.out.println("----------------------------------------------------------------------------------------");
-		System.out.printf("|%-15s|%-33s|%-5s|%-22s\n","ISBN","Title (available)","Year","Author(s)");
-		System.out.println("----------------------------------------------------------------------------------------");
-		
-		String previsbn =null;
-		while (rs.next()){
-			if (rs.getString(1).equals(previsbn)){
-				System.out.print(", "+ rs.getString(4));
-				continue;
-			}else if (previsbn != null){
-				System.out.println();
-			}
-			previsbn = rs.getString(1);
-			
-			System.out.printf("|%-15s|%-30s%3s|%-5s|"	,rs.getString(1)
-	   													,rs.getString(2).substring(0, Math.min(rs.getString(2).length(), 27))
-	   													,"("+rs.getString(5)+")"
-	   													,rs.getString(3));
-			System.out.print(rs.getString(4));
-		}
-		System.out.println("\n----------------------------------------------------------------------------------------");
-	}
 }

@@ -139,6 +139,7 @@ public class Member {
 		}
 		
 	}
+	
 	//pay methods find rows where fees need to be paid
 	private static double payBookFees(String code,double amount, double bookfees){
 		String sql = "select bookfees, isbn "+
