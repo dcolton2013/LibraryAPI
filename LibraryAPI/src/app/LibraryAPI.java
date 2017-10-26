@@ -23,17 +23,13 @@ public class LibraryAPI{
         initLibrary();
         testMethod();
     }
-<<<<<<< HEAD
 	
     private static void testMethod() {
+    	
     	
 	}
 
 	//initialize library
-=======
-   
-    //initialize library
->>>>>>> 267e64c4e5064fb790e890483edcf0aba7cad3fd
     public static void initLibrary(){
 		new Library();
     }

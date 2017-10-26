@@ -90,7 +90,7 @@ public class Library{
 			if (!rs.next())
 				//empty result
 				System.out.println("\t"+ uname + " not authenticated");
-			else{
+			else{ 
 				System.out.println("\t"+uname+" authentication successful");
 			    sql = 	"update associates "+
 						"set loggedIn = 1 " +
@@ -425,8 +425,6 @@ public class Library{
 		output += "\n";
 		return output;
 	}
-<<<<<<< HEAD
-=======
 	
 	public static String searchTitle(String title){
 		return searchISBN(getISBN(title));
@@ -488,5 +486,4 @@ public class Library{
 		}
 		System.out.println("\n----------------------------------------------------------------------------------------");
 	}				 	
->>>>>>> 267e64c4e5064fb790e890483edcf0aba7cad3fd
 }
