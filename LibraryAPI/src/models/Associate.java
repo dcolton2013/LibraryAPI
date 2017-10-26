@@ -14,7 +14,10 @@ public class Associate{
 	private int id;
 	
 	private static Scanner scan = new Scanner(System.in);
-	
+	static Statement stmt;
+	static Statement stmt2;
+	static Connection conn;
+	static ResultSet rs;
 	/*getters/setters of data field*/
 	/* Validate book, update availability*/
 	public static void scanInBook(String memberUsername, String bookISBN){

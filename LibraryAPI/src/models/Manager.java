@@ -129,28 +129,28 @@ public class Manager{
 		createManager(username,password);
 	}
 	
-	public static void suspendMember(String uname){
+	public static void suspendMember(String code){
 		String sql = "update members "+
 					 "set suspended = 1 "+
-					 "where username = ?";
+					 "where code = ?";
 		PreparedStatement pstmt;
 		try {
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, uname);
+			pstmt.setString(1, code);
 			pstmt.execute();
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
 	}
 	
-	public static void reactivateMember(String uname){
+	public static void reactivateMember(String code){
 		String sql = "update members "+
 					 "set suspended = 0 "+
-					 "where username = ?";
+					 "where code = ?";
 		PreparedStatement pstmt;
 		try {
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, uname);
+			pstmt.setString(1, code);
 			pstmt.execute();
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());

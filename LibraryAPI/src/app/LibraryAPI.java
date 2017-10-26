@@ -30,7 +30,7 @@ public class LibraryAPI{
 
 	//initialize library
     public static void initLibrary(){
-		lib = new Library();
+		new Library();
     }
 }
 

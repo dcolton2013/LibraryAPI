@@ -75,7 +75,6 @@ public class Library{
 		    		stmt.executeUpdate(sql);
 		    		currentUser = uname;
 		    		authorityLevel = 0;
-		    		Manager.handleMain();
 			}
 		}catch(SQLException e){
 			System.out.println(e.getMessage());
