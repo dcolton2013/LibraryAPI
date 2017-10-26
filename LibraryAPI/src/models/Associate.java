@@ -8,12 +8,6 @@ import java.sql.Statement;
 import java.util.*;
 
 public class Associate{
-	private String password;
-	private String username;
-	private String name;
-	private int id;
-	
-	private static Scanner scan = new Scanner(System.in);
 	static Statement stmt;
 	static Statement stmt2;
 	static Connection conn;
@@ -177,7 +171,7 @@ public class Associate{
 		 						String addr, String phone,
 		 						String username,String password,
 		 						String code){
-		String sql = "insert into members values(?,?,?,?,?,?,?,?,?,?)";
+		String sql = "insert into members values(?,?,?,?,?,?,?,?,?,?,?)";
 		try {
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1,fname);
@@ -190,12 +184,13 @@ public class Associate{
 			pstmt.setInt(8,0);
 			pstmt.setBoolean(9,false);
 			pstmt.setBoolean(10,false);
+			pstmt.setDouble(11,0);
 			pstmt.execute();
 			System.out.println("\tuser added.");
 			System.out.println("\tcredentials: ");
 			System.out.println("\tusername: " + username);
 			System.out.println("\tpassword: " + password);
-			System.out.println("\tlibrary Code: " + code);
+			System.out.println("\tlibrary code: " + code);
 		} catch (SQLException e) {
 			String s = e.getLocalizedMessage();
 			System.out.println(s);
