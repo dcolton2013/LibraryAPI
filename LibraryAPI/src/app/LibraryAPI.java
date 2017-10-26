@@ -18,19 +18,23 @@ public class LibraryAPI{
 	public static Library lib;
 	private static Scanner scan = new Scanner(System.in);
 	
-    //Main class allow login (manager,associate,member) and nonmembers to search db
-	public static void main(String[] args) throws InterruptedException, ParseException{
+	public static void main(String[] args){
         System.out.println("Library API");
         initLibrary();
-        System.out.println();
-        //startApp();
+        testMethod();
     }
-   
-    //initialize library
+	
+    private static void testMethod() {
+    	
+    	
+	}
+
+	//initialize library
     public static void initLibrary(){
-		lib = new Library();
+		new Library();
     }
 }
+
 
 //compile all neccessary files from root directory:
 //  javac $(find . -name "*.java")
