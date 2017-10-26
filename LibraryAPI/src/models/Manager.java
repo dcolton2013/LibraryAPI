@@ -268,6 +268,8 @@ public class Manager{
 		String sql = "update books "+
 					 "set newrelease = 0 "+
 					 "where year < "+(currentyear-1);
+		
+		
 		try{
 			stmt.executeUpdate(sql);
 		}catch(SQLException e){

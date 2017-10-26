@@ -425,4 +425,68 @@ public class Library{
 		output += "\n";
 		return output;
 	}
+<<<<<<< HEAD
+=======
+	
+	public static String searchTitle(String title){
+		return searchISBN(getISBN(title));
+	}
+
+
+
+	public static String searchAvailability(){
+		String sql = "select isbn, name, availableCopies "+
+					 "from books "+
+					 "where availableCopies > 0";
+		try{	
+			PreparedStatement ps = conn.prepareStatement(sql);
+			rs = ps.executeQuery();
+			if(!rs.next())
+				return "no matches";
+			else{
+				String output = String.format("%-15s%-50s%-17s","isbn","title","availableCopies" );
+				output += String.format("\n%-15s%-50s%-17d", rs.getString(1),rs.getString(2).substring(0, Math.min(rs.getString(2).length(),47 )),rs.getInt(3));
+				while (rs.next()){
+					output += String.format("\n%-15s%-50s%-17d", rs.getString(1),rs.getString(2).substring(0, Math.min(rs.getString(2).length(), 47)),rs.getInt(3));
+				}
+				output += "\n";
+				return output;
+			}	
+		}catch(SQLException e){
+			return e.getMessage();
+		}
+	}
+	
+	
+	//Display info
+	private static void printBooks(String isbn) throws SQLException{
+		String sql =	"select distinct b.isbn, b.name,b.year, a.author,b.availableCopies "+
+					 	"from books b, books_authors a "+
+						"inner join books_authors "+
+					 	"where b.isbn = a.isbn";
+		rs = stmt.executeQuery(sql);
+		
+		System.out.println("----------------------------------------------------------------------------------------");
+		System.out.printf("|%-15s|%-33s|%-5s|%-22s\n","ISBN","Title (available)","Year","Author(s)");
+		System.out.println("----------------------------------------------------------------------------------------");
+		
+		String previsbn =null;
+		while (rs.next()){
+			if (rs.getString(1).equals(previsbn)){
+				System.out.print(", "+ rs.getString(4));
+				continue;
+			}else if (previsbn != null){
+				System.out.println();
+			}
+			previsbn = rs.getString(1);
+			
+			System.out.printf("|%-15s|%-30s%3s|%-5s|"	,rs.getString(1)
+	   													,rs.getString(2).substring(0, Math.min(rs.getString(2).length(), 27))
+	   													,"("+rs.getString(5)+")"
+	   													,rs.getString(3));
+			System.out.print(rs.getString(4));
+		}
+		System.out.println("\n----------------------------------------------------------------------------------------");
+	}				 	
+>>>>>>> 267e64c4e5064fb790e890483edcf0aba7cad3fd
 }
