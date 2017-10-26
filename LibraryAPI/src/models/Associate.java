@@ -8,26 +8,10 @@ import java.sql.Statement;
 import java.util.*;
 
 public class Associate{
-	private String password;
-	private String username;
-	private String name;
-	private int id;
-	
-	private static Scanner scan = new Scanner(System.in);
-	
-	static Statement stmt,stmt2;
+	static Statement stmt;
+	static Statement stmt2;
 	static Connection conn;
-	private static ResultSet rs;
-
-	//DS to keep up with Associate activity
-	private ArrayList<String> activity;
-
-	Associate(String name, int id){
-		this.name=name;
-		this.id=id;
-		this.activity = new ArrayList<String>();
-	}
-	
+	static ResultSet rs;
 	/*getters/setters of data field*/
 	/* Validate book, update availability*/
 	public static void scanInBook(String memberUsername, String bookISBN){
@@ -175,129 +159,106 @@ public class Associate{
 			
 	}
 	
-	public static void showAssociateMenu() throws SQLException{
-        System.out.println("*****************************");
-        System.out.println("1. Create new member");
-        System.out.println("2. Check out book");
-        System.out.println("3. Return books");
-        System.out.println("4. Logout");
-        System.out.println("*****************************");
-        System.out.print("\tSelection: ");
-	}
-	
-	//handles Associate menu options
-	public static void handleMain() throws SQLException {
-		int selection = 0;
-    	showAssociateMenu();
-    	while (true){
-			selection = scan.nextInt();
-			scan.nextLine();
-			switch(selection){
-				case 1:	promptUserInfo();
-						break;
-				case 2: promptScanOut();
-						break;
-				case 3: promptScanIn(); 
-						break;
-				case 4:	selection = -1;
-						break;
-				default: System.out.println("invalid selection");
-			}
-			if (selection == -1) break;
-				showAssociateMenu();
-    	}
-		
-	}
-	
-	public static void promptScanIn() {
-		System.out.print("What's the member's username? ");
-		String memberUName = scan.nextLine();
-		System.out.println();
-		System.out.print("Enter the book's isbn#: ");
-		String isbnBeingReturned = scan.nextLine();
-		System.out.println();
-		scanInBook(memberUName, isbnBeingReturned);
-	}
-	
-	public static void promptScanOut() {
-		System.out.print("Enter the book's ISBN# :  ");
-		String bookISBN = scan.nextLine();
-		System.out.println();
-		System.out.print("Enter the member username: ");
-		String memberCheckingOut = scan.nextLine();
-		System.out.println();
-		scanOutBook(memberCheckingOut, bookISBN);
-	}
-	
-	public static void promptUserInfo() throws SQLException{
-		System.out.print("\tFirst Name:");
-		String fname = scan.nextLine();
-		
-		System.out.print("\tLast Name:");
-		String lname = scan.nextLine();
-		
-		System.out.print("\tAddress:");
-		String addr = scan.nextLine();
-
-		System.out.print("\tPhone:");
-		String phone = scan.nextLine();
-		
-		System.out.print("\tUsername:");
-		String username = scan.nextLine();
-		System.out.println();
-		
+	public static int addMember(String fname, String lname,
+							 	String addr, String phone,
+							 	String username){
+		String password = Member.generatePassword();
 		String code = Member.generateLibrarycode();
-		int returncode = addMember(fname,lname,addr,phone,username,code);
-		
-		while(returncode != 0){
-			if (returncode == 1){
-				//duplicate username
-				System.out.println("uname in use");
-				System.out.println("Username:");
-				username = scan.nextLine();
-			}
-			if (returncode == 2){
-				//duplicatecode
-				code = Member.generateLibrarycode();
-			}
-			returncode = addMember(fname,lname,addr,phone,username,code);
-		}	
-		System.out.println("\tuser added.");
-		System.out.println("\tCredentials: ");
-		System.out.println("\tUsername: " + username);
-		System.out.println("\tLibrary Code: " + code);
+		return addMember(fname,lname,addr,phone,username,password,code);
 	}
 	
 	public static int addMember(String fname, String lname,
-							 	String addr, String phone,
-							 	String username,String code) throws SQLException{
-		
-		String sql = "insert into members values(?,?,?,?,?,?,?,?,?,?)";
-		PreparedStatement pstmt = conn.prepareStatement(sql);
-		pstmt.setString(1,fname);
-		pstmt.setString(2,lname);
-		pstmt.setString(3,addr);
-		pstmt.setString(4,phone);
-		pstmt.setString(5,username);
-		pstmt.setString(6,Member.generatePassword());
-		pstmt.setString(7,Member.generateLibrarycode());
-		pstmt.setInt(8,0);
-		pstmt.setBoolean(9,false);
-		pstmt.setBoolean(10,false);
-		
+		 						String addr, String phone,
+		 						String username,String password,
+		 						String code){
+		String sql = "insert into members values(?,?,?,?,?,?,?,?,?,?,?)";
 		try {
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1,fname);
+			pstmt.setString(2,lname);
+			pstmt.setString(3,addr);
+			pstmt.setString(4,phone);
+			pstmt.setString(5,username);
+			pstmt.setString(6,password);
+			pstmt.setString(7,code);
+			pstmt.setInt(8,0);
+			pstmt.setBoolean(9,false);
+			pstmt.setBoolean(10,false);
+			pstmt.setDouble(11,0);
 			pstmt.execute();
+			System.out.println("\tuser added.");
+			System.out.println("\tcredentials: ");
+			System.out.println("\tusername: " + username);
+			System.out.println("\tpassword: " + password);
+			System.out.println("\tlibrary code: " + code);
 		} catch (SQLException e) {
 			String s = e.getLocalizedMessage();
 			System.out.println(s);
 			if (s.contains("uname") || s.contains("PRIMARY")){
 				//duplicate username
+				System.out.println("duplicate username");
 				return 1;
 			}else if (s.contains("code")){
 				//duplicate library code;
-				return 2;
+				code = Member.generateLibrarycode();
+				addMember(fname,lname,addr,phone,username,password,code);
 			}
 		}
 		return 0;
+	}
+
+	public static void renewBook(String isbn, String code){
+		int returncode = getRenewals(isbn,code);
+		//num of renewals on book
+		if (returncode >= 2){ 
+			System.out.println("renewal limit for "+isbn+" reached");
+			return;
+		}
+		
+		//user doesnt have book checked out
+		if (returncode < 0) {
+			System.out.println(code+" doesnt have this book checked out");
+			return;
+		}
+		
+		if (Library.getNumHolds(isbn) != 0){
+			System.out.println("active holds, renew not available");
+			return;
+		}
+		
+		if (Library.checkNewRelease(isbn)){
+			System.out.println("new release, renew not available");
+			return;
+		}
+		
+		String sql = "update members_checkouts "+
+					 "set status = 'renewed', checkoutdate = NOW(), returndate = DATE_ADD(NOW(),INTERVAL 2 WEEK), renewals = renewals + 1 "+
+					 "where (isbn = ? and code = ?)";
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setString(1, isbn);
+			pstmt.setString(2, code);
+			pstmt.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}	
+	}
+	
+	//get amount of renewals for a given isbn and library code
+	public static int getRenewals(String isbn, String code){
+		String sql =  "select renewals "+
+					  "from members_checkouts "+
+					  "where (isbn = ? and code = ?)";
+		try{
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, isbn);
+			ps.setString(2, code);
+			rs = ps.executeQuery();
+			if (rs.next())
+				return rs.getInt(1);
+		}catch(SQLException e){
+			System.out.println(e.getMessage());
+		}
+		return -1;
 	}
 }

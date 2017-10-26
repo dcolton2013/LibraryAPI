@@ -13,96 +13,86 @@ public class Manager{
 	static Connection conn;
 	private static ResultSet rs;
 	
-	public static void showManagerMenu() throws SQLException{
-	        System.out.println("*****************************");
-	        System.out.println("1. Create new manager");
-	        System.out.println("2. Create new associate");
-	        System.out.println("3. Create new member");
-	        System.out.println("4. Remove manager (NYI)");
-	        System.out.println("5. Remove associate (NYI)");
-	        System.out.println("6. Remove member (NYI)");
-	        System.out.println("7. Suspend member (NYI)");
-	        System.out.println("8. Inventory options");
-	        System.out.println("9. Logout");
-	        System.out.println("*****************************");
-	        System.out.print("\tSelection: ");
-	}
-	
-	public static void showInventoryMenu() throws SQLException{
-        System.out.println("*****************************");
-        System.out.println("1. Create new book");
-        System.out.println("2. Remove book");
-        System.out.println("3. Edit book (NYI)");
-        System.out.println("\t-1 return to manager options");
-        System.out.println("*****************************");
-        System.out.print("\tSelection: ");
-	}
-	
-	//handles manager menu
-	public static void handleMain() throws SQLException {
-		int selection = 0;
-    	showManagerMenu();
-    	while (true){
-			selection = scan.nextInt();
-			scan.nextLine();
-			switch(selection){
-				case 1: addManager();
-						break;
-				case 2: addAssociate();
-						break;
-				case 3: Associate.promptUserInfo();
-						break;
-				case 4:
-						break;
-				case 5:
-						break;
-				case 6:
-						break;
-				case 7:
-						break;	
-				case 8:	handleInventory();
-						break;
-				
-				case 9: Library.logoutManager();
-						selection = -1;
-						break;
-				default: System.out.println("invalid selection");
-			}
-			if (selection == -1) break;
-			showManagerMenu();
-    	}
-	}
-	
-	//handles inventory menu
-	public static void handleInventory() throws SQLException{
-        showInventoryMenu();
-        while(true){
-        	int selection = scan.nextInt();
-            scan.nextLine();
-        	switch (selection){
-        	case 1:	promptBookInfo();
-        			//createBook("0011000000333","pablo,shamboni", "blah", "2009", 30, 19.66,"mystery");
-        			break;
-        	case 2: System.out.print("\tEnter ISBN: ");
-        			String isbn = scan.nextLine();
-        			removeBookISBN(isbn);
-        			break;
-        	case 3: 
-    				break;
-        	case -1: selection = -1;
-    				break;
-        	default:System.out.println("invalid selection"); 
-        			break;
-        	}
-        	if (selection == -1) break;
-        	showInventoryMenu();
-        }
-	}
-	
 	public static void applyCharges(){
-		String sql = "update member_checkouts "+
-					 "set latefees = latefees+.10 "+
+		String sql = "update members_checkouts "+
+					 "set latefees = latefees+.1, status = 'late'"+
 					 "where returndate < NOW() AND status <> 'lost'";
+		try {
+			stmt.executeUpdate(sql);
+			modifyMemberStatus();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	public static void modifyMemberStatus(){
+		//suspends users where applicable
+		suspendMembers();
+		
+		//reactivates users who have paid the minimum payment
+		reactivateMembers();
+	}
+	
+	public static void suspendMembers(){
+		String sql = "update members 			"+
+					 "set suspended = '1' 		"+
+					 "where code in ( 			"+
+					 "				select code "+
+					 "				from members_checkouts "+
+					 "				where (latefees > 25 or status = 'lost') "+
+					 "				)";
+		try {
+			stmt.executeUpdate(sql);
+			calculateMinimunPayments();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	private static void calculateMinimunPayments() {
+		String sql = "select code "+
+					 "from members "+
+					 "where suspended = 1";
+		try {
+			rs = stmt.executeQuery(sql);
+			while(rs.next()){
+				double latefees = Member.getLateFees(rs.getString(1));
+				double bookfees = Member.getBookFees(rs.getString(1));
+				double amount = 0;
+				if (latefees>25){
+					if(latefees>30)
+						amount += latefees - 25;
+					else
+						amount += 5;
+				}
+				amount += bookfees;
+				insertMinimumPayment(rs.getString(1),amount);
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+
+	private static void insertMinimumPayment(String code, double amount) {
+		String sql = "update members "+
+					 "set minPayment = ? "+
+					 "where code = ?";
+		try {
+			PreparedStatement pstmt = conn.prepareStatement(sql);
+			pstmt.setDouble(1, amount);
+			pstmt.setString(2, code);
+			pstmt.execute();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		
+		
+	}
+
+	public static void reactivateMembers(){
+		String sql = "update members "+
+					 "set suspended = 0 "+
+					 "where suspended = 1 and minPayment = 0";
 		try {
 			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
@@ -139,28 +129,28 @@ public class Manager{
 		createManager(username,password);
 	}
 	
-	public static void suspendMember(String uname){
+	public static void suspendMember(String code){
 		String sql = "update members "+
 					 "set suspended = 1 "+
-					 "where username = ?";
+					 "where code = ?";
 		PreparedStatement pstmt;
 		try {
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, uname);
+			pstmt.setString(1, code);
 			pstmt.execute();
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
 	}
 	
-	public static void reactivateMember(String uname){
+	public static void reactivateMember(String code){
 		String sql = "update members "+
 					 "set suspended = 0 "+
-					 "where username = ?";
+					 "where code = ?";
 		PreparedStatement pstmt;
 		try {
 			pstmt = conn.prepareStatement(sql);
-			pstmt.setString(1, uname);
+			pstmt.setString(1, code);
 			pstmt.execute();
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
@@ -191,29 +181,31 @@ public class Manager{
 	//create books
 	//accepts authors and keywords as a string
 	//separate each author/keyword with a comma
-	public static void createBook(String isbn, String authors,String name, String year,int avail, double price, String keywords  ){
+	public static int createBook(String isbn, String authors,String name, String year,int avail, double price, String keywords){
 		//no author
-		if (authors.length() == 0) return;
+		if (authors.length() == 0) return 1;
 		
 		//improper isbn length
-		if (Integer.parseInt(year) < 2007)
-			if(isbn.length() != 10) return;
-		else
-			if (isbn.length() != 13) return;
+		if (Integer.parseInt(year) < 2007){
+			if(isbn.length() != 10) return 2;
+		}else{
+			if (isbn.length() != 13) return 3;
+		}
 		
 		//no title
-		if (name == null || name == "") return;
+		if (name == null || name == "") return 4;
 
 		insertIntoBooks(isbn,name,year,avail,price);
 			
 		insertIntoBookAuthors(isbn,authors);
 			
 		insertIntoBookKeywords(isbn, keywords);
+		
+		return 0;
 	}
 	
 	private static void insertIntoBooks(String isbn, String name, String year, int avail, double price){
-		String sql = "insert ignore into books values(?,?,?,?,?,?)";
-
+		String sql = "insert ignore into books values(?,?,?,?,?,?,?,?)";
 		try{
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1,isbn);
@@ -223,6 +215,8 @@ public class Manager{
 			pstmt.setInt(5,avail);
 			pstmt.setInt(6,0);
 			pstmt.setDouble(7,price);
+			pstmt.setInt(8,isNewRelease(year));
+			pstmt.execute();
 		}catch(SQLException e){
 			System.out.println(e.getMessage());
 		}
@@ -230,7 +224,7 @@ public class Manager{
 	
 	private static void insertIntoBookKeywords(String isbn, String keywords) {
 		try{
-			if (keywords.length() == 0) return;
+			if (keywords == null || keywords.length() == 0) return;
 			
 			for (String k: keywords.split(",( |)")){
 				String sql = 	"insert ignore into books_keywords values( "+
@@ -258,6 +252,30 @@ public class Manager{
 		
 	}
 
+	private static int isNewRelease(String year){
+		//Determine new release
+		//in 2017 year (2016-2017) will be new release
+        Calendar cal = Calendar.getInstance();
+        int currentyear = cal.get(Calendar.YEAR);
+        if (Integer.parseInt(year) >= (currentyear- 1))
+        	return 1;
+        return 0;
+	}
+	
+	public static void updateNewReleases(){
+		Calendar cal = Calendar.getInstance();
+        int currentyear = cal.get(Calendar.YEAR);
+		String sql = "update books "+
+					 "set newrelease = 0 "+
+					 "where year < "+(currentyear-1);
+		
+		
+		try{
+			stmt.executeUpdate(sql);
+		}catch(SQLException e){
+			System.out.println(e.getMessage());
+		}
+	}
 	//Remove Functions
 		//remove books by isbn
 	public static void removeBookISBN(String isbn){
@@ -265,23 +283,9 @@ public class Manager{
 		if(isbn.length() < 7) return;
 		
 		String title = Library.getTitle(isbn);
-		try{
-			String sql = "delete from books "+
-						 "where ISBN LIKE '%"+isbn+"%'";
-			stmt.executeUpdate(sql);
-			
-			//remove from books_keywords
-			sql = "delete from books_keywords "+
-				  "where ISBN LIKE '%"+isbn+"%'";
-			stmt.executeUpdate(sql);
-			
-			//remove from books_authors
-			sql = "delete from books_keywords "+
-				  "where ISBN LIKE '%"+isbn+"%'";
-			stmt.executeUpdate(sql);
-		}catch (SQLException e){
-			System.out.println(e.getMessage());
-		}
+		deleteFromBooksKeywords(isbn);
+		deleteFromBooksAuthors(isbn);
+		deleteFromBooks(isbn);
 		System.out.println("Book: "+isbn+" "+title+" removed");
 	}
 
@@ -289,4 +293,36 @@ public class Manager{
 	public static void removeBookName(String name){
 		removeBookISBN(Library.getISBN(name));
 	}
+	
+	public static void deleteFromBooks(String isbn){
+		String sql = "delete from books "+
+				 "where ISBN LIKE '%"+isbn+"%'";
+		try {
+			stmt.executeUpdate(sql);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	public static void deleteFromBooksAuthors(String isbn){
+		String sql = "delete from books_authors "+
+				 	 "where ISBN LIKE '%"+isbn+"%'";
+		try {
+			stmt.executeUpdate(sql);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	public static void deleteFromBooksKeywords(String isbn){
+		String sql = "delete from books_keywords "+
+				 	 "where ISBN LIKE '%"+isbn+"%'";
+		try {
+			stmt.executeUpdate(sql);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	
 }

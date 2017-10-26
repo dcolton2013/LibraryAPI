@@ -75,7 +75,6 @@ public class Library{
 		    		stmt.executeUpdate(sql);
 		    		currentUser = uname;
 		    		authorityLevel = 0;
-		    		Manager.handleMain();
 			}
 		}catch(SQLException e){
 			System.out.println(e.getMessage());
@@ -91,7 +90,7 @@ public class Library{
 			if (!rs.next())
 				//empty result
 				System.out.println("\t"+ uname + " not authenticated");
-			else{
+			else{ 
 				System.out.println("\t"+uname+" authentication successful");
 			    sql = 	"update associates "+
 						"set loggedIn = 1 " +
@@ -168,8 +167,7 @@ public class Library{
 		authorityLevel = 3;
 	}
 	
-	//Queries
-		//getISBN by name
+	//getISBN by title
 	public static String getISBN(String value){
 		String sql = 	"select distinct isbn "+
 						"from books "+
@@ -184,7 +182,7 @@ public class Library{
 		}			
 	}
 	
-		//getTitle by ISBN
+	//getTitle by ISBN
 	public static String getTitle(String value){
 		String sql = 	"select distinct name "+
 						"from books "+
@@ -200,6 +198,74 @@ public class Library{
 		
 	}
 	
+	public static String getUsername(String code){
+		if (code.length() != 4) return null;
+		
+		String sql = "select username "+
+					 "from members "+
+					 "where code = "+code;
+		try {
+			rs = stmt.executeQuery(sql);
+			if (rs.next())
+				return rs.getString(1);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return null;
+	}
+	
+	public static boolean userExists(String code){
+		String sql = "select * 		"+ 
+				     "from members  "+
+				     "where code = ?";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, code);
+			rs = ps.executeQuery();
+			if (rs.next())
+				return true;
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return false;
+		
+	}
+	
+	public static boolean bookExists(String isbn){
+		String sql = "select * 		"+ 
+			     	 "from books  "+
+			     	 "where isbn = ?";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, isbn);
+			rs = ps.executeQuery();
+			if (rs.next())
+				return true;
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return false;
+	}
+	
+	public static boolean checkNewRelease(String isbn){
+		String sql = "select newrelease "+
+					 "from books "+
+					 "where isbn = ?";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, isbn);
+			rs = ps.executeQuery();
+			if (rs.next()){
+				int num = rs.getInt(1);
+				if (num == 1)
+					return true;
+			}
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return false;
+	}
+
 	public static Double getBookCost(String isbn){
 		String sql = "select b.price "+
 					 "from books b "+
@@ -252,7 +318,7 @@ public class Library{
 	}
 	
 	public static void addHoldExpirationDate(String username, String isbn){
-		String sql =  "update member_holds mh "+
+		String sql =  "update members_holds mh "+
 					  "set mh.holdexpiration = DATE_ADD(NOW(),INTERVAL 4 DAY) "+
 					  "where (mh.username = ? and mh.isbn = ?)";
 		try{
@@ -264,6 +330,23 @@ public class Library{
 			System.out.println(e.getMessage());
 		}
 		
+	}
+	
+	public static int getAvailableCopies(String isbn){
+		String sql = "select b.availableCopies "+
+					 "from books b "+
+					 "where b.isbn = '"+isbn+"'";
+		try{
+			rs = stmt.executeQuery(sql);
+			if (!rs.next())
+				return -1;
+			else
+				return rs.getInt(1);
+				
+		}catch(SQLException e){
+			System.out.println(e.getMessage());
+			return -1;
+		}
 	}
 	//Searches
 		//by ISBN - search by isbn or partial isbn must be of length 6 or more
@@ -342,6 +425,36 @@ public class Library{
 		output += "\n";
 		return output;
 	}
+	
+	public static String searchTitle(String title){
+		return searchISBN(getISBN(title));
+	}
+
+
+
+	public static String searchAvailability(){
+		String sql = "select isbn, name, availableCopies "+
+					 "from books "+
+					 "where availableCopies > 0";
+		try{	
+			PreparedStatement ps = conn.prepareStatement(sql);
+			rs = ps.executeQuery();
+			if(!rs.next())
+				return "no matches";
+			else{
+				String output = String.format("%-15s%-50s%-17s","isbn","title","availableCopies" );
+				output += String.format("\n%-15s%-50s%-17d", rs.getString(1),rs.getString(2).substring(0, Math.min(rs.getString(2).length(),47 )),rs.getInt(3));
+				while (rs.next()){
+					output += String.format("\n%-15s%-50s%-17d", rs.getString(1),rs.getString(2).substring(0, Math.min(rs.getString(2).length(), 47)),rs.getInt(3));
+				}
+				output += "\n";
+				return output;
+			}	
+		}catch(SQLException e){
+			return e.getMessage();
+		}
+	}
+	
 	
 	//Display info
 	private static void printBooks(String isbn) throws SQLException{
