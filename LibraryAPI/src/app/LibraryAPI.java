@@ -25,7 +25,7 @@ public class LibraryAPI{
     }
 	
     private static void testMethod() {
-				
+    	
 	}
 
 	//initialize library
@@ -33,6 +33,7 @@ public class LibraryAPI{
 		new Library();
     }
 }
+
 
 //compile all neccessary files from root directory:
 //  javac $(find . -name "*.java")

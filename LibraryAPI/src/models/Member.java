@@ -88,7 +88,7 @@ public class Member {
 		if (bookfees>0)
 			amount = payBookFees(code,amount,bookfees);
 		if (amount > 0 && latefees>0)
-			amount = payLateFees(code,amount,bookfees);
+			amount = payLateFees(code,amount,latefees);
 		
 		return amount;
 	}
