@@ -247,7 +247,7 @@ public class Associate{
 		System.out.println();
 		
 		String code = Member.generateLibrarycode();
-		int returncode = addMember(fname,lname,addr,phone,username,code);
+		int returncode = addMember(fname,lname,addr,phone,username);
 		
 		while(returncode != 0){
 			if (returncode == 1){
