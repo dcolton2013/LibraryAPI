@@ -22,7 +22,7 @@ public class LibraryAPI{
         System.out.println("Library API");
         initLibrary();
         System.out.println();
-        Associate.addMember("don", "colt", "overthere", "678", "blahblahblah","efsddsf","9161");
+      //  Associate.addMember("don", "colt", "overthere", "678", "blahblahblah","efsddsf","9161");
         //startApp();
     }
    

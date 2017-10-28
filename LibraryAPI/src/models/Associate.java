@@ -15,7 +15,7 @@ public class Associate{
 	
 	private static Scanner scan = new Scanner(System.in);
 	
-	static Statement stmt,stmt2;
+	static Statement stmt,stmt2,stmt3;
 	static Connection conn;
 	private static ResultSet rs;
 
@@ -76,45 +76,52 @@ public class Associate{
 		 String memberQuery = "select * from members m where m.username = '" + member + "' limit 1;";
 		 String bookQuery = "select * from books b where b.isbn = '" + bookISBN + "' limit 1;";
 		 String updateBookQuery = "UPDATE books b SET b.availableCopies = (b.availableCopies - 1) WHERE b.isbn= "+ bookISBN+ " ;" ;
-	//	 String updateMemberQuery = "UPDATE members m SET m.numBooksCheckedOut = (m.numBooksCheckedOut + 1) WHERE m.username= "+ member+ " ;" ;	
+		 String updateMemberQuery = "UPDATE members m SET m.numBooksCheckedOut = (m.numBooksCheckedOut + 1) WHERE m.username= "+ member+ " ;" ;
+		 
 		//	book = stmt.executeQuery(updateBookQuery);
 	    try {
 	        stmt = conn.createStatement();
 	        stmt2 = conn.createStatement();
+	        stmt3 = conn.createStatement();
 	        ResultSet rs = stmt.executeQuery(memberQuery);
 	        
 	        while (rs.next()) {
 	            String memberName = rs.getString("fname") + " " + rs.getString("lname");
 	            int booksCheckedOut = rs.getInt("numBooksCheckedOut");
 	            boolean isSuspended = rs.getBoolean("suspended");
-	            if(booksCheckedOut >= 10 || isSuspended) {
+	            if(booksCheckedOut > 9 || isSuspended) {
 	            		System.out.printf("Unfortunately this member has reached maxed checkouts or is suspended.\n");
 	            		System.out.printf("Number of books checked out as of %s: %d%n", new Date().toString(), booksCheckedOut);
 	            		System.out.println("|--------------------------------------------|");
 	            		System.out.printf(" Will list books the member has checked out. ");
 	            		System.out.println("|--------------------------------------------|");
 	            }
+
 	            else {
-	            	
-	            	if()
 	            	   rs = stmt2.executeQuery(bookQuery); //book query
 		    	        while (rs.next()) {
 		    	            String bookName = rs.getString("name");
-
-		    	            if(rs.getInt("availableCopies") >= 1) {
+		    	            int availableCopies = rs.getInt("availableCopies");
+		    	            
+		    	            if(availableCopies > 0) {
 		    	            		System.out.printf("%s has been successfully scanned out to %s.%n",bookName, memberName);
 		    	            		System.out.println("----------------------------------");
 		    	            		System.out.printf("%S - Membership Summary %n",memberName);
 		    	            		System.out.printf("Number of books checked out as of %s: %d%n", new Date().toString(), booksCheckedOut);
 			 	            System.out.printf("Remaining rentals: %d%n", (10-booksCheckedOut)); //update in db via stmt3 to avoid set closing
+			 	            
 			 	           int response = stmt.executeUpdate(updateBookQuery);
-			 	           int copies=rs.getInt("availableCopies");
+			 	           
+			 	           stmt3.executeUpdate(updateMemberQuery); //update members checkouts
+			 	           
+			 	           int copies=rs.getInt("availableCopies"); // new value --
+			 	           
 			 	           if(response == 1){
-								System.out.println("Book copies available: " + (copies-1));
+								System.out.println("Book copies available: " + (copies-1)); // a successful U-query
 			 	           }
 		    	            }
 		    	            else {
-		    	            		System.out.println(bookName+ " is out of stock. Sorry.");
+		    	            		System.out.println(bookName+ " is out of stock. Sorry."); // its out of stock playa
 		    	            }
 		    	        }
 	            }
@@ -130,52 +137,6 @@ public class Associate{
 	    } 
 	}
 	
-	private static void updateBookInfo(ResultSet book, String method) {
-		try {
-			if(book.isClosed()) {
-				System.out.println("closed");
-			}
-			else {
-				System.out.println("opended");
-			}
-		} catch (SQLException e1) {
-			// TODO Auto-generated catch block
-			e1.printStackTrace();
-		}
-		String updateBookQuery;
-		if(method.equalsIgnoreCase("out")) {
-			try {
-				System.out.println("testing:"+book.getInt("availableCopies"));
-				updateBookQuery = "UPDATE books b SET b.availableCopies = " + (book.getInt("availableCopies")-1) + 
-						" WHERE b.isbn= "+ book.getInt("isbn")+ " ;" ;
-				
-				book = stmt.executeQuery(updateBookQuery);
-				while(book.next()){
-					int copies=book.getInt("availableCopies");
-					System.out.println("Book copies available: " + copies);
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-		
-		if(method.equalsIgnoreCase("in")) {
-			try {
-				updateBookQuery = "UPDATE books b SET b.availableCopies = " + (book.getInt("availableCopies")+1) + 
-						" WHERE b.isbn= '"+ book.getString("isbn")+ "' ;" ;
-				
-				stmt.executeUpdate(updateBookQuery);
-				
-				while(book.next()){
-					int copies=book.getInt("availableCopies");
-					System.out.println("Book copies available: " + copies);
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
-			
-	}
 	
 	public static void showAssociateMenu() throws SQLException{
         System.out.println("*****************************");
