@@ -86,15 +86,17 @@ public class Associate{
 	        while (rs.next()) {
 	            String memberName = rs.getString("fname") + " " + rs.getString("lname");
 	            int booksCheckedOut = rs.getInt("numBooksCheckedOut");
-	            
-	            if(booksCheckedOut >= 10) {
-	            		System.out.printf("Unfortunately this member has reached maxed checkouts.\n");
+	            boolean isSuspended = rs.getBoolean("suspended");
+	            if(booksCheckedOut >= 10 || isSuspended) {
+	            		System.out.printf("Unfortunately this member has reached maxed checkouts or is suspended.\n");
 	            		System.out.printf("Number of books checked out as of %s: %d%n", new Date().toString(), booksCheckedOut);
 	            		System.out.println("|--------------------------------------------|");
 	            		System.out.printf(" Will list books the member has checked out. ");
 	            		System.out.println("|--------------------------------------------|");
 	            }
 	            else {
+	            	
+	            	if()
 	            	   rs = stmt2.executeQuery(bookQuery); //book query
 		    	        while (rs.next()) {
 		    	            String bookName = rs.getString("name");
