@@ -75,6 +75,7 @@ public class dbinit {
 	    					 	"numBooksCheckedOut			int						,"+
 	    					 	"suspended					boolean					,"+
 	    					 	"loggedIn					boolean					,"+
+	    					 	"minPayment					numeric(10,2)			,"+
 	    					 	"primary key(username));";
 	    try {
 	        stmt.executeUpdate(membersTable);
@@ -136,8 +137,8 @@ public class dbinit {
 	}
 	
 	private static void createMemberHoldsTable(){
-		System.out.println("Creating table: member_holds...");
-		String userHolds = 	"create table if not exists member_holds( 	"+
+		System.out.println("Creating table: members_holds...");
+		String userHolds = 	"create table if not exists members_holds( 	"+
 							"code			varchar(4)		not null,	"+
 							"isbn			varchar(15)		not null,	"+ 
 							"holdpos		int,						"+
@@ -155,19 +156,19 @@ public class dbinit {
 	private static void createMemberCheckoutsTable(){
 		//uname isbn fees status(returned,checkedout,late,lost) checkoutdate/time returndate/time
 		//sql insert ex. 1,NOW(),DATE_ADD(NOW(), INTERVAL 2 WEEK)
-		System.out.println("Creating table: member_checkouts...");
-		String member_checkouts = "create table if not exists member_checkouts( "+
-								  "code 		varchar(4)  not null, 			"+
-								  "isbn			varchar(15)  not null, 			"+
-								  "status 		varchar(15)	 not null, 			"+
-								  "checkoutdate	DATETIME	not null, 			"+
-								  "returndate	DATETIME	not null, 			"+
-								  "renewals 	int, 							"+
-								  "latefees 	double, 						"+
-								  "bookfees 	double, 						"+
-								  "primary key(code, isbn),						"+
-								  "foreign key(code) references members(code),	"+
-								  "foreign key(isbn) references books(isbn))		";
+		System.out.println("Creating table: members_checkouts...");
+		String member_checkouts = "create table if not exists members_checkouts( "+
+								  "code 		varchar(4)  	not null	,"+
+								  "isbn			varchar(15)  	not null	,"+
+								  "status 		varchar(15)	 	not null	,"+
+								  "checkoutdate	DATETIME		not null	,"+
+								  "returndate	DATETIME		not null	,"+
+								  "renewals 	int							,"+
+								  "latefees 	numeric(10,2)				,"+
+								  "bookfees 	numeric(10,2)				,"+
+								  "primary key(code, isbn)					,"+
+								  "foreign key(code) references members(code),"+
+								  "foreign key(isbn) references books(isbn))";
 		try {
 			stmt.executeUpdate(member_checkouts);
 		} catch (SQLException e) {

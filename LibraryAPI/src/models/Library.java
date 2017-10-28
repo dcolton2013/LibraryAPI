@@ -75,7 +75,6 @@ public class Library{
 		    		stmt.executeUpdate(sql);
 		    		currentUser = uname;
 		    		authorityLevel = 0;
-		    		Manager.handleMain();
 			}
 		}catch(SQLException e){
 			System.out.println(e.getMessage());
@@ -91,7 +90,7 @@ public class Library{
 			if (!rs.next())
 				//empty result
 				System.out.println("\t"+ uname + " not authenticated");
-			else{
+			else{ 
 				System.out.println("\t"+uname+" authentication successful");
 			    sql = 	"update associates "+
 						"set loggedIn = 1 " +
@@ -319,7 +318,7 @@ public class Library{
 	}
 	
 	public static void addHoldExpirationDate(String username, String isbn){
-		String sql =  "update member_holds mh "+
+		String sql =  "update members_holds mh "+
 					  "set mh.holdexpiration = DATE_ADD(NOW(),INTERVAL 4 DAY) "+
 					  "where (mh.username = ? and mh.isbn = ?)";
 		try{
