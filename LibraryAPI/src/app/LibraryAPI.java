@@ -21,7 +21,7 @@ public class LibraryAPI{
 	public static void main(String[] args){
         System.out.println("Library API");
         initLibrary();
-        testMethod();
+
     }
 	
     private static void testMethod() {
