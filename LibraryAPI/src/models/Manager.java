@@ -225,7 +225,6 @@ public class Manager{
 	private static void insertIntoBookKeywords(String isbn, String keywords) {
 		try{
 			if (keywords == null || keywords.length() == 0) return;
-			
 			for (String k: keywords.split(",( |)")){
 				String sql = 	"insert ignore into books_keywords values( "+
 								"'"+isbn	+"', "+ 
