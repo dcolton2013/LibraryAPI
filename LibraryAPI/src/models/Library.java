@@ -348,6 +348,23 @@ public class Library{
 			return -1;
 		}
 	}
+	
+	public static int getTotalCopies(String isbn){
+		String sql = "select b.totalCopies "+
+					 "from books b "+
+					 "where b.isbn = '"+isbn+"'";
+		try{
+			rs = stmt.executeQuery(sql);
+			if (!rs.next())
+				return -1;
+			else
+				return rs.getInt(1);
+				
+		}catch(SQLException e){
+			System.out.println(e.getMessage());
+			return -1;
+		}
+	}
 	//Searches
 		//by ISBN - search by isbn or partial isbn must be of length 6 or more
 	public static String searchISBN(String isbn){
@@ -430,8 +447,6 @@ public class Library{
 		return searchISBN(getISBN(title));
 	}
 
-
-
 	public static String searchAvailability(){
 		String sql = "select isbn, name, availableCopies "+
 					 "from books "+
@@ -454,8 +469,7 @@ public class Library{
 			return e.getMessage();
 		}
 	}
-	
-	
+		
 	//Display info
 	private static void printBooks(String isbn) throws SQLException{
 		String sql =	"select distinct b.isbn, b.name,b.year, a.author,b.availableCopies "+

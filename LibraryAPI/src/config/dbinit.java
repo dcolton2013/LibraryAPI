@@ -14,7 +14,7 @@ import java.sql.Statement;
 public class dbinit {
 	private static Statement stmt;
 	//create tables
-	public static void createDB(Statement s) throws SQLException{
+	public static void createDB(Statement s){
 	    stmt = s;
 		try {
 	        stmt.executeUpdate("create schema if not exists Library;");
@@ -29,6 +29,7 @@ public class dbinit {
     	createBookKeywordsTable();
     	createMemberHoldsTable();
     	createMemberCheckoutsTable();
+    	createMemberReturnsTable();
 	}
 	
 	private static void createManagersTable() {
@@ -61,7 +62,7 @@ public class dbinit {
 	    }
 	}
 	
-	private static void createMembersTable() throws SQLException {
+	private static void createMembersTable(){
 		System.out.println("Creating Table: members...");
 	    //init table
 	    String membersTable =  "create table if not exists members (" +
@@ -176,6 +177,21 @@ public class dbinit {
 		}
 	}
 	
+	private static void createMemberReturnsTable(){
+		System.out.println("Creating table: members_returns...");
+		String member_returns = "create table if not exists members_returns( "+
+								  "code 	varchar(4)		not null,"+
+								  "isbn		varchar(15)		not null,"+
+								  "primary key(code,isbn) 			,"+
+								  "foreign key (code) references members(code),"+
+								  "foreign key (isbn) references books(isbn))";
+		try {
+			stmt.executeUpdate(member_returns);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
 	private static void addMemberConstraints(){
 		try{
 			String sql = "ALTER TABLE members "+
@@ -223,7 +239,7 @@ public class dbinit {
 		}
 	}
 	
-	private static void loadBookAuthors() throws SQLException {
+	private static void loadBookAuthors(){
 		System.out.println("populating table: books_authors...");
 		File f = new File("src/config/books_authors");
 		String path = f.getPath();
@@ -234,6 +250,10 @@ public class dbinit {
 					 "INTO TABLE books_authors "+ 
 					 "COLUMNS TERMINATED BY ',' "+
 					 "LINES STARTING BY '.'";
-		stmt.executeUpdate(sql);
+		try {
+			stmt.executeUpdate(sql);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 }

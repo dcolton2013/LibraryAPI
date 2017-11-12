@@ -100,17 +100,6 @@ public class Manager{
 		}
 	}
 	
-	private static void promptBookInfo() throws SQLException {
-		System.out.println("Enter isbn: 9780439023528");
-		System.out.println("Enter authors (seperated by comma): Suzanne Collins");
-		System.out.println("Enter title: The Hunger Games (Book 1)");
-		System.out.println("Enter year: 2010");
-		System.out.println("Enter copies: 3");
-		System.out.println("Enter price: 8.70");
-		System.out.println("Enter keywords: Dystopian, Science-Fiction, Survival, Action");
-		createBook("9780439023528","Suzanne Collins","The Hunger Games (Book 1)","2010", 3, 8.70, "Dystopian, Science-Fiction, Survival, Action" );
-	}
-	
 	//prompt for info
 	private static void addAssociate() throws SQLException {
 		System.out.print("\tusername: ");
@@ -275,6 +264,7 @@ public class Manager{
 			System.out.println(e.getMessage());
 		}
 	}
+	
 	//Remove Functions
 		//remove books by isbn
 	public static void removeBookISBN(String isbn){

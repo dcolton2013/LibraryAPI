@@ -69,6 +69,53 @@ public class Member {
 		Associate.renewBook(isbn,code);
 	}
 	
+	public static void returnToDropbox(String code, String isbn){
+		if (!Library.userExists(code)){
+			System.out.println("User doesnt exist");
+			return;
+		}
+		if (!Library.bookExists(isbn)){
+			System.out.println("Book doesnt exist");
+			return;
+		}
+		
+		if (!bookCheckedOut(code,isbn)){
+			System.out.println("User doesnt have book checked out");
+			return;
+		}
+		
+		String sql = "insert into members_returns values "+
+					 "(?,?)";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, code);
+			ps.setString(2, isbn);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		
+	}
+	
+	public static boolean bookCheckedOut(String code, String isbn){
+		String sql = "select * "+
+				 	 "from members_checkout "+
+					 "where isbn = ? and code = ?";
+		try {
+			PreparedStatement ps= conn.prepareStatement(sql);
+			ps.setString(1, isbn);
+			ps.setString(2, code);
+			rs = ps.executeQuery();
+			if (!rs.next())
+				return false;
+			else 
+				return true;
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		return false;
+	}
+	
 	//returns balance after payment
 	public static double makePayment(double amount,String code){
 		if (!Library.userExists(code)) return -1;
@@ -139,6 +186,7 @@ public class Member {
 		}
 		
 	}
+	
 	
 	//pay methods find rows where fees need to be paid
 	private static double payBookFees(String code,double amount, double bookfees){

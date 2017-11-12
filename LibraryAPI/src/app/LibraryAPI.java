@@ -21,11 +21,10 @@ public class LibraryAPI{
 	public static void main(String[] args){
         System.out.println("Library API");
         initLibrary();
-
+        testMethodsHere();
     }
 	
-    private static void testMethod() {
-    	
+    private static void testMethodsHere() {
 	}
 
 	//initialize library
@@ -33,7 +32,6 @@ public class LibraryAPI{
 		new Library();
     }
 }
-
 
 //compile all neccessary files from root directory:
 //  javac $(find . -name "*.java")
