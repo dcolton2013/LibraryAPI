@@ -5,4 +5,5 @@
 <fullyQualifiedTypeName name="tests.nonmembers"/>
 <fullyQualifiedTypeName name="models.Library"/>
 <fullyQualifiedTypeName name="java.util.concurrent.TimeUnit"/>
+<fullyQualifiedTypeName name="java.lang.Math"/>
 </qualifiedTypeNameHistroy>

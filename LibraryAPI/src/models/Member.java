@@ -26,6 +26,19 @@ public class Member {
 	}
 	
 	public static void reportLost(String isbn,String code){
+		if (!Library.bookExists(isbn)){
+			System.out.println("no matching isbn");
+			return;
+		}
+		if (!Library.userExists(code)){
+			System.out.println("invalid library code");
+			return;
+		}
+		if (!bookCheckedOut(code,isbn)){
+			System.out.println("User doesnt have book checked out");
+			return;
+		}
+		
 		String sql = "update members_checkouts "+
 				     "set status = 'lost',bookfees = ?"+
 				     "where (isbn = ? and code = ?)";
@@ -42,6 +55,14 @@ public class Member {
 	}
 
 	public static void requestHold(String isbn,String code){
+		if (!Library.bookExists(isbn)){
+			System.out.println("no matching isbn");
+			return;
+		}
+		if (!Library.userExists(code)){
+			System.out.println("invalid library code");
+			return;
+		}
 		String sql = "insert into members_holds values(?,?,?,?)";
 		PreparedStatement pstmt;
 		try {
@@ -64,6 +85,10 @@ public class Member {
 		}
 		if (!Library.userExists(code)){
 			System.out.println("invalid library code");
+			return;
+		}
+		if (!bookCheckedOut(code,isbn)){
+			System.out.println("User doesnt have book checked out");
 			return;
 		}
 		Associate.renewBook(isbn,code);
@@ -186,8 +211,7 @@ public class Member {
 		}
 		
 	}
-	
-	
+
 	//pay methods find rows where fees need to be paid
 	private static double payBookFees(String code,double amount, double bookfees){
 		String sql = "select bookfees, isbn "+
