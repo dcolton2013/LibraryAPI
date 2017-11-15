@@ -280,7 +280,7 @@ public class Member {
 		}
 		
 	}
-
+  
 	private static void updateMinimumPayment(String code, double amount,double minimumPayment){
 		if (amount >= minimumPayment)
 			amount = minimumPayment;
@@ -295,6 +295,64 @@ public class Member {
 			ps.executeUpdate();
 		}catch(SQLException ex){
 			System.out.println(ex.getMessage());
+		}
+	}     
+	public static void displayHolds(String code){
+		if (!Library.userExists(code))
+			System.out.println("user not found");
+		
+		String sql = "select b.name, m.holdExpiration, m.holdPos "+
+					 "from members_holds m, books b "+
+					 "where code = ? and m.isbn = b.isbn";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, code);
+			rs = ps.executeQuery();
+			
+			if (!rs.next()){
+				System.out.println("User has no books checked out");
+			}
+			else{
+				System.out.printf("%-10s%-30s%-10s\n","Hold Pos.","Title","Expiration");
+				do{
+					System.out.printf("%-10s%-30s",rs.getString(3),rs.getString(1).substring(0, Math.min(rs.getString(1).length(), 27)));
+					if (rs.getString(2) == null)
+						System.out.printf("%-10s\n","no current expiration date");
+					else
+						System.out.printf("%-10s\n",rs.getString(2));
+				}while(rs.next());
+			}
+			
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+		
+	}
+	
+	public static void displayCheckoutInfo(String code){
+		if (!Library.userExists(code))
+			System.out.println("user not found");
+		
+		String sql = "select b.name, m.returndate, m.latefees, m.bookfees "+
+					 "from members_checkouts m, books b "+
+					 "where code = ? and m.isbn = b.isbn and m.status = 'checkedout'";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, code);
+			rs = ps.executeQuery();
+			if (!rs.next()){
+				System.out.println("User has no books checkout");
+			}
+			else{
+				System.out.printf("%-30s%-25s%-10s%-10s%-5s\n","Title","Return Date","Late Fees", "Book Fees", "Total");
+				do{
+					System.out.printf("%-30s%-25s%-10.2f%-10.2f%-5.2f\n",rs.getString(1).substring(0, Math.min(rs.getString(1).length(), 27))
+															,rs.getString(2),rs.getDouble(3),rs.getDouble(4),(rs.getDouble(3) + rs.getDouble(4)));
+				}while(rs.next());
+			}
+			
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
 		}
 	}
 }
