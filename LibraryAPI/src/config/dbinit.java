@@ -14,7 +14,7 @@ import java.sql.Statement;
 public class dbinit {
 	private static Statement stmt;
 	//create tables
-	public static void createDB(Statement s) throws SQLException{
+	public static void createDB(Statement s){
 	    stmt = s;
 		try {
 	        stmt.executeUpdate("create schema if not exists Library;");
@@ -29,6 +29,7 @@ public class dbinit {
     	createBookKeywordsTable();
     	createMemberHoldsTable();
     	createMemberCheckoutsTable();
+    	createMemberReturnsTable();
 	}
 	
 	private static void createManagersTable() {
@@ -61,7 +62,7 @@ public class dbinit {
 	    }
 	}
 	
-	private static void createMembersTable() throws SQLException {
+	private static void createMembersTable(){
 		System.out.println("Creating Table: members...");
 	    //init table
 	    String membersTable =  "create table if not exists members (" +
@@ -75,6 +76,7 @@ public class dbinit {
 	    					 	"numBooksCheckedOut			int						,"+
 	    					 	"suspended					boolean					,"+
 	    					 	"loggedIn					boolean					,"+
+	    					 	"minPayment					numeric(10,2)			,"+
 	    					 	"primary key(username));";
 	    try {
 	        stmt.executeUpdate(membersTable);
@@ -136,8 +138,8 @@ public class dbinit {
 	}
 	
 	private static void createMemberHoldsTable(){
-		System.out.println("Creating table: member_holds...");
-		String userHolds = 	"create table if not exists member_holds( 	"+
+		System.out.println("Creating table: members_holds...");
+		String userHolds = 	"create table if not exists members_holds( 	"+
 							"code			varchar(4)		not null,	"+
 							"isbn			varchar(15)		not null,	"+ 
 							"holdpos		int,						"+
@@ -155,21 +157,36 @@ public class dbinit {
 	private static void createMemberCheckoutsTable(){
 		//uname isbn fees status(returned,checkedout,late,lost) checkoutdate/time returndate/time
 		//sql insert ex. 1,NOW(),DATE_ADD(NOW(), INTERVAL 2 WEEK)
-		System.out.println("Creating table: member_checkouts...");
-		String member_checkouts = "create table if not exists member_checkouts( "+
-								  "code 		varchar(4)  not null, 			"+
-								  "isbn			varchar(15)  not null, 			"+
-								  "status 		varchar(15)	 not null, 			"+
-								  "checkoutdate	DATETIME	not null, 			"+
-								  "returndate	DATETIME	not null, 			"+
-								  "renewals 	int, 							"+
-								  "latefees 	double, 						"+
-								  "bookfees 	double, 						"+
-								  "primary key(code, isbn),						"+
-								  "foreign key(code) references members(code),	"+
-								  "foreign key(isbn) references books(isbn))		";
+		System.out.println("Creating table: members_checkouts...");
+		String member_checkouts = "create table if not exists members_checkouts( "+
+								  "code 		varchar(4)  	not null	,"+
+								  "isbn			varchar(15)  	not null	,"+
+								  "status 		varchar(15)	 	not null	,"+
+								  "checkoutdate	DATETIME		not null	,"+
+								  "returndate	DATETIME		not null	,"+
+								  "renewals 	int							,"+
+								  "latefees 	numeric(10,2)				,"+
+								  "bookfees 	numeric(10,2)				,"+
+								  "primary key(code, isbn)					,"+
+								  "foreign key(code) references members(code),"+
+								  "foreign key(isbn) references books(isbn))";
 		try {
 			stmt.executeUpdate(member_checkouts);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	private static void createMemberReturnsTable(){
+		System.out.println("Creating table: members_returns...");
+		String member_returns = "create table if not exists members_returns( "+
+								  "code 	varchar(4)		not null,"+
+								  "isbn		varchar(15)		not null,"+
+								  "primary key(code,isbn) 			,"+
+								  "foreign key (code) references members(code),"+
+								  "foreign key (isbn) references books(isbn))";
+		try {
+			stmt.executeUpdate(member_returns);
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
@@ -222,7 +239,7 @@ public class dbinit {
 		}
 	}
 	
-	private static void loadBookAuthors() throws SQLException {
+	private static void loadBookAuthors(){
 		System.out.println("populating table: books_authors...");
 		File f = new File("src/config/books_authors");
 		String path = f.getPath();
@@ -233,6 +250,10 @@ public class dbinit {
 					 "INTO TABLE books_authors "+ 
 					 "COLUMNS TERMINATED BY ',' "+
 					 "LINES STARTING BY '.'";
-		stmt.executeUpdate(sql);
+		try {
+			stmt.executeUpdate(sql);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
 	}
 }

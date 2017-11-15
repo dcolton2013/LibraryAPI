@@ -6,6 +6,7 @@ import models.Member;
 //import tests.*;
 
 import java.util.*;
+import java.util.Date;
 import java.util.concurrent.TimeUnit;
 import java.io.*;
 import java.sql.*;
@@ -17,17 +18,23 @@ public class LibraryAPI{
 	public static Library lib;
 	private static Scanner scan = new Scanner(System.in);
 	
-    //Main class allow login (manager,associate,member) and nonmembers to search db
-	public static void main(String[] args) throws InterruptedException, ParseException{
+	public static void main(String[] args){
         System.out.println("Library API");
         initLibrary();
+<<<<<<< HEAD
         System.out.println();
         //startApp();
+=======
+        testMethodsHere();
+>>>>>>> d0e2550effde51c0ec86cbbe7bf4b8920c0fcd92
     }
-   
-    //initialize library
+	
+    private static void testMethodsHere() {
+	}
+
+	//initialize library
     public static void initLibrary(){
-		lib = new Library();
+		new Library();
     }
 }
 

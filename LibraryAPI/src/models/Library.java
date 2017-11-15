@@ -75,7 +75,6 @@ public class Library{
 		    		stmt.executeUpdate(sql);
 		    		currentUser = uname;
 		    		authorityLevel = 0;
-		    		Manager.handleMain();
 			}
 		}catch(SQLException e){
 			System.out.println(e.getMessage());
@@ -91,7 +90,7 @@ public class Library{
 			if (!rs.next())
 				//empty result
 				System.out.println("\t"+ uname + " not authenticated");
-			else{
+			else{ 
 				System.out.println("\t"+uname+" authentication successful");
 			    sql = 	"update associates "+
 						"set loggedIn = 1 " +
@@ -319,7 +318,7 @@ public class Library{
 	}
 	
 	public static void addHoldExpirationDate(String username, String isbn){
-		String sql =  "update member_holds mh "+
+		String sql =  "update members_holds mh "+
 					  "set mh.holdexpiration = DATE_ADD(NOW(),INTERVAL 4 DAY) "+
 					  "where (mh.username = ? and mh.isbn = ?)";
 		try{
@@ -335,6 +334,23 @@ public class Library{
 	
 	public static int getAvailableCopies(String isbn){
 		String sql = "select b.availableCopies "+
+					 "from books b "+
+					 "where b.isbn = '"+isbn+"'";
+		try{
+			rs = stmt.executeQuery(sql);
+			if (!rs.next())
+				return -1;
+			else
+				return rs.getInt(1);
+				
+		}catch(SQLException e){
+			System.out.println(e.getMessage());
+			return -1;
+		}
+	}
+	
+	public static int getTotalCopies(String isbn){
+		String sql = "select b.totalCopies "+
 					 "from books b "+
 					 "where b.isbn = '"+isbn+"'";
 		try{
@@ -431,8 +447,6 @@ public class Library{
 		return searchISBN(getISBN(title));
 	}
 
-
-
 	public static String searchAvailability(){
 		String sql = "select isbn, name, availableCopies "+
 					 "from books "+
@@ -455,8 +469,7 @@ public class Library{
 			return e.getMessage();
 		}
 	}
-	
-	
+		
 	//Display info
 	private static void printBooks(String isbn) throws SQLException{
 		String sql =	"select distinct b.isbn, b.name,b.year, a.author,b.availableCopies "+
