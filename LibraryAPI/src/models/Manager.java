@@ -257,6 +257,23 @@ public class Manager{
 		}
 		
 	}
+	public static void editBookName(String isbn, String title){
+		if (!Library.bookExists(isbn))
+			System.out.println("book not found");
+		
+		String sql = "update books "+
+					 "set name = ? "+
+					 "where isbn = ?";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, title);
+			ps.setString(2, isbn);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	//Remove Functions
 		//remove books by isbn
