@@ -330,6 +330,41 @@ public class Manager{
 			}
 		}
 		
+		public static void editNewRelease(String isbn, int b){
+			if (!Library.bookExists(isbn))
+				System.out.println("book not found");
+			
+			String sql = "update books "+
+						 "set newRelease = ? "+
+						 "where isbn = ?";
+			try {
+				PreparedStatement ps = conn.prepareStatement(sql);
+				ps.setInt(1, b);
+				ps.setString(2, isbn);
+				ps.executeUpdate();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		
+		public static void dropKeyword(String isbn, String keyword){
+			if (!Library.bookExists(isbn))
+				System.out.println("book doesnt exist");
+			
+			String sql = "delete from books_keywords "+
+						 "where isbn = ? and keyword = ?";
+			try {
+				PreparedStatement ps = conn.prepareStatement(sql);
+				ps.setString(1, isbn);
+				ps.setString(2, keyword);
+				ps.executeUpdate();
+			} catch (SQLException e) {
+				System.out.println(e.getMessage());
+			}
+		}
+
 		
 	
 	//Remove Functions
