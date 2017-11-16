@@ -282,6 +282,27 @@ public class Manager{
 		}
 	}
 	
+
+	public static void editBookPrice(String isbn, double price){
+		if (!Library.bookExists(isbn))
+			System.out.println("book not found");
+		
+		String sql = "update books "+
+					 "set price = ? "+
+					 "where isbn = ?";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setDouble(1, price);
+			ps.setString(2, isbn);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	
+	
 	//Remove Functions
 		//remove books by isbn
 	public static void removeBookISBN(String isbn){
