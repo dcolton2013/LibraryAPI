@@ -1,0 +1,13 @@
+#Member.requestLost(isbn, code)
+
+#ISBN
+Book_Status:
+	Valid.
+	Invalid.	[error] [property notFound]
+#Code:
+code_status:
+	Valid.
+	Invalid.		[error]
+checkouts:
+	user checkedout book.	   [if !notFound]
+	user didn't checkout book. [error]	

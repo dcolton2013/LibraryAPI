@@ -1,0 +1,37 @@
+#Manager.createBook(String isbn, String authors,String name, String year,int avail, double price, String keywords)
+
+#year
+year_length:
+	Empty. [error]
+	Non-Empty.
+year:
+	old. [property pre2007]
+	new. [property post2007]
+#isbn
+isbn_length:
+	Empty.	[error]
+	length = 10. [if !post2007]
+	length = 13. [if !pre2007]
+	Invalid. [error]
+#avail
+availableCopies:
+	<0. [error]
+	>=0.
+#authors
+authors_length:
+	Empty. [error]
+	Non-Empty.
+#name
+Title:
+	Empty. [error]
+	Non-Empty.
+#Price
+Price:
+	<=0. [error]
+	>0.
+#Keywords
+keywords_length:
+	Empty. [error]
+	Non-Empty.
+	
+	

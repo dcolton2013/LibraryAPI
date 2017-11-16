@@ -1,0 +1,37 @@
+#addMember(String fname, String lname, String addr, String phone,String username)
+
+#First Name
+FN_Length:
+	Empty.		[error]
+	Non-Empty.	
+
+#Last Name
+LN_Length:
+	Empty.		[error]
+	Non-Empty.
+	
+#Address
+Addy_Length:
+	Empty.		[error]
+	Non-Empty.
+	
+#Phone
+Phone_Length:
+	Empty.		[error]
+	Length < 10.	[error]
+	Non-Empty.
+	
+#Username
+UN_status:
+	Not Unique.	[error] [property notUnique]
+	Valid.		[if !notUnique]
+
+UN_Length:
+	Empty.		[error]
+	Non-Empty	[if !notUnique]
+
+#Password
+	Empty.		[error]
+	Valid.
+	
+

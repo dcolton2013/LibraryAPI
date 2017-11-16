@@ -1,0 +1,32 @@
+
+Test Case 1  		<error>
+   Book_Status :  Not Found
+
+
+Test Case 2  		<error>
+   code_status :  Invalid
+
+
+Test Case 3  		<single>
+   member_status :  suspended latefees
+
+
+Test Case 4  		<single>
+   member_status :  lostbook
+
+
+Test Case 5  		<single>
+   member_status :  suspeneded general
+
+
+Test Case 6  		(Key = 1.1.1.)
+   Book_Status   :  Available
+   code_status   :  Valid
+   member_status :  good standing
+
+
+Test Case 7  		(Key = 2.1.1.)
+   Book_Status   :  On Hold
+   code_status   :  Valid
+   member_status :  good standing
+

@@ -9,20 +9,11 @@ import java.util.*;
 
 public class Associate{
 
-	private String password;
-	private String username;
-	private String name;
-	private int id;
-	
 	private static Scanner scan = new Scanner(System.in);
-	
 	static Statement stmt,stmt2,stmt3;
-
-
 	static Connection conn;
 	static ResultSet rs;
-	/*getters/setters of data field*/
-	/* Validate book, update availability*/
+	
 	public static void scanInBook(String memberUsername, String bookISBN){
 	    String memberQuery = "select * from members m where m.username = '" + memberUsername + "' limit 1;";
 	    String bookQuery = "select * from books b where b.isbn = '" + bookISBN + "' limit 1;";
@@ -130,101 +121,6 @@ public class Associate{
 	    } 
 	}
 	
-
-	public static void showAssociateMenu() throws SQLException{
-        System.out.println("*****************************");
-        System.out.println("1. Create new member");
-        System.out.println("2. Check out book");
-        System.out.println("3. Return books");
-        System.out.println("4. Logout");
-        System.out.println("*****************************");
-        System.out.print("\tSelection: ");
-	}
-	
-	//handles Associate menu options
-	public static void handleMain() throws SQLException {
-		int selection = 0;
-    	showAssociateMenu();
-    	while (true){
-			selection = scan.nextInt();
-			scan.nextLine();
-			switch(selection){
-				case 1:	promptUserInfo();
-						break;
-				case 2: promptScanOut();
-						break;
-				case 3: promptScanIn(); 
-						break;
-				case 4:	selection = -1;
-						break;
-				default: System.out.println("invalid selection");
-			}
-			if (selection == -1) break;
-				showAssociateMenu();
-    	}
-		
-	}
-	
-	public static void promptScanIn() {
-		System.out.print("What's the member's username? ");
-		String memberUName = scan.nextLine();
-		System.out.println();
-		System.out.print("Enter the book's isbn#: ");
-		String isbnBeingReturned = scan.nextLine();
-		System.out.println();
-		scanInBook(memberUName, isbnBeingReturned);
-	}
-	
-	public static void promptScanOut() {
-		System.out.print("Enter the book's ISBN# :  ");
-		String bookISBN = scan.nextLine();
-		System.out.println();
-		System.out.print("Enter the member username: ");
-		String memberCheckingOut = scan.nextLine();
-		System.out.println();
-		scanOutBook(memberCheckingOut, bookISBN);
-	}
-	
-	public static void promptUserInfo() throws SQLException{
-		System.out.print("\tFirst Name:");
-		String fname = scan.nextLine();
-		
-		System.out.print("\tLast Name:");
-		String lname = scan.nextLine();
-		
-		System.out.print("\tAddress:");
-		String addr = scan.nextLine();
-
-		System.out.print("\tPhone:");
-		String phone = scan.nextLine();
-		
-		System.out.print("\tUsername:");
-		String username = scan.nextLine();
-		System.out.println();
-		
-		String code = Member.generateLibrarycode();
-		int returncode = addMember(fname,lname,addr,phone,username);
-		
-		while(returncode != 0){
-			if (returncode == 1){
-				//duplicate username
-				System.out.println("uname in use");
-				System.out.println("Username:");
-				username = scan.nextLine();
-			}
-			if (returncode == 2){
-				//duplicatecode
-				code = Member.generateLibrarycode();
-			}
-			returncode = addMember(fname,lname,addr,phone,username);
-		}	
-		System.out.println("\tuser added.");
-		System.out.println("\tCredentials: ");
-		System.out.println("\tUsername: " + username);
-		System.out.println("\tLibrary Code: " + code);
-	}
-	
-
 	public static int addMember(String fname, String lname,
 							 	String addr, String phone,
 							 	String username){

@@ -1,0 +1,41 @@
+
+Test Case 1  		<error>
+   FN_Length :  Empty
+
+
+Test Case 2  		<error>
+   LN_Length :  Empty
+
+
+Test Case 3  		<error>
+   Addy_Length :  Empty
+
+
+Test Case 4  		<error>
+   Phone_Length :  Empty
+
+
+Test Case 5  		<error>
+   Phone_Length :  Length < 10
+
+
+Test Case 6  		<error>
+   UN_status :  Not Unique
+
+
+Test Case 7  		<error>
+   UN_Length :  Empty
+
+
+Test Case 8  		<error>
+   UN_Length :  Empty
+
+
+Test Case 9  		(Key = 2.2.2.3.2.3.)
+   FN_Length    :  Non-Empty
+   LN_Length    :  Non-Empty
+   Addy_Length  :  Non-Empty
+   Phone_Length :  Non-Empty
+   UN_status    :  Valid
+   UN_Length    :  Valid
+

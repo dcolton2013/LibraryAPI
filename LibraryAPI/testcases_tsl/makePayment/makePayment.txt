@@ -1,0 +1,18 @@
+#Member.makePayment(double amount, String code)
+
+#amount
+payment:
+	<0.			[error]
+	>0.		
+	=0.			[single]
+#code
+code_status:
+	Invalid. 		[error]
+	Valid.
+
+member_fees:
+	total fees<0.		[error]
+	total fees=0.		[single]
+	total fees>0.
+	late fees > 0, book fees = 0.
+	book fees > 0, late fees = 0. 

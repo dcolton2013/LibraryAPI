@@ -1,0 +1,18 @@
+
+Test Case 1  		<error>
+   Book_Status :  Invalid
+
+
+Test Case 2  		<error>
+   code_status :  Invalid
+
+
+Test Case 3  		<error>
+   checkouts :  user didn't checkout book
+
+
+Test Case 4  		(Key = 1.1.1.)
+   Book_Status :  Valid
+   code_status :  Valid
+   checkouts   :  user checkedout book
+

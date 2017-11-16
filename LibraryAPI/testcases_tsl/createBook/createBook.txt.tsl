@@ -1,0 +1,54 @@
+
+Test Case 1  		<error>
+   year_length :  Empty
+
+
+Test Case 2  		<error>
+   isbn_length :  Empty
+
+
+Test Case 3  		<error>
+   isbn_length :  Invalid
+
+
+Test Case 4  		<error>
+   availableCopies :  <0
+
+
+Test Case 5  		<error>
+   authors_length :  Empty
+
+
+Test Case 6  		<error>
+   Title :  Empty
+
+
+Test Case 7  		<error>
+   Price :  <=0
+
+
+Test Case 8  		<error>
+   keywords_length :  Empty
+
+
+Test Case 9  		(Key = 2.1.2.2.2.2.2.2.)
+   year_length     :  Non-Empty
+   year            :  old
+   isbn_length     :  length = 10
+   availableCopies :  >=0
+   authors_length  :  Non-Empty
+   Title           :  Non-Empty
+   Price           :  >0
+   keywords_length :  Non-Empty
+
+
+Test Case 10 		(Key = 2.2.3.2.2.2.2.2.)
+   year_length     :  Non-Empty
+   year            :  new
+   isbn_length     :  length = 13
+   availableCopies :  >=0
+   authors_length  :  Non-Empty
+   Title           :  Non-Empty
+   Price           :  >0
+   keywords_length :  Non-Empty
+

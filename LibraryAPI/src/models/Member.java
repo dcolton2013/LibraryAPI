@@ -8,6 +8,7 @@ import java.sql.Statement;
 import java.util.*;
 
 public class Member {
+	
 	static Statement stmt;
 	static Connection conn;
 	private static ResultSet rs;
@@ -321,6 +322,7 @@ public class Member {
 			System.out.println(ex.getMessage());
 		}
 	}     
+	
 	public static void displayHolds(String code){
 		if (!Library.userExists(code))
 			System.out.println("user not found");

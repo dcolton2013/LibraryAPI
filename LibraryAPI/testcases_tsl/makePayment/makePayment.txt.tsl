@@ -1,0 +1,38 @@
+
+Test Case 1  		<error>
+   payment :  <0
+
+
+Test Case 2  		<single>
+   payment :  =0
+
+
+Test Case 3  		<error>
+   code_status :  Invalid
+
+
+Test Case 4  		<error>
+   member_fees :  total fees<0
+
+
+Test Case 5  		<single>
+   member_fees :  total fees=0
+
+
+Test Case 6  		(Key = 2.2.3.)
+   payment     :  >0
+   code_status :  Valid
+   member_fees :  total fees>0
+
+
+Test Case 7  		(Key = 2.2.4.)
+   payment     :  >0
+   code_status :  Valid
+   member_fees :  late fees > 0, book fees = 0
+
+
+Test Case 8  		(Key = 2.2.5.)
+   payment     :  >0
+   code_status :  Valid
+   member_fees :  book fees > 0, late fees = 0
+

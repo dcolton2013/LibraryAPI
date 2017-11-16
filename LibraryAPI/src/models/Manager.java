@@ -170,6 +170,7 @@ public class Manager{
 	//create books
 	//accepts authors and keywords as a string
 	//separate each author/keyword with a comma
+	//each book must contain at least one author and keyword
 	public static int createBook(String isbn, String authors,String name, String year,int avail, double price, String keywords){
 		//no author
 		if (authors.length() == 0) return 1;
@@ -183,7 +184,9 @@ public class Manager{
 		
 		//no title
 		if (name == null || name == "") return 4;
-
+		
+		if (keywords == null || keywords.length() == 0) return 5;
+		
 		insertIntoBooks(isbn,name,year,avail,price);
 			
 		insertIntoBookAuthors(isbn,authors);
@@ -213,7 +216,6 @@ public class Manager{
 	
 	private static void insertIntoBookKeywords(String isbn, String keywords) {
 		try{
-			if (keywords == null || keywords.length() == 0) return;
 			for (String k: keywords.split(",( |)")){
 				String sql = 	"insert ignore into books_keywords values( "+
 								"'"+isbn	+"', "+ 
@@ -239,6 +241,7 @@ public class Manager{
 		}
 		
 	}
+	
 	public static void editBookName(String isbn, String title){
 		if (!Library.bookExists(isbn))
 			System.out.println("book not found");
@@ -282,7 +285,6 @@ public class Manager{
 		}
 	}
 	
-
 	public static void editBookPrice(String isbn, double price){
 		if (!Library.bookExists(isbn))
 			System.out.println("book not found");
@@ -301,8 +303,8 @@ public class Manager{
 		}
 	}
 	
-	//accepts isbn an a positive or negative num to increase total copies by
-		public static void editTotalCopies(String isbn, int copies){
+	//accepts isbn an a positive or negative num (copies) to increase total copies by
+	public static void editTotalCopies(String isbn, int copies){
 			if (!Library.bookExists(isbn))
 				System.out.println("book not found");
 			
@@ -330,9 +332,11 @@ public class Manager{
 			}
 		}
 		
-		public static void editNewRelease(String isbn, int b){
+	public static void editNewRelease(String isbn, int b){
 			if (!Library.bookExists(isbn))
 				System.out.println("book not found");
+			
+			if (!(b == 1 || b==0))return;
 			
 			String sql = "update books "+
 						 "set newRelease = ? "+
@@ -348,8 +352,7 @@ public class Manager{
 			}
 		}
 		
-		
-		public static void dropKeyword(String isbn, String keyword){
+	public static void dropKeyword(String isbn, String keyword){
 			if (!Library.bookExists(isbn))
 				System.out.println("book doesnt exist");
 			
@@ -364,11 +367,8 @@ public class Manager{
 				System.out.println(e.getMessage());
 			}
 		}
-
 		
-	
-	//Remove Functions
-		//remove books by isbn
+	//remove books by isbn
 	public static void removeBookISBN(String isbn){
 		//remove from books table if isbn is of required length
 		if(isbn.length() < 7) return;
@@ -380,7 +380,7 @@ public class Manager{
 		System.out.println("Book: "+isbn+" "+title+" removed");
 	}
 
-		//remove by name
+	//remove by name
 	public static void removeBookName(String name){
 		removeBookISBN(Library.getISBN(name));
 	}

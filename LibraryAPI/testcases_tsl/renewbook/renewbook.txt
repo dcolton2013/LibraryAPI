@@ -1,0 +1,17 @@
+#Member.requestRenewal(isbn, code)
+#Associate.renewBook(isbn,code)
+
+#ISBN
+Book_Status:
+	Available.
+	On Hold.		[property onHold]
+	Not Found.		[error][property notFound]
+#Code:
+code_status:
+	Valid.
+	Invalid.		[error][if !notFound]
+member_status:
+	good standing.
+	suspended latefees. 	[single][if !onHold]			
+      	lostbook. 		[single][if !onHold]			
+      	suspeneded general. 	[single][if !onHold]	
