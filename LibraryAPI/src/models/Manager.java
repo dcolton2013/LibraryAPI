@@ -239,6 +239,23 @@ public class Manager{
 		}
 		
 	}
+	public static void editBookName(String isbn, String title){
+		if (!Library.bookExists(isbn))
+			System.out.println("book not found");
+		
+		String sql = "update books "+
+					 "set name = ? "+
+					 "where isbn = ?";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setString(1, title);
+			ps.setString(2, isbn);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
 
 	private static int isNewRelease(String year){
 		//Determine new release
@@ -264,6 +281,91 @@ public class Manager{
 			System.out.println(e.getMessage());
 		}
 	}
+	
+
+	public static void editBookPrice(String isbn, double price){
+		if (!Library.bookExists(isbn))
+			System.out.println("book not found");
+		
+		String sql = "update books "+
+					 "set price = ? "+
+					 "where isbn = ?";
+		try {
+			PreparedStatement ps = conn.prepareStatement(sql);
+			ps.setDouble(1, price);
+			ps.setString(2, isbn);
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+	
+	//accepts isbn an a positive or negative num to increase total copies by
+		public static void editTotalCopies(String isbn, int copies){
+			if (!Library.bookExists(isbn))
+				System.out.println("book not found");
+			
+			if (copies == 0) return;
+			
+			//wont allow totalCopies to go below zero
+			int currentCopies = Library.getTotalCopies(isbn);
+			if (copies<0){
+				if (currentCopies < Math.abs(copies))
+					copies = -currentCopies;
+			}
+			
+			String sql = "update books "+
+						 "set totalCopies = totalCopies + ?, availableCopies = availableCopies + ? "+
+						 "where isbn = ?";
+			try {
+				PreparedStatement ps = conn.prepareStatement(sql);
+				ps.setDouble(1, copies);
+				ps.setDouble(2, copies);
+				ps.setString(3, isbn);
+				ps.executeUpdate();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		public static void editNewRelease(String isbn, int b){
+			if (!Library.bookExists(isbn))
+				System.out.println("book not found");
+			
+			String sql = "update books "+
+						 "set newRelease = ? "+
+						 "where isbn = ?";
+			try {
+				PreparedStatement ps = conn.prepareStatement(sql);
+				ps.setInt(1, b);
+				ps.setString(2, isbn);
+				ps.executeUpdate();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		
+		public static void dropKeyword(String isbn, String keyword){
+			if (!Library.bookExists(isbn))
+				System.out.println("book doesnt exist");
+			
+			String sql = "delete from books_keywords "+
+						 "where isbn = ? and keyword = ?";
+			try {
+				PreparedStatement ps = conn.prepareStatement(sql);
+				ps.setString(1, isbn);
+				ps.setString(2, keyword);
+				ps.executeUpdate();
+			} catch (SQLException e) {
+				System.out.println(e.getMessage());
+			}
+		}
+
+		
 	
 	//Remove Functions
 		//remove books by isbn
