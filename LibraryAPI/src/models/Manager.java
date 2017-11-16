@@ -301,7 +301,36 @@ public class Manager{
 		}
 	}
 	
-	
+	//accepts isbn an a positive or negative num to increase total copies by
+		public static void editTotalCopies(String isbn, int copies){
+			if (!Library.bookExists(isbn))
+				System.out.println("book not found");
+			
+			if (copies == 0) return;
+			
+			//wont allow totalCopies to go below zero
+			int currentCopies = Library.getTotalCopies(isbn);
+			if (copies<0){
+				if (currentCopies < Math.abs(copies))
+					copies = -currentCopies;
+			}
+			
+			String sql = "update books "+
+						 "set totalCopies = totalCopies + ?, availableCopies = availableCopies + ? "+
+						 "where isbn = ?";
+			try {
+				PreparedStatement ps = conn.prepareStatement(sql);
+				ps.setDouble(1, copies);
+				ps.setDouble(2, copies);
+				ps.setString(3, isbn);
+				ps.executeUpdate();
+			} catch (SQLException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+		}
+		
+		
 	
 	//Remove Functions
 		//remove books by isbn
