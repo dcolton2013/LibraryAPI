@@ -25,6 +25,8 @@ public class LibraryAPI{
     }
 	
     private static void testMethodsHere() {
+    		Manager.createAssociate("a1", "pass1");
+    		Manager.createAssociate("a1", "pass1");
 	}
 
 	//initialize library

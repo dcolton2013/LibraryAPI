@@ -22,14 +22,14 @@ public class dbinit {
 	    	System.out.println(e.getMessage());
 	    }
 		createManagersTable();
-    	createAssociatesTable();
-    	createMembersTable();
-    	createBooksTable();
-    	createBookAuthorsTable();
-    	createBookKeywordsTable();
-    	createMemberHoldsTable();
-    	createMemberCheckoutsTable();
-    	createMemberReturnsTable();
+	    	createAssociatesTable();
+	    	createMembersTable();
+	    	createBooksTable();
+	    	createBookAuthorsTable();
+	    	createBookKeywordsTable();
+	    	createMemberHoldsTable();
+	    	createMemberCheckoutsTable();
+	    	createMemberReturnsTable();
 	}
 	
 	private static void createManagersTable() {

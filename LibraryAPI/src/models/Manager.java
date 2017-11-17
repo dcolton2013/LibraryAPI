@@ -100,24 +100,6 @@ public class Manager{
 		}
 	}
 	
-	//prompt for info
-	private static void addAssociate() throws SQLException {
-		System.out.print("\tusername: ");
-		String username = scan.nextLine();
-		System.out.print("\tpassword: ");
-		String password = scan.nextLine();
-		createAssociate(username,password);
-		
-	}
-
-	private static void addManager() throws SQLException {
-		System.out.print("\tusername: ");
-		String username = scan.nextLine();
-		System.out.print("\tpassword: ");
-		String password = scan.nextLine();
-		createManager(username,password);
-	}
-	
 	public static void suspendMember(String code){
 		String sql = "update members "+
 					 "set suspended = 1 "+
@@ -147,24 +129,37 @@ public class Manager{
 	}
 	
 	//functions to add tuples to the db
-	public static void createManager(String uname,String password) throws SQLException{
-		System.out.println("\tadding manager: " + uname);
+	public static void createManager(String uname,String password){
 		String sql = 	"insert ignore into managers values (" +
 					 	"'"+uname+"',"+
 					 	"'"+password+"',"+
 					 	"'"+0+"'"+
 					 	")";
-		stmt.executeUpdate(sql);	
+		try {
+			stmt.executeUpdate(sql);
+			System.out.println("\tadding manager: " + uname );
+		} catch (SQLException e) {
+			String s = e.getMessage();
+			if (s.contains("PRIMARY"))
+				System.out.println("Username " + uname + " already exists");
+		}	
 	}
 	
-	public static void createAssociate(String uname,String password) throws SQLException{
-		System.out.println("\tadding associate: " + uname );
-		String sql = 	"insert ignore into associates values (" +
+	public static void createAssociate(String uname,String password){
+		//System.out.println("\tadding associate: " + uname );
+		String sql = 	"insert into associates values (" +
 					 	"'"+uname+"',"+
 					 	"'"+password+"',"+
 					 	"'"+0+"'"+
 					 	")";
-		stmt.executeUpdate(sql);	
+		try {
+			stmt.executeUpdate(sql);
+			System.out.println("\tadding associate: " + uname );
+		} catch (SQLException e) {
+			String s = e.getMessage();
+			if (s.contains("PRIMARY"))
+				System.out.println("Username " + uname + " already exists");
+		}
 	}
 	
 	//create books
