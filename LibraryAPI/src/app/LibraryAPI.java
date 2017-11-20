@@ -25,8 +25,15 @@ public class LibraryAPI{
     }
 	
     private static void testMethodsHere() {
-    		Manager.createAssociate("a1", "pass1");
-    		Manager.createAssociate("a1", "pass1");
+    	//	Manager.createAssociate("a1", "pass1");
+    	//	Manager.createAssociate("a1", "pass1");
+    	
+    		//Scan out books
+//    		Associate.scanOutBook("testmember2", "9781501175565");
+  //  		Associate.scanOutBook("testmember2", "9780062645227");
+    		//Scan inbooks
+    	//Associate.scanInBook("blahblahblah", "9780849946158");
+    	//	Associate.scanInBook("blahblahblah", "0394900014");
 	}
 
 	//initialize library
