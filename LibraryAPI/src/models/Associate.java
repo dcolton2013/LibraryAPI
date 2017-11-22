@@ -16,121 +16,50 @@ public class Associate{
 	static ResultSet rs;
 	
 	public static void scanInBook(String memberUsername, String bookISBN){
-
 	    String memberQuery = "select * from members m where m.username = '" + memberUsername + "' limit 1;";
-
 	    String bookQuery = "select * from books b where b.isbn = '" + bookISBN + "' limit 1;";
-
 	    String updateBookQuery = "UPDATE books b SET b.availableCopies = (b.availableCopies + 1) WHERE b.isbn= '"+ bookISBN+ "' ;" ;
-
 	    String updateMemberQuery = "UPDATE members m SET m.numBooksCheckedOut = (m.numBooksCheckedOut - 1) WHERE m.username= '"+ memberUsername+ "' ;" ;
-
-
-
 	    try {
-
 	        stmt = conn.createStatement();
-
 	        stmt2 = conn.createStatement();
-
-	       
-
 	        ResultSet rs = stmt.executeQuery(memberQuery);
-
-	       
-
 	        int remainingRentals =0;
-
-	       
-
 	        while (rs.next()) {
-
 	            String memberName = rs.getString("fname") + " " + rs.getString("lname");
-
 	            System.out.printf("%s has been successfully retrieved.%n", memberName);
-
 	        }
-
-	       
-
 	        rs = stmt2.executeQuery(bookQuery);
-
 	        int copies=0;
-
 	        while (rs.next()) {
-
 	            String bookName = rs.getString("name");
-
 	            copies = rs.getInt("availableCopies");
-
 	            System.out.printf("%s has been successfully scanned in.%n", bookName);
-
 	        }
-
 	        int response = stmt.executeUpdate(updateBookQuery);
-
-
-
 	          if(response == 1){
-
 	System.out.println("Book copies available: " + (copies+1));
-
 	          }
-
-	           
-
-	           
-
 	          int responseMember = stmt2.executeUpdate(updateMemberQuery);
-
 	          String updateMemberCheckinQuery = "UPDATE members_checkouts m SET m.status = 'checked in' WHERE m.isbn= '"+ bookISBN+ "' ;" ;  
-
 	 	      int memCheckins = stmt2.executeUpdate(updateMemberCheckinQuery);
-
-	       
-
 	 	      if(memCheckins == 1) {
-
 	 	   	  System.out.println("checkin success alert.");
-
 	 	      }
-
-	           
-
 	          rs = stmt.executeQuery(memberQuery);
-
 	          while (rs.next()) {
-
 	            int booksCheckedOut = rs.getInt("numBooksCheckedOut");
-
 	            System.out.printf("You have %d reamaining rentals.\n", 10-booksCheckedOut);
-
 	        }
-
 	          if(responseMember==1) {
-
 	       	  System.out.println("Okay thanks alot.");
-
 	       	  System.out.println("Come again.");
-
 	          }
-
-	           
-
 	        stmt.close();
-
 	        stmt2.close();
-
-	       
-
 	    } catch (SQLException e ) {
-
 	        e.printStackTrace();
-
 	    } 
-
-	   
-
 	}
 
 
