@@ -1,0 +1,4 @@
+.assoc1,apass1
+.assoc2,apass2
+.assoc3,apass3
+.assoc4,apass4

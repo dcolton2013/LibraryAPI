@@ -3,6 +3,7 @@ package config;
 import java.io.File;
 import java.sql.SQLException;
 import java.sql.Statement;
+import models.*;
 /*
  * this class creates the initial pre-populated db
  * data files can be found under src/config/
@@ -38,13 +39,14 @@ public class dbinit {
 	    String managersTable =  "create table if not exists managers (" +
 	    					 	"username	varchar(15)		not null,"+
 	    					 	"password	varchar(15)		not null,"+
-	    					 	"loggedIn	boolean					,"+
+	    					 	"loggedIn	boolean			default 0,"+
 	    					 	"primary key(username));";
 	    try {
 	        stmt.executeUpdate(managersTable);
 	    } catch (SQLException ex) {
 	        System.out.println(ex.getMessage());
 	    }
+	    loadManagers();
 	}
 	
 	private static void createAssociatesTable() {
@@ -53,13 +55,14 @@ public class dbinit {
 	    String associatesTable = "create table if not exists associates (" +
 	    					 	 "username	varchar(15)		not null,"+
 	    					 	 "password	varchar(15)		not null,"+
-	    					 	 "loggedIn	boolean					,"+
+	    					 	 "loggedIn	boolean			default 0,"+
 	    					 	 "primary key(username));";
 	    try {
 	        stmt.executeUpdate(associatesTable);
 	    } catch (SQLException ex) {
 	        System.out.println(ex.toString());
 	    }
+	    loadAssociates();
 	}
 	
 	private static void createMembersTable(){
@@ -68,15 +71,15 @@ public class dbinit {
 	    String membersTable =  "create table if not exists members (" +
 	    					 	"fname						varchar(15)		not null,"+
 	    					 	"lname						varchar(15)		not null,"+
-	    					 	"address					varchar(50)		not null,"+
+	    					 	"address						varchar(50)		not null,"+
 	    					 	"phone						varchar(10)		not null,"+
 	    					 	"username					varchar(15)		not null,"+
 	    					 	"password					varchar(15)		not null,"+
 	    					 	"code						varchar(4)		not null,"+
-	    					 	"numBooksCheckedOut			int						,"+
-	    					 	"suspended					boolean					,"+
-	    					 	"loggedIn					boolean					,"+
-	    					 	"minPayment					numeric(10,2)			,"+
+	    					 	"numBooksCheckedOut			int				default 0,"+
+	    					 	"suspended					boolean			default 0,"+
+	    					 	"loggedIn					boolean			default 0,"+
+	    					 	"minPayment					numeric(10,2)	default 0,"+
 	    					 	"primary key(username));";
 	    try {
 	        stmt.executeUpdate(membersTable);
@@ -84,6 +87,7 @@ public class dbinit {
 	        System.out.println(ex.toString());
 	    }
 	    addMemberConstraints();
+	    loadMembers();
 	}
 	
 	private static void createBooksTable() {
@@ -94,9 +98,9 @@ public class dbinit {
 							 "year				varchar(4)		not null, "+
 							 "totalCopies		int				not null, "+
 							 "availableCopies	int				not null, "+
-							 "holds				int				not null, "+
+							 "holds				int				not null		default 0, "+
 							 "price				double			not null, "+
-							 "newrelease		boolean			not null, "+
+							 "newrelease		boolean				not null		default 0, "+
 				 			 "primary key(isbn))";
 		try{
 			stmt.executeUpdate(booksTable);
@@ -159,14 +163,14 @@ public class dbinit {
 		//sql insert ex. 1,NOW(),DATE_ADD(NOW(), INTERVAL 2 WEEK)
 		System.out.println("Creating table: members_checkouts...");
 		String member_checkouts = "create table if not exists members_checkouts( "+
-								  "code 		varchar(4)  	not null	,"+
+								  "code 			varchar(4)  		not null	,"+
 								  "isbn			varchar(15)  	not null	,"+
 								  "status 		varchar(15)	 	not null	,"+
-								  "checkoutdate	DATETIME		not null	,"+
-								  "returndate	DATETIME		not null	,"+
-								  "renewals 	int							,"+
-								  "latefees 	numeric(10,2)				,"+
-								  "bookfees 	numeric(10,2)				,"+
+								  "checkoutdate	DATETIME			not null	 	default NOW(),"+
+								  "returndate	DATETIME			not null		,"+
+								  "renewals 		int							default 0,"+
+								  "latefees 		numeric(10,2)				default 0,"+
+								  "bookfees 		numeric(10,2)				default 0,"+
 								  "primary key(code, isbn)					,"+
 								  "foreign key(code) references members(code),"+
 								  "foreign key(isbn) references books(isbn))";
@@ -175,6 +179,7 @@ public class dbinit {
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
+		loadMemberCheckouts();
 	}
 	
 	private static void createMemberReturnsTable(){
@@ -220,6 +225,42 @@ public class dbinit {
 			System.out.println(e.getMessage());
 		}
 	}
+	
+	private static void loadManagers() {
+		System.out.println("populating table: managers...");
+		File f = new File("src/config/managers");
+		String path =f.getPath();
+		if (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0){
+			path = path.replace("\\", "/");
+		}
+		String sql = "LOAD DATA LOCAL INFILE '"+path+".txt' "+
+					 "INTO TABLE managers "+
+					 "COLUMNS TERMINATED BY ',' "+
+					 "LINES STARTING BY '.'";
+		try {
+			stmt.executeUpdate(sql);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	private static void loadAssociates() {
+		System.out.println("populating table: associates...");
+		File f = new File("src/config/associates");
+		String path =f.getPath();
+		if (System.getProperty("os.name").toLowerCase().indexOf("win") >= 0){
+			path = path.replace("\\", "/");
+		}
+		String sql = "LOAD DATA LOCAL INFILE '"+path+".txt' "+
+					 "INTO TABLE associates "+
+					 "COLUMNS TERMINATED BY ',' "+
+					 "LINES STARTING BY '.'";
+		try {
+			stmt.executeUpdate(sql);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
 
 	private static void loadBooks(){
 		System.out.println("populating table: books...");
@@ -239,6 +280,15 @@ public class dbinit {
 		}
 	}
 	
+	private static void loadMembers(){
+		System.out.println("populating table: members...");
+		Associate.addMember("Lebron", "James", "6022 Cleveland Ave", "5678453456", "ljames");
+		Associate.addMember("Sammy", "Sharpsburg", "1101 Savory Street", "8882223333", "ssharpsburg");
+		Associate.addMember("Kobe", "Bryant", "477 East Langford Drive", "5554321987", "kbryant");
+		Associate.addMember("Sasha", "Smitherson", "1212 Twelfth Street", "2291212122", "ssmitherson");
+		Associate.addMember("Sheldon", "Bloobob", "333 Mars Way", "4567239900", "sbloobob");
+	}
+	
 	private static void loadBookAuthors(){
 		System.out.println("populating table: books_authors...");
 		File f = new File("src/config/books_authors");
@@ -255,5 +305,10 @@ public class dbinit {
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
+	}
+	
+	private static void loadMemberCheckouts() {
+		System.out.println("populating table:member_checkouts...");
+		Associate.scanOutBook("3330", "9781501175565");
 	}
 }

@@ -13,19 +13,6 @@ public class Member {
 	static Connection conn;
 	private static ResultSet rs;
 	
-	public static String generatePassword(){
-		String password = UUID.randomUUID().toString();
-		password.replace("-","");
-		password = password.substring(0,8);
-		return password;
-	}
-	
-	public static String generateLibrarycode(){
-		Random random = new Random();
-		int code = random.nextInt(9000) + 1000;
-		return "" + code;
-	}
-	
 	public static void reportLost(String isbn,String code){
 		if (!Library.bookExists(isbn)){
 			System.out.println("no matching isbn");

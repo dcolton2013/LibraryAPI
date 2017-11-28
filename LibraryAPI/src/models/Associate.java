@@ -60,13 +60,14 @@ public class Associate{
 			e.printStackTrace();
 		} 
 	}
+	
 	@SuppressWarnings("resource")
 	public static void scanOutBook(String member, String bookISBN){
 		String memberQuery = "select * from members m where m.username = '" + member + "' limit 1;";
 		String bookQuery = "select * from books b where b.isbn = '" + bookISBN + "' limit 1;";
 		String updateBookQuery = "UPDATE books b SET b.availableCopies = (b.availableCopies - 1) WHERE b.isbn= '"+ bookISBN+ "' ;" ;
 		String updateMemberQuery = "UPDATE members m SET m.numBooksCheckedOut = (m.numBooksCheckedOut + 1) WHERE m.username= '"+ member+ "' ;" ;
-		try {
+		try { 
 			stmt = conn.createStatement();
 			stmt2 = conn.createStatement();
 			stmt3 = conn.createStatement();
@@ -130,14 +131,25 @@ public class Associate{
 			e.printStackTrace();
 		} 
 	}
-
-
 	
+	private static String generatePassword(){
+		String password = UUID.randomUUID().toString();
+		password.replace("-","");
+		password = password.substring(0,8);
+		return password;
+	}
+	
+	private static String generateLibrarycode(){
+		Random random = new Random();
+		int code = random.nextInt(9000) + 1000;
+		return "" + code;
+	}
+
 	public static int addMember(String fname, String lname,
 							 	String addr, String phone,
 							 	String username){
-		String password = Member.generatePassword();
-		String code = Member.generateLibrarycode();
+		String password = generatePassword();
+		String code = generateLibrarycode();
 		return addMember(fname,lname,addr,phone,username,password,code);
 	}
 	
@@ -145,7 +157,7 @@ public class Associate{
 		 						String addr, String phone,
 		 						String username,String password,
 		 						String code){
-		String sql = "insert into members values(?,?,?,?,?,?,?,?,?,?,?)";
+		String sql = "insert into members values(?,?,?,?,?,?,?,default,default,default,default)";
 		try {
 			PreparedStatement pstmt = conn.prepareStatement(sql);
 			pstmt.setString(1,fname);
@@ -155,10 +167,6 @@ public class Associate{
 			pstmt.setString(5,username);
 			pstmt.setString(6,password);
 			pstmt.setString(7,code);
-			pstmt.setInt(8,0);
-			pstmt.setBoolean(9,false);
-			pstmt.setBoolean(10,false);
-			pstmt.setDouble(11,0);
 			pstmt.execute();
 			System.out.println("\tuser added.");
 			System.out.println("\tcredentials: ");
@@ -174,7 +182,7 @@ public class Associate{
 				return 1;
 			}else if (s.contains("code")){
 				//duplicate library code;
-				code = Member.generateLibrarycode();
+				code = generateLibrarycode();
 				addMember(fname,lname,addr,phone,username,password,code);
 			}
 		}

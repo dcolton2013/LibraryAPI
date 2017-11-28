@@ -1,0 +1,4 @@
+.man1,mpass1
+.man2,mpass2
+.man3,mpass3
+.man4,mpass4

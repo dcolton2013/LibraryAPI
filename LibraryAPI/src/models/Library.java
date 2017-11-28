@@ -43,19 +43,20 @@ public class Library{
 			conn = DriverManager.getConnection(url, user, password);
 			stmt = conn.createStatement();
 		    System.out.println("Database connected successfully");
+		    
+		    Manager.stmt = stmt;
+		    Associate.stmt = stmt;
+		    Member.stmt = stmt;
+		    
+		    Manager.conn = conn;
+		    Associate.conn = conn;
+		    Member.conn = conn;
+		    
 		    dbinit.createDB(stmt);
 		} catch (SQLException e) {
 			e.printStackTrace();
 			System.exit(0);
 		}
-	    
-	    Manager.stmt = stmt;
-	    Associate.stmt = stmt;
-	    Member.stmt = stmt;
-	    
-	    Manager.conn = conn;
-	    Associate.conn = conn;
-	    Member.conn = conn;
 	}
 	
 	public static void loginManager(String uname, String password){
