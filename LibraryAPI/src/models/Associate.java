@@ -175,10 +175,10 @@ public class Associate{
 			System.out.println("\tlibrary code: " + code);
 		} catch (SQLException e) {
 			String s = e.getLocalizedMessage();
-			System.out.println(s);
+			//System.out.println(s);
 			if (s.contains("uname") || s.contains("PRIMARY")){
 				//duplicate username
-				System.out.println("duplicate username");
+				//System.out.println("duplicate username");
 				return 1;
 			}else if (s.contains("code")){
 				//duplicate library code;

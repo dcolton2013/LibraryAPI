@@ -20,9 +20,6 @@ public class Library{
 	public static Connection conn;
 	private static Statement stmt;
 	private static ResultSet rs;
-	
-	//currently logged in
-	public static String currentUser = "";
 
 	//authority levels
 	//0: admin, managers
@@ -74,7 +71,6 @@ public class Library{
 						"set loggedIn = 1 " +
 						"where username = '"+uname+"'";
 		    		stmt.executeUpdate(sql);
-		    		currentUser = uname;
 		    		authorityLevel = 0;
 			}
 		}catch(SQLException e){
@@ -97,7 +93,6 @@ public class Library{
 						"set loggedIn = 1 " +
 						"where username = '"+uname+"'";
 		    		stmt.executeUpdate(sql);
-		    		currentUser = uname;
 		    		authorityLevel = 1;
 		    		//Associate.handleMain();
 				}
@@ -121,7 +116,6 @@ public class Library{
 						"set loggedIn = 1 " +
 						"where username = '"+uname+"'";
 		    		stmt.executeUpdate(sql);
-		    		currentUser = uname;
 		    		authorityLevel = 2;
 			}
 		}catch(SQLException e){
@@ -129,39 +123,39 @@ public class Library{
 		}
 	}
 
-	public static void logoutManager() {
+	public static void logoutManager(String user) {
 		String sql = "update managers "+
 					 "set loggedIn = 0 "+
-					 "where username = '"+ currentUser +"'";
+					 "where username = '"+ user +"'";
 		try {
 			stmt.executeUpdate(sql);
-			System.out.println("\t"+currentUser + " succesfully logged out");
+			System.out.println("\t"+user + " succesfully logged out");
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
 		authorityLevel = 3;
 	}
 	
-	public static void logoutAssociate() {
+	public static void logoutAssociate(String user) {
 		String sql = "update associates "+
 					 "set loggedIn = 0 "+
-					 "where username = '"+ currentUser +"'";
+					 "where username = '"+ user +"'";
 		try {
 			stmt.executeUpdate(sql);
-			System.out.println("\t" + currentUser + " succesfully logged out");
+			System.out.println("\t" + user + " succesfully logged out");
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}
 		authorityLevel = 3;
 	}
 	
-	public static void logoutMember() {
+	public static void logoutMember(String user) {
 		String sql = "update members "+
 					 "set loggedIn = 0 "+
-					 "where username = '"+ currentUser +"'";
+					 "where username = '"+ user +"'";
 		try {
 			stmt.executeUpdate(sql);
-			System.out.println("\t" + currentUser + " succesfully logged out");
+			System.out.println("\t" + user + " succesfully logged out");
 		} catch (SQLException e) {
 			System.out.println(e.getMessage());
 		}

@@ -21,21 +21,10 @@ public class LibraryAPI{
 	public static void main(String[] args){
         System.out.println("Library API");
         initLibrary();
-        testMethodsHere();
+        System.out.println("\n\n\n\n");
+        demo.main(args);
     }
 	
-    private static void testMethodsHere() {
-    	//	Manager.createAssociate("a1", "pass1");
-    	//	Manager.createAssociate("a1", "pass1");
-    	
-    		//Scan out books
-//    		Associate.scanOutBook("testmember2", "9781501175565");
-  //  		Associate.scanOutBook("testmember2", "9780062645227");
-    		//Scan inbooks
-    	//Associate.scanInBook("blahblahblah", "9780849946158");
-    	//	Associate.scanInBook("blahblahblah", "0394900014");
-	}
-
 	//initialize library
     public static void initLibrary(){
 		new Library();
@@ -46,3 +35,4 @@ public class LibraryAPI{
 //  javac $(find . -name "*.java")
 //Run program from main:
 //  java app.main
+

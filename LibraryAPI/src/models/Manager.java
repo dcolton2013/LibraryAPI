@@ -7,7 +7,7 @@ import java.sql.ResultSet;
 import java.util.*;
 
 
-public class Manager{
+public class Manager extends Associate{
 	private static Scanner scan = new Scanner(System.in);
 	static Statement stmt;
 	static Connection conn;
