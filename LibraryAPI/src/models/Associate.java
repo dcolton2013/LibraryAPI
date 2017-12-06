@@ -26,35 +26,44 @@ public class Associate{
 			stmt2 = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(memberQuery);
 			int remainingRentals = 0;
+			
 			while (rs.next()) {
 				String memberName = rs.getString("fname") + " " + rs.getString("lname");
 				System.out.printf("%s has been successfully retrieved.%n", memberName);
 			}
 			rs = stmt2.executeQuery(bookQuery);
-			int copies=0;
-			while (rs.next()) {
-				String bookName = rs.getString("name");
-				copies = rs.getInt("availableCopies");
-				System.out.printf("%s has been successfully scanned in.%n", bookName);
+			if(rs.next()) {
+				//update member checkouts add four days from today
+				boolean checkHolds = Library.getNumHolds(rs.getString("isbn")) > 0;
+				
+				System.out.println("Holds on this book.");
 			}
-			int response = stmt.executeUpdate(updateBookQuery);
-			if(response == 1){
-				System.out.println("Book copies available: " + (copies+1));
-			}
-			int responseMember = stmt2.executeUpdate(updateMemberQuery);
-			String updateMemberCheckinQuery = "UPDATE members_checkouts m SET m.status = 'checked in' WHERE m.isbn= '"+ bookISBN+ "' ;" ;  
-			int memCheckins = stmt2.executeUpdate(updateMemberCheckinQuery);
-			if(memCheckins == 1) {
-				System.out.println("checkin success alert.");
-			}
-			rs = stmt.executeQuery(memberQuery);
-			while (rs.next()) {
-				int booksCheckedOut = rs.getInt("numBooksCheckedOut");
-				System.out.printf("You have %d reamaining rentals.\n", 10-booksCheckedOut);
-			}
-			if(responseMember==1) {
-				System.out.println("Okay thanks alot.");
-				System.out.println("Come again.");
+			else {
+				int copies=0;
+				while (rs.next()) {
+					String bookName = rs.getString("name");
+					copies = rs.getInt("availableCopies");
+					System.out.printf("%s has been successfully scanned in.%n", bookName);
+				}
+				int response = stmt.executeUpdate(updateBookQuery);
+				if(response == 1){
+					System.out.println("Book copies available: " + (copies+1));
+				}
+				int responseMember = stmt2.executeUpdate(updateMemberQuery);
+				String updateMemberCheckinQuery = "UPDATE members_checkouts m SET m.status = 'checked in' WHERE m.isbn= '"+ bookISBN+ "' ;" ;  
+				int memCheckins = stmt2.executeUpdate(updateMemberCheckinQuery);
+				if(memCheckins == 1) {
+					System.out.println("checkin success alert.");
+				}
+				rs = stmt.executeQuery(memberQuery);
+				while (rs.next()) {
+					int booksCheckedOut = rs.getInt("numBooksCheckedOut");
+					System.out.printf("You have %d reamaining rentals.\n", 10-booksCheckedOut);
+				}
+				if(responseMember==1) {
+					System.out.println("Okay thanks alot.");
+					System.out.println("Come again.");
+				}
 			}
 			stmt.close();
 			stmt2.close();
@@ -82,6 +91,7 @@ public class Associate{
 				boolean isSuspended = rs.getBoolean("suspended");
 				int remainingRentals = (10 - booksCheckedOut);
 				library_code=rs.getString("code");
+				
 				if(booksCheckedOut > 9 || isSuspended) {
 					System.out.printf("Unfortunately this member has reached maxed checkouts or is suspended.\n");
 					System.out.printf("Number of books checked out as of %s: %d%n", new Date().toString(), booksCheckedOut);
@@ -92,6 +102,7 @@ public class Associate{
 				else {
 					rs = stmt2.executeQuery(bookQuery); //book query
 					while (rs.next()) {
+						
 						String bookName = rs.getString("name");
 						int availableCopies = rs.getInt("availableCopies");
 						if(availableCopies > 0) {
