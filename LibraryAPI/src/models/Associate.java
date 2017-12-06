@@ -29,22 +29,37 @@ public class Associate{
 			
 			while (rs.next()) {
 				String memberName = rs.getString("fname") + " " + rs.getString("lname");
-				System.out.printf("%s has been successfully retrieved.%n", memberName);
+				System.out.printf("%s has been successfully returned.%n", memberName);
 			}
+
 			rs = stmt2.executeQuery(bookQuery);
-			if(rs.next()) {
-				//update member checkouts add four days from today
-				boolean checkHolds = Library.getNumHolds(rs.getString("isbn")) > 0;
-				
-				System.out.println("Holds on this book.");
-			}
-			else {
+
 				int copies=0;
 				while (rs.next()) {
 					String bookName = rs.getString("name");
 					copies = rs.getInt("availableCopies");
 					System.out.printf("%s has been successfully scanned in.%n", bookName);
+					
+					boolean hasOneOrManyHolds = Library.getNumHolds(rs.getString("isbn")) > 0;
+					boolean isAvailable = copies == 0;
+					
+					if(hasOneOrManyHolds && isAvailable) {
+						SimpleDateFormat dateFormatter = new SimpleDateFormat("y-M-d hh:mm:s");
+						int noOfDays = 4; //i.e four days
+						Calendar calendar = Calendar.getInstance();
+						calendar.setTime(new Date());            
+						calendar.add(Calendar.DAY_OF_YEAR, noOfDays);
+						Date date = calendar.getTime();
+						String holdExp = "UPDATE members_holds SET holdexpiration='"+ dateFormatter.format(date) +"' WHERE isbn='" + rs.getString("isbn")+"';";
+						stmt = conn.createStatement();
+						int x =	stmt.executeUpdate(holdExp);
+						if(x==1) {
+							System.out.println("Good shit");
+						}
+					}
+					
 				}
+				
 				int response = stmt.executeUpdate(updateBookQuery);
 				if(response == 1){
 					System.out.println("Book copies available: " + (copies+1));
@@ -64,7 +79,7 @@ public class Associate{
 					System.out.println("Okay thanks alot.");
 					System.out.println("Come again.");
 				}
-			}
+			
 			stmt.close();
 			stmt2.close();
 		} catch (SQLException e ) {
