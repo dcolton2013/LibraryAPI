@@ -309,6 +309,6 @@ public class dbinit {
 	
 	private static void loadMemberCheckouts() {
 		System.out.println("populating table:member_checkouts...");
-		Associate.scanOutBook("3330", "9781501175565");
+		//Associate.scanOutBook("3330", "9781501175565");
 	}
 }
