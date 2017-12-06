@@ -112,7 +112,7 @@ public class Member {
 	
 	public static boolean bookCheckedOut(String code, String isbn){
 		String sql = "select * "+
-				 	 "from members_checkout "+
+				 	 "from members_checkouts "+
 					 "where isbn = ? and code = ?";
 		try {
 			PreparedStatement ps= conn.prepareStatement(sql);

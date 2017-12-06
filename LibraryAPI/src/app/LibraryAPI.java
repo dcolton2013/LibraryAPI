@@ -22,7 +22,15 @@ public class LibraryAPI{
         System.out.println("Library API");
         initLibrary();
         System.out.println("\n\n\n\n");
-        demo.main(args);
+        //demo.main(args);
+     /*   Associate.scanOutBook("9161", "9781501165320");
+        Associate.scanOutBook("9161", "0060854936");
+        Associate.scanOutBook("9161", "0440445450");
+        Associate.scanOutBook("9161", "9780062645227");
+        Associate.scanOutBook("9161", "0439708184");
+        Associate.scanOutBook("9161", "0394900014");*/
+        Associate.scanDropBox();
+       // Member.returnToDropbox("9161", "0394900014");
     }
 	
 	//initialize library

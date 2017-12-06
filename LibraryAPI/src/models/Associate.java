@@ -11,19 +11,21 @@ import java.util.*;
 public class Associate{
 
 	private static Scanner scan = new Scanner(System.in);
-	static Statement stmt,stmt2,stmt3;
+	static Statement stmt,stmt2,stmt3,stmt4;
 	static Connection conn;
 	static ResultSet rs;
-	public static void scanInBook(String memberUsername, String bookISBN){
-		String memberQuery = "select * from members m where m.username = '" + memberUsername + "' limit 1;";
+	
+	
+	public static void scanInBook(String code, String bookISBN){
+		String memberQuery = "select * from members m where m.code = '" + code + "' limit 1;";
 		String bookQuery = "select * from books b where b.isbn = '" + bookISBN + "' limit 1;";
 		String updateBookQuery = "UPDATE books b SET b.availableCopies = (b.availableCopies + 1) WHERE b.isbn= '"+ bookISBN+ "' ;" ;
-		String updateMemberQuery = "UPDATE members m SET m.numBooksCheckedOut = (m.numBooksCheckedOut - 1) WHERE m.username= '"+ memberUsername+ "' ;" ;
+		String updateMemberQuery = "UPDATE members m SET m.numBooksCheckedOut = (m.numBooksCheckedOut - 1) WHERE m.code= '"+ code+ "' ;" ;
 		try {
 			stmt = conn.createStatement();
 			stmt2 = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(memberQuery);
-			int remainingRentals =0;
+			int remainingRentals = 0;
 			while (rs.next()) {
 				String memberName = rs.getString("fname") + " " + rs.getString("lname");
 				System.out.printf("%s has been successfully retrieved.%n", memberName);
@@ -62,23 +64,24 @@ public class Associate{
 	}
 	
 	@SuppressWarnings("resource")
-	public static void scanOutBook(String member, String bookISBN){
-		String memberQuery = "select * from members m where m.username = '" + member + "' limit 1;";
+	public static void scanOutBook(String code, String bookISBN){
+		String memberQuery = "select * from members m where m.code = '" + code + "' limit 1;";
 		String bookQuery = "select * from books b where b.isbn = '" + bookISBN + "' limit 1;";
 		String updateBookQuery = "UPDATE books b SET b.availableCopies = (b.availableCopies - 1) WHERE b.isbn= '"+ bookISBN+ "' ;" ;
-		String updateMemberQuery = "UPDATE members m SET m.numBooksCheckedOut = (m.numBooksCheckedOut + 1) WHERE m.username= '"+ member+ "' ;" ;
+		String updateMemberQuery = "UPDATE members m SET m.numBooksCheckedOut = (m.numBooksCheckedOut + 1) WHERE m.code= '"+ code+ "' ;" ;
+	
 		try { 
 			stmt = conn.createStatement();
 			stmt2 = conn.createStatement();
 			stmt3 = conn.createStatement();
 			ResultSet rs = stmt.executeQuery(memberQuery);
-			String code;
+			String library_code;
 			while (rs.next()) {
 				String memberName = rs.getString("fname") + " " + rs.getString("lname");
 				int booksCheckedOut = rs.getInt("numBooksCheckedOut");
 				boolean isSuspended = rs.getBoolean("suspended");
 				int remainingRentals = (10 - booksCheckedOut);
-				code=rs.getString("code");
+				library_code=rs.getString("code");
 				if(booksCheckedOut > 9 || isSuspended) {
 					System.out.printf("Unfortunately this member has reached maxed checkouts or is suspended.\n");
 					System.out.printf("Number of books checked out as of %s: %d%n", new Date().toString(), booksCheckedOut);
@@ -130,6 +133,19 @@ public class Associate{
 		} catch (SQLException e ) {
 			e.printStackTrace();
 		} 
+	}
+	
+	public static void scanDropBox() {
+		try {
+			String memberRetQuery = "select * from members_returns;";
+			stmt4 = conn.createStatement();
+			rs = stmt4.executeQuery(memberRetQuery);
+			while (rs.next()) {
+				scanInBook(rs.getString("code"), rs.getString("isbn"));
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} //book query
 	}
 	
 	private static String generatePassword(){
