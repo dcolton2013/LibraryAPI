@@ -1,25 +1,25 @@
 package tests;
 
-import models.Library;
+import models.*;
 
 public class login_logout {
 	static String manager,associate,member = "";
-	public static void testManager(String[] args){
+	public static Manager testManager(String[] args){
 		//Login manage;
 		manager = args[0];
-		Library.loginManager(args[0], args[1]);
+		return Library.loginManager(args[0], args[1]);
 	}
 	
-	public static void testAssociate(String[] args){
+	public static Associate testAssociate(String[] args){
 		//Login manager
 		associate = args[0];
-		Library.loginAssociate(args[0], args[1]);
+		return Library.loginAssociate(args[0], args[1]);
 	}
 	
-	public static void testMember(String[] args){
+	public static Member testMember(String[] args){
 		//Login manager
 		member = args[0];
-		Library.loginMember(args[0], args[1]);
+		return Library.loginMember(args[0], args[1]);
 	}
 	
 	public static void logout() {

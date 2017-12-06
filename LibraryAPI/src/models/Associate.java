@@ -14,6 +14,16 @@ public class Associate{
 	static Statement stmt,stmt2,stmt3;
 	static Connection conn;
 	static ResultSet rs;
+	private String uname;
+
+	public Associate(String uname) {
+		this.uname = uname;
+	}
+
+	public String getUname() {
+		return uname;
+	}
+
 	public static void scanInBook(String memberUsername, String bookISBN){
 		String memberQuery = "select * from members m where m.username = '" + memberUsername + "' limit 1;";
 		String bookQuery = "select * from books b where b.isbn = '" + bookISBN + "' limit 1;";

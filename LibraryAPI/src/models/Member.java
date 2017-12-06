@@ -12,7 +12,16 @@ public class Member {
 	static Statement stmt;
 	static Connection conn;
 	private static ResultSet rs;
+	private String uname;
 	
+	public Member(String uname) {
+		this.uname = uname;
+	}
+
+	public String getUname() {
+		return uname;
+	}
+
 	public static void reportLost(String isbn,String code){
 		if (!Library.bookExists(isbn)){
 			System.out.println("no matching isbn");
@@ -110,9 +119,9 @@ public class Member {
 		
 	}
 	
-	public static boolean bookCheckedOut(String code, String isbn){
+	private static boolean bookCheckedOut(String code, String isbn){
 		String sql = "select * "+
-				 	 "from members_checkout "+
+				 	 "from members_checkouts "+
 					 "where isbn = ? and code = ?";
 		try {
 			PreparedStatement ps= conn.prepareStatement(sql);
@@ -185,7 +194,7 @@ public class Member {
 		return 0;
 	}
 	
-	public static double getMinimumPayment(String code){
+	private static double getMinimumPayment(String code){
 		String sql = "select minPayment "+
 					 "from members "+
 					 "where code = '"+code+"'";
@@ -323,7 +332,7 @@ public class Member {
 			rs = ps.executeQuery();
 			
 			if (!rs.next()){
-				System.out.println("User has no books checked out");
+				System.out.println("User has no books on hold");
 			}
 			else{
 				System.out.printf("%-10s%-30s%-10s\n","Hold Pos.","Title","Expiration");

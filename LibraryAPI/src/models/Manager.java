@@ -8,11 +8,20 @@ import java.util.*;
 
 
 public class Manager extends Associate{
+	public Manager(String uname) {
+		super(uname);
+	}
+
 	private static Scanner scan = new Scanner(System.in);
 	static Statement stmt;
 	static Connection conn;
 	private static ResultSet rs;
-	
+	private String uname;
+
+	public String getUname() {
+		return uname;
+	}
+
 	public static void applyCharges(){
 		String sql = "update members_checkouts "+
 					 "set latefees = latefees+.1, status = 'late'"+
@@ -367,7 +376,6 @@ public class Manager extends Associate{
 	public static void removeBookISBN(String isbn){
 		//remove from books table if isbn is of required length
 		if(isbn.length() < 7) return;
-		
 		String title = Library.getTitle(isbn);
 		deleteFromBooksKeywords(isbn);
 		deleteFromBooksAuthors(isbn);

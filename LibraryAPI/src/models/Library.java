@@ -56,7 +56,7 @@ public class Library{
 		}
 	}
 	
-	public static void loginManager(String uname, String password){
+	public static Manager loginManager(String uname, String password){
 	String sql =  	"SELECT m.username, m.password " +
 	          		"FROM managers m " +
 	          		"WHERE m.username = '"+uname+"' AND m.password = '"+password+"'"; 
@@ -76,9 +76,10 @@ public class Library{
 		}catch(SQLException e){
 			System.out.println(e.getMessage());
 		}
+		return new Manager(uname);
 	}
 		
-	public static void loginAssociate(String uname, String password){
+	public static Associate loginAssociate(String uname, String password){
 	String sql =  	"SELECT a.username, a.password " +
 	          		"FROM associates a " +
 	          		"WHERE a.username = '"+uname+"' AND a.password = '"+password+"'"; 
@@ -99,9 +100,10 @@ public class Library{
 		}catch(SQLException e){
 			System.out.println(e.getMessage());
 		}
+		return new Associate(uname);
 	}
 		
-	public static void loginMember(String uname, String password){
+	public static Member loginMember(String uname, String password){
 		String sql =  	"SELECT m.username, m.password " +
           				"FROM members m " +
           				"WHERE m.username = '"+uname+"' AND m.password = '"+password+"'"; 
@@ -116,11 +118,11 @@ public class Library{
 						"set loggedIn = 1 " +
 						"where username = '"+uname+"'";
 		    		stmt.executeUpdate(sql);
-		    		authorityLevel = 2;
 			}
 		}catch(SQLException e){
 			System.out.println(e.getMessage());
 		}
+		return new Member(uname);
 	}
 
 	public static void logoutManager(String user) {

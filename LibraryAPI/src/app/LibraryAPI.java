@@ -22,11 +22,16 @@ public class LibraryAPI{
         System.out.println("Library API");
         initLibrary();
         System.out.println("\n\n\n\n");
-        demo.main(args);
+        try {
+			demo.main(args);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
     }
 	
 	//initialize library
-    public static void initLibrary(){
+    private static void initLibrary(){
 		new Library();
     }
 }
@@ -35,4 +40,3 @@ public class LibraryAPI{
 //  javac $(find . -name "*.java")
 //Run program from main:
 //  java app.main
-
