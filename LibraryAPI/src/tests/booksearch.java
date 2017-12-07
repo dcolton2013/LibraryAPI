@@ -15,10 +15,10 @@ public class booksearch {
 		System.out.println("****searchISBN(isbn):");
 		System.out.println(Library.searchISBN(args[2]));
 		
-		System.out.println("****searchTitle(isbn):");
+		System.out.println("****searchTitle(title):");
 		System.out.println(Library.searchTitle(args[3]));
 		
-		System.out.println("****searchAvailability(isbn):");
+		System.out.println("****searchAvailability():");
 		System.out.println(Library.searchAvailability());
 	}
 }

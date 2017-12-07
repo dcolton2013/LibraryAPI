@@ -346,6 +346,23 @@ public class Library{
 		}
 	}
 	
+	public static boolean userHasHold(String code, String isbn) {
+		String sql = "select count(*) "+
+					 "from members_holds "+
+					 "where code = '" + code + "' and isbn = '"+isbn+"'";
+		try {
+			rs = stmt.executeQuery(sql);
+			if (rs.next()) {
+				if (rs.getInt(1) > 0)
+					return true;
+			}else
+				return false;
+		} catch (SQLException e) {
+			
+		}
+		return false;	
+	}
+	
 	public static int getTotalCopies(String isbn){
 		String sql = "select b.totalCopies "+
 					 "from books b "+
@@ -443,7 +460,7 @@ public class Library{
 	public static String searchTitle(String title){
 		return searchISBN(getISBN(title));
 	}
-
+	
 	public static String searchAvailability(){
 		String sql = "select isbn, name, availableCopies "+
 					 "from books "+

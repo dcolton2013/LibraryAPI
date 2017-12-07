@@ -52,6 +52,7 @@ public class Associate{
 					boolean hasOneOrManyHolds = Library.getNumHolds(rs.getString("isbn")) > 0;
 					boolean isAvailable = copies == 0;
 					
+					
 					if(hasOneOrManyHolds && isAvailable) {
 						SimpleDateFormat dateFormatter = new SimpleDateFormat("y-M-d hh:mm:s");
 						int noOfDays = 4; //i.e four days
@@ -59,7 +60,7 @@ public class Associate{
 						calendar.setTime(new Date());            
 						calendar.add(Calendar.DAY_OF_YEAR, noOfDays);
 						Date date = calendar.getTime();
-						String holdExp = "UPDATE members_holds SET holdexpiration='"+ dateFormatter.format(date) +"' WHERE isbn='" + rs.getString("isbn")+"';";
+						String holdExp = "UPDATE members_holds SET holdexpiration='"+ dateFormatter.format(date) +"' WHERE isbn='" + rs.getString("isbn")+"' and holdpos = 1;";
 						stmt = conn.createStatement();
 						int x =	stmt.executeUpdate(holdExp);
 						if(x==1) {
@@ -74,7 +75,7 @@ public class Associate{
 					System.out.println("Book copies available: " + (copies+1));
 				}
 				int responseMember = stmt2.executeUpdate(updateMemberQuery);
-				String updateMemberCheckinQuery = "UPDATE members_checkouts m SET m.status = 'checked in' WHERE m.isbn= '"+ bookISBN+ "' ;" ;  
+				String updateMemberCheckinQuery = "delete from members_checkouts WHERE isbn= '"+ bookISBN+"' and code = '"+ code + "'" ;  
 				int memCheckins = stmt2.executeUpdate(updateMemberCheckinQuery);
 				if(memCheckins == 1) {
 					System.out.println("checkin success alert.");
@@ -89,8 +90,8 @@ public class Associate{
 					System.out.println("Come again.");
 				}
 			
-			stmt.close();
-			stmt2.close();
+			//stmt.close();
+			//stmt2.close();
 		} catch (SQLException e ) {
 			e.printStackTrace();
 		} 
@@ -106,6 +107,49 @@ public class Associate{
 			System.out.println("no valid code");
 			return;
 		}
+		
+		int holds = Library.getNumHolds(bookISBN);
+		int copies2 = Library.getAvailableCopies(bookISBN);
+		if (holds>0) {
+			manageHolds(bookISBN);
+			if (holds == copies2) {
+				if (!Library.userHasHold(code, bookISBN)) {
+					System.out.println("holds exist");
+					return;
+				}else {
+					dropFromHolds(code,bookISBN);
+				}
+			}else if (holds > copies2){
+					int hp = getHoldPos(code,bookISBN);
+					if (!(hp>=copies2))
+						return;
+					if (hp == -1)
+						return;
+					else
+						updateHoldPos(bookISBN,hp);
+					String sql = "select code "+
+							 	 "from members_holds "+
+							 	 "where holdpos <= '"+copies2+"'";
+					boolean canCheckOut = false;
+					try {
+						rs = stmt.executeQuery(sql);
+						while(rs.next()) {
+							System.out.println(rs.getString(1));
+							if (code.equals(rs.getString(1))) {
+								System.out.println("match");
+								canCheckOut = true;
+								dropFromHolds(code,bookISBN);
+								break;
+							}
+						}
+					} catch (SQLException e) {
+					}
+					if (!canCheckOut) {
+						System.out.println("holds exist");
+						return;
+					}
+				}
+		}		
 		String memberQuery = "select * from members m where m.code = '" + code + "' limit 1;";
 		String bookQuery = "select * from books b where b.isbn = '" + bookISBN + "' limit 1;";
 		String updateBookQuery = "UPDATE books b SET b.availableCopies = (b.availableCopies - 1) WHERE b.isbn= '"+ bookISBN+ "' ;" ;
@@ -172,9 +216,9 @@ public class Associate{
 					}
 				}
 			}
-			stmt.close(); stmt2.close();
+			//stmt.close(); stmt2.close();
 		} catch (SQLException e ) {
-			e.printStackTrace();
+			System.out.println("Member has book checked out already");
 		} 
 	}
 	
@@ -186,11 +230,90 @@ public class Associate{
 			while (rs.next()) {
 				scanInBook(rs.getString("code"), rs.getString("isbn"));
 			}
+			String sql = "truncate table members_returns";
+			stmt.executeUpdate(sql);
 		} catch (SQLException e) {
 			e.printStackTrace();
-		} //book query
+		} 
 	}
 	
+	public static void manageHolds(String isbn) {
+		String sql =  "select isbn "+
+					  "from members_holds "+
+				 	  "where holdexpiration < NOW()";
+
+		try {
+			rs = stmt.executeQuery(sql);
+			while (rs.next()) {
+				updateHoldPos(rs.getString(1),0);
+				deleteExpiredHold(isbn);
+				updateNextHold();
+			}	
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	private static void updateHoldPos(String isbn, int pos) {
+		String sql = "update members_holds "+
+					 "set holdpos = holdpos - 1 "+
+					 "where isbn = '" + isbn +"' and holdpos > "+pos+"";
+		try {
+			int x = stmt2.executeUpdate(sql);	
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	private static void deleteExpiredHold(String isbn) {
+		String sql = "delete from members_holds "+
+					 "where holdpos = 0";
+		try {
+			int x = stmt3.executeUpdate(sql);
+			Library.decreaseHolds(isbn);
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	private static void updateNextHold() {
+		String sql = "update members_holds "+
+					 "set holdexpiration = DATE_ADD(NOW(), INTERVAL 4 DAY)"+
+					 "where holdpos = 0";
+		try {
+			int x = stmt4.executeUpdate(sql);	
+		} catch (SQLException e) {
+			System.out.println(e.getMessage());
+		}
+	}
+	
+	private static void dropFromHolds(String code,String isbn) {
+		String sql = "delete from members_holds "+
+					 "where code = '"+code + "' and isbn = '"+isbn+"'";
+		try {
+			stmt.executeUpdate(sql);
+			Library.decreaseHolds(isbn);
+		} catch (SQLException e) {
+		}
+		
+	}
+	
+	public static int getHoldPos(String code,String isbn) {
+		String sql = "select holdpos "+
+					 "from members_holds "+
+					 "where code = '"+code + "' and isbn = '"+isbn+"'";
+		try {
+			rs = stmt.executeQuery(sql);
+			if(rs.next());
+				int hp = rs.getInt(1);
+			return hp;
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return -1;
+	}
+ 	
 	private static String generatePassword(){
 		String password = UUID.randomUUID().toString();
 		password.replace("-","");

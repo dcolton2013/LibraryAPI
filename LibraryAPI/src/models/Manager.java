@@ -177,13 +177,22 @@ public class Manager extends Associate{
 	//each book must contain at least one author and keyword
 	public static int createBook(String isbn, String authors,String name, String year,int avail, double price, String keywords){
 		//no author
-		if (authors.length() == 0) return 1;
+		if (authors.length() == 0) {
+			System.out.println("no authors supplied");
+			return 1;
+		}
 		
 		//improper isbn length
 		if (Integer.parseInt(year) < 2007){
-			if(isbn.length() != 10) return 2;
+			if(isbn.length() != 10) {
+				System.out.println("Length != 10");
+				return 2;
+			}
 		}else{
-			if (isbn.length() != 13) return 3;
+			if (isbn.length() != 13) {
+				System.out.println("Length != 13");
+				return 3;
+			}
 		}
 		
 		//no title

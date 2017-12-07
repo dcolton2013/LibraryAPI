@@ -26,20 +26,13 @@ public class LibraryAPI{
 			demo.main(args);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			//e.printStackTrace();
 		}	
-        
 	}
+	
 	public static void testmethods(){
-     /*   Associate.scanOutBook("9161", "9781501165320");
-        Associate.scanOutBook("9161", "0060854936");
-        Associate.scanOutBook("9161", "0440445450");
-        Associate.scanOutBook("9161", "9780062645227");
-        Associate.scanOutBook("9161", "0439708184");
-        Associate.scanOutBook("9161", "0394900014");*/
-        //Associate.scanDropBox();
-       // Member.returnToDropbox("9161", "0394900014");
     }
+	
 	
 	//initialize library
     private static void initLibrary(){

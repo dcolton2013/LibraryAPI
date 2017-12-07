@@ -71,8 +71,9 @@ public class Member {
 			pstmt.execute();
 			Library.increaseHolds(isbn);
 		} catch (SQLException e) {
-			System.out.println(e.getMessage());
+			//System.out.println(e.getMessage());
 		}
+		System.out.println(code + " requesting hold on " + isbn);
 	}
 	
 	public static void requestRenewal(String isbn, String code){
@@ -357,13 +358,13 @@ public class Member {
 		
 		String sql = "select b.name, m.returndate, m.latefees, m.bookfees "+
 					 "from members_checkouts m, books b "+
-					 "where code = ? and m.isbn = b.isbn and m.status = 'checkedout'";
+					 "where code = ? and m.isbn = b.isbn and m.status = 'checked out'";
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, code);
 			rs = ps.executeQuery();
 			if (!rs.next()){
-				System.out.println("User has no books checkout");
+				System.out.println("User has no books checked out");
 			}
 			else{
 				System.out.printf("%-30s%-25s%-10s%-10s%-5s\n","Title","Return Date","Late Fees", "Book Fees", "Total");
