@@ -23,18 +23,7 @@ public class LibraryAPI{
         initLibrary();
         System.out.println("\n\n\n\n");
         try {
-		//	demo.main(args);
-//        	Associate.scanOutBook("9161", "0440445450");
-//            Associate.scanOutBook("9161", "9780345803481");
-//            Associate.scanOutBook("9161", "9780849946158");
-//            Associate.scanOutBook("9161", "0743233212");
-//            Associate.scanOutBook("9161", "1594771537");
-//            Associate.scanOutBook("9161", "0394900014");
-//            Associate.scanOutBook("9161", "9780789331144");
-//            Associate.scanOutBook("9161", "0439708184");
-//            Associate.scanOutBook("9161", "0915957264");
-            Associate.scanOutBook("9161", "0439064872");
-//            Associate.scanOutBook("9161", "9780062645227");
+			demo.main(args);
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			//e.printStackTrace();

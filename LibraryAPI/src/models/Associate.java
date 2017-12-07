@@ -60,7 +60,7 @@ public class Associate{
 						calendar.setTime(new Date());            
 						calendar.add(Calendar.DAY_OF_YEAR, noOfDays);
 						Date date = calendar.getTime();
-						String holdExp = "UPDATE members_holds SET holdexpiration='"+ dateFormatter.format(date) +"' WHERE isbn='" + rs.getString("isbn")+"' and holdpos = 1;";
+						String holdExp = "UPDATE members_holds SET holdexpiration='"+ dateFormatter.format(date) +"' WHERE isbn='" + bookISBN+"' and holdpos = 1;";
 						stmt = conn.createStatement();
 						int x =	stmt.executeUpdate(holdExp);
 						if(x==1) {
@@ -96,25 +96,6 @@ public class Associate{
 			e.printStackTrace();
 		} 
 	}
-	
-	public static int getNumOfSetExpirations(){
-		String sql = "select count(*) from members_holds where holdexpiration <> null;";
-		try {
-		Statement s = conn.createStatement();
-		rs = s.executeQuery(sql);
-		if (rs.next()) {
-		return rs.getInt(1);
-
-		}
-		else{
-		return -1;
-		}
-
-		} catch (SQLException e) {
-		e.printStackTrace();
-		}
-		return -1;
-		}
 	
 	@SuppressWarnings("resource")
 	public static void scanOutBook(String code, String bookISBN){
@@ -173,14 +154,11 @@ public class Associate{
 		String bookQuery = "select * from books b where b.isbn = '" + bookISBN + "' limit 1;";
 		String updateBookQuery = "UPDATE books b SET b.availableCopies = (b.availableCopies - 1) WHERE b.isbn= '"+ bookISBN+ "' ;" ;
 		String updateMemberQuery = "UPDATE members m SET m.numBooksCheckedOut = (m.numBooksCheckedOut + 1) WHERE m.code= '"+ code+ "' ;" ;
-		String membersBooksQuery = "select distinct members_checkouts.code, members_checkouts.isbn from members_checkouts inner join members on members_checkouts.code='" + code+"';";
-		
+	
 		try { 
 			stmt = conn.createStatement();
 			stmt2 = conn.createStatement();
 			stmt3 = conn.createStatement();
-			stmt4 = conn.createStatement();
-			
 			ResultSet rs = stmt.executeQuery(memberQuery);
 			String library_code;
 			while (rs.next()) {
@@ -190,26 +168,10 @@ public class Associate{
 				int remainingRentals = (10 - booksCheckedOut);
 				library_code=rs.getString("code");
 				
+				
 				if(booksCheckedOut > 9 || isSuspended) {
 					System.out.printf("Unfortunately this member has reached maxed checkouts or is suspended.\n");
 					System.out.printf("Number of books checked out as of %s: %d%n", new Date().toString(), booksCheckedOut);
-					System.out.println("|--------------------------------------------|");
-					System.out.printf(" Books checked out to [%s].\n", code);
-					System.out.println("|--------------------------------------------|");
-					ResultSet rs2 = stmt4.executeQuery(membersBooksQuery);
-					while(rs2.next()) {
-						String isbn;
-						try {
-							isbn = rs2.getString("isbn");
-							System.out.println(" - "+Library.getTitle(isbn));
-						} catch (SQLException e) {
-							// TODO Auto-generated catch block
-							e.printStackTrace();
-						}
-					}
-					System.out.println("|--------------------------------------------|");
-					stmt4.close();
-					
 				}
 				else {
 					rs = stmt2.executeQuery(bookQuery); //book query

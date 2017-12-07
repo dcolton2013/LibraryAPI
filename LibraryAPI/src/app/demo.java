@@ -21,18 +21,18 @@ public class demo {
 		
 		
 		//create book
-		System.out.println("DB rejects books w/ incorrect isbn length");
+		System.out.println("\n\n\nDB rejects books w/ incorrect isbn length");
 		System.out.println("Manager.createBook(\"97814496\", \"Duncan A. Buell\", \"Data Structures Using Java\", \"2011\", 1, 31.49, \"Data Structures, Java, Programming\")");
 		Manager.createBook("97814496", "Duncan A. Buell", "Data Structures Using Java", "2011", 1, 31.49, "Data Structures, Java, Programming");
 		while (go() == false) {}
 		
-		System.out.println("Manager create books: \n Manager.createBook()");
-		System.out.println(Manager.createBook("9781449628079", "Duncan A. Buell", "Data Structures Using Java", "2011", 1, 31.49,"Data Structures, Java, Programming"));;
+		System.out.println("Manager create books: \nManager.createBook(\"9781449628079\", \"Duncan A. Buell\", \"Data Structures Using Java\", \"2011\", 1, 31.49,\"Data Structures, Java, Programming\")");
+		Manager.createBook("9781449628079", "Duncan A. Buell", "Data Structures Using Java", "2011", 1, 31.49,"Data Structures, Java, Programming");
 		while (go() == false) {}
 		
 		
 		///////edit book functions
-		System.out.println("Edit Book functions: Profiles in Courage");
+		System.out.println("\n\n\n\nEdit Book functions: Profiles in Courage");
 		while (go() == false) {}
 		Manager.editBookName("0060854936", "Edited Book Title");
 		Manager.editBookPrice("0060854936", 10);
@@ -47,7 +47,7 @@ public class demo {
 		
 		
 		//create members and associates
-		System.out.println("Create Managers and Associtates");
+		System.out.println("\n\n\n\nCreate Managers and Associtates");
 		System.out.println("Manager.createMember(\"Nemo\", \"Sacosa\", \"77 Goro Street\", \"2298889876\", \"nsacosa\")");
 		Associate.addMember("Nemo", "Sacosa", "77 Goro Street", "2298889876", "nsacosa");
 		System.out.println("Manager.createAssociate(\"assoc5\", \"apass5\")");
@@ -57,7 +57,7 @@ public class demo {
 		
 		
 		///////Login
-		System.out.println("Login Functions: ");
+		System.out.println("\n\n\n\nLogin Functions: ");
 		System.out.println("loginManager(\"man1\",\"mpass1\"): ");
 		Manager man = login_logout.testManager( new String[]{"man1","mpass1"} );
 		System.out.println("loginAssociate(\"assoc1\",\"apass1\"): ");
@@ -68,7 +68,7 @@ public class demo {
 		
 		
 		///////Scan In/Scan out
-		System.out.println("ScanIn/Out");
+		System.out.println("\n\n\n\n\n- ScanIn/Out");
 		System.out.println("- Member exceeding 10 books");
 		//member exceeding ten books
 		Associate.scanOutBook("5693", "9781501175565");
@@ -85,9 +85,7 @@ public class demo {
 		Associate.scanOutBook("5693", "9780789331144");
 		while (go() == false) {}
 		
-		System.out.println("- Scan out a few more books");
-		while (go() == false) {}
-		
+		System.out.println("\n\n\n\n- Scan out a few more books");
 		Associate.scanOutBook("2698", "9781501175565");
 		Associate.scanOutBook("2698", "0394900014");
 		Associate.scanOutBook("6907", "1400082773");
@@ -95,7 +93,7 @@ public class demo {
 		while (go() == false) {}
 		
 		//Member requesting checkout of non - available book
-		System.out.println("Member requesting checkout of non-available book:");
+		System.out.println("\n\n\nMember requesting checkout of non-available book:");
 		System.out.println("8339 requests checkout on: 0439064872");
 		Associate.scanOutBook("6528", "0439064872");
 		while (go() == false) {}
@@ -103,62 +101,68 @@ public class demo {
 		
 		
 		//request holds
-		System.out.println("Member requesting holds on non-availble book:");
-		System.out.println("8339 placed holds on: 0439064872, 97815011653202");
-		System.out.println("6528 placed holds on: 0439064872");
+		System.out.println("\n\n\nMember requesting holds on non-availble book:");
 		Member.requestHold("0439064872", "8339");
 		Member.requestHold("9781501165320", "8339");
 		Member.requestHold("0439064872", "6528");
 		while (go() == false) {}
 		
+		
+		
 		//scan held books back in
+		System.out.println("\n\n\n");
 		Member.returnToDropbox("5693", "0439064872");
 		Member.returnToDropbox("8339", "9781501165320");
+		while (go() == false) {}
 		System.out.println("Associate scans from dropbox");
 		Associate.scanDropBox();
 		while (go() == false) {}
 		
 		///////member - report lost - request renewal
 		System.out.println("- Member reporting book lost");
-		Member.reportLost("9781501175565", "2698");
+		Member.reportLost("9780345803481", "5693");
 		while (go() == false) {}
 		
 		
 		
-		System.out.println("- Member requesting renewal");
-		Member.requestRenewal("9781501165320", "8339");
+		System.out.println("\n\n\n- Member requesting renewal");
+		Member.requestRenewal("0743233212", "5693");
 		while (go() == false) {}
 		
 		
-		System.out.println("- Member requesting renewal of new release book");
+		System.out.println("\n\n\n- Member requesting renewal of new release book");
 		Member.requestRenewal("9781501175565", "5693");
 		while (go() == false) {}
 		
 		
 		
 		///////member retrieving displaying info (checkouts + holds)
-		System.out.println("- Member showing their info: ");
+		System.out.println("\n\n\n- Member showing their info: ");
 		memberInfo.main(new String[] {"5693"});
 		while (go() == false) {}
 		
 		
 		
 		///////Manger applying charges
-		System.out.println("- Manager applying charges: ");
+		System.out.println("\n\n\n- Manager applying charges: ");
 		do{
 			System.out.println("Manager.applyCharges(): ");
 			long t= System.currentTimeMillis();
-			long end = t+400;
+			long end = t+1000;
 			while(System.currentTimeMillis() < end) {
 			  Manager.applyCharges();
 			  Thread.sleep(1);
 			}
 		}while (go() == false);
 
+		///////member retrieving displaying info (checkouts + holds)
+		System.out.println("\n\n\n- Member showing their info: ");
+		memberInfo.main(new String[] {"5693"});
+		while (go() == false) {}
 		
 		
 		///////Member make payment
-		System.out.println("- Member making payment: ");
+		System.out.println("\n\n\n- Member making payment: ");
 		do{
 			System.out.println("Manager.makePayment(10,2698): ");
 			double rem = Member.makePayment(10,"5693");
