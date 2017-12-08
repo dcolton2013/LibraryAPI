@@ -62,7 +62,7 @@ public class demo {
 		Manager man = login_logout.testManager( new String[]{"man1","mpass1"} );
 		System.out.println("loginAssociate(\"assoc1\",\"apass1\"): ");
 		Associate a = login_logout.testAssociate( new String[]{"assoc1","apass1"} );
-		System.out.println("loginMemmber(\"ssmitherson\",\"f2694800\"): ");
+		System.out.println("loginMemmber(\"ssmitherson\",\"7996870c\"): ");
 		Member memb = login_logout.testMember( new String[]{"ssmitherson","f2694800"} );
 		while (go() == false) {}
 		
@@ -112,14 +112,13 @@ public class demo {
 		//scan held books back in
 		System.out.println("\n\n\n");
 		Member.returnToDropbox("5693", "0439064872");
-		Member.returnToDropbox("8339", "9781501165320");
 		while (go() == false) {}
 		System.out.println("Associate scans from dropbox");
 		Associate.scanDropBox();
 		while (go() == false) {}
 		
 		///////member - report lost - request renewal
-		System.out.println("- Member reporting book lost");
+		System.out.println("\n\n\n- Member reporting book lost");
 		Member.reportLost("9780345803481", "5693");
 		while (go() == false) {}
 		
@@ -164,9 +163,8 @@ public class demo {
 		///////Member make payment
 		System.out.println("\n\n\n- Member making payment: ");
 		do{
-			System.out.println("Manager.makePayment(10,2698): ");
+			System.out.println("Manager.makePayment(10,5693): ");
 			double rem = Member.makePayment(10,"5693");
-			double rem2 = Member.makePayment(10,"2698");
 			Manager.applyCharges();
 			System.out.println(rem);
 		}while (go() == false);
@@ -174,7 +172,7 @@ public class demo {
 		
 		
 		////////logout
-		System.out.println("Logout all previosuly logged in");
+		System.out.println("\n\n\nLogout all previosuly logged in");
 		login_logout.logout();
 	}
 	

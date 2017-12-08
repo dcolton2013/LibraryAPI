@@ -358,7 +358,7 @@ public class Member {
 		
 		String sql = "select b.name, m.returndate, m.latefees, m.bookfees "+
 					 "from members_checkouts m, books b "+
-					 "where code = ? and m.isbn = b.isbn and m.status = 'checked out'";
+					 "where code = ? and m.isbn = b.isbn";
 		try {
 			PreparedStatement ps = conn.prepareStatement(sql);
 			ps.setString(1, code);

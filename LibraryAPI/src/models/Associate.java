@@ -63,9 +63,6 @@ public class Associate{
 						String holdExp = "UPDATE members_holds SET holdexpiration='"+ dateFormatter.format(date) +"' WHERE isbn='" + bookISBN+"' and holdpos = 1;";
 						stmt = conn.createStatement();
 						int x =	stmt.executeUpdate(holdExp);
-						if(x==1) {
-							System.out.println("Good shit");
-						}
 					}
 					
 				}
@@ -154,7 +151,7 @@ public class Associate{
 		String bookQuery = "select * from books b where b.isbn = '" + bookISBN + "' limit 1;";
 		String updateBookQuery = "UPDATE books b SET b.availableCopies = (b.availableCopies - 1) WHERE b.isbn= '"+ bookISBN+ "' ;" ;
 		String updateMemberQuery = "UPDATE members m SET m.numBooksCheckedOut = (m.numBooksCheckedOut + 1) WHERE m.code= '"+ code+ "' ;" ;
-	
+		String membersBooksQuery = "select distinct members_checkouts.code, members_checkouts.isbn from members_checkouts inner join members on members_checkouts.code='" + code+"';";
 		try { 
 			stmt = conn.createStatement();
 			stmt2 = conn.createStatement();
